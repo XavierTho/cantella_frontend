@@ -14,3 +14,5 @@ menu: nav/home.html
 <a href="{{site.baseurl}}/classes/ap/chem/home">AP Chemistry</a>
 
 <a href="{{site.baseurl}}/classes/ap/physics/home">AP Physics</a>
+
+<a href="{{site.baseurl}}/classes/ap/csp/home">AP CSP</a>
