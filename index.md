@@ -12,3 +12,5 @@ menu: nav/home.html
 <a href="{{site.baseurl}}/classes/ap/world/home">AP World</a>
 
 <a href="{{site.baseurl}}/classes/ap/chem/home">AP Chemistry</a>
+
+<a href="{{site.baseurl}}/classes/ap/stats/home">AP Statistics</a>
