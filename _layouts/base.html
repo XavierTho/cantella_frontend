@@ -15,3 +15,63 @@
   {%- include theme/cayman/base.html -%}
 {% endif %}
 </html>
+
+{%- include head.html -%}
+
+<body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let _paths = window.location.pathname.split("/").filter(Boolean);
+      if (_paths.length > 1) {
+        // not on the main page
+        console.log("not on the main page");
+        /*
+                document
+          .getElementsByClassName("page-content")[0]
+          .classList.remove("hidden-pg");*/
+      }
+    });
+  </script>
+  {%- include header.html -%}
+
+  <main class="page-content" aria-label="Content">
+    <div class="wrapper">{{ content }}</div>
+  </main>
+
+  {%- include theme/minima/footer.html -%}
+
+  <style>
+    /* Full-Page Background with Strong Glowing Effect */
+    body {
+      background: linear-gradient(
+        135deg,
+        #1254f0,
+        hsla(277, 73%, 74%, 0.632),
+        #25c3f8,
+        #5a67d8
+      );
+      background-size: 400% 400%;
+      animation: glowingBackground 20s ease infinite;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    /* Glowing Animation for Background */
+    @keyframes glowingBackground {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .hidden-pg {
+      display: none !important;
+    }
+  </style>
+</body>
+
