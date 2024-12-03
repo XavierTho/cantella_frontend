@@ -3,7 +3,7 @@
 <html lang='{{ page.lang | default: site.lang | default: "en" }}'>
 
 <!-- Look in _includes/theme for <head> and <body> definitions -->
-{% if site.remote_theme contains 'minima' %}
+  {% if site.remote_theme contains 'minima' %}
   {%- include theme/minima/base.html -%}
 {% elsif site.remote_theme contains 'midnight' %}
   {%- include theme/midnight/base.html -%}
@@ -15,3 +15,20 @@
   {%- include theme/cayman/base.html -%}
 {% endif %}
 </html>
+
+{%- include head.html -%}
+
+<body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let _paths = window.location.pathname.split("/").filter(Boolean);
+      if (_paths.length > 1) {
+        // not on the main page
+        console.log("not on the main page");
+        /*
+                document
+          .getElementsByClassName("page-content")[0]
+          .classList.remove("hidden-pg");*/
+      }
+    });
+ 
