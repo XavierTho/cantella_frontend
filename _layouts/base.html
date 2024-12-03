@@ -3,7 +3,7 @@
 <html lang='{{ page.lang | default: site.lang | default: "en" }}'>
 
 <!-- Look in _includes/theme for <head> and <body> definitions -->
-{% if site.remote_theme contains 'minima' %}
+  {% if site.remote_theme contains 'minima' %}
   {%- include theme/minima/base.html -%}
 {% elsif site.remote_theme contains 'midnight' %}
   {%- include theme/midnight/base.html -%}
@@ -31,47 +31,4 @@
           .classList.remove("hidden-pg");*/
       }
     });
-  </script>
-  {%- include header.html -%}
-  
-  <main class="page-content" aria-label="Content">
-    <div class="wrapper">{{ content }}</div>
-  </main>
-  
-  {%- include theme/minima/footer.html -%}
-  
-  <style>
-    /* Full-Page Background with Darker White-Gray Effect */
-    body {
-      background: linear-gradient(
-        135deg,
-        #d4d4d4,
-        rgba(200, 200, 200, 0.9),
-        #bfbfbf,
-        #e0e0e0
-      );
-      background-size: 400% 400%;
-      animation: glowingBackground 20s ease infinite;
-      font-family: Arial, sans-serif;
-      color: #222;
-    }
-  
-    /* Glowing Animation for Background */
-    @keyframes glowingBackground {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
-    }
-  
-    .hidden-pg {
-      display: none !important;
-    }
-  </style>
-  </body>
-  
+ 
