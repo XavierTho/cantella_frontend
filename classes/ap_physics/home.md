@@ -1,5 +1,5 @@
 ---
 layout: post
-title: AP Chemistry
-permalink: classes/ap/chem/home
+title: AP Physics
+permalink: classes/ap/physics/home
 ---
