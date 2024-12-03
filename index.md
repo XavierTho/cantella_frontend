@@ -6,27 +6,6 @@ hide: true
 menu: nav/home.html
 ---
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: white;
-    }
-    header {
-        padding: 1.5rem;
-        text-align: center;
-        background-color: rgba(0, 0, 0, 0.7);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    }
-    header h1 {
-        font-size: 2.5rem;
-        margin: 0;
-    }
-    header p {
-        font-size: 1rem;
-        margin: 0.5rem 0 0;
-    }
     .motivational-bar {
         text-align: center;
         font-size: 1.2rem;
