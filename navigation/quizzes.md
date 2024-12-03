@@ -1,6 +1,7 @@
 ---
 layout: search 
-title: hangouts
+title: Quizzes
 search_exclude: true
-permalink: /hangouts/
+permalink: /quizzes/
 ---
+
