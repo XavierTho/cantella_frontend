@@ -18,3 +18,5 @@ menu: nav/home.html
 <a href="{{site.baseurl}}/classes/ap/csp/home">AP CSP</a>
 
 <a href="{{site.baseurl}}/classes/ap/us/home">AP US History</a>
+
+<a href="{{site.baseurl}}/classes/ap/stats/home">AP Statistics</a>
