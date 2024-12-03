@@ -98,7 +98,7 @@ menu: nav/home.html
     <div class="class-card"><a href="{{site.baseurl}}/classes/ap/chem/home">AP Chemistry</a></div>
     <div class="class-card"><a href="{{site.baseurl}}/classes/ap/physics/home">AP Physics</a></div>
     <div class="class-card"><a href="{{site.baseurl}}/classes/ap/csp/home">AP CSP</a></div>
-    <div class="class-card"><a href="{{site.baseurl}}/classes/ap/us/home">AP US History</a></div>
+    <div class="class-card"><a href="{{site.baseurl}}/classes/ap/ush/home">AP US History</a></div>
 </div>
 
 <script>
