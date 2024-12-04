@@ -8,16 +8,16 @@ hide: true
 # Welcome to The Flashcards Page
 
 <style>
-  .flashcard-container {
+  .deck-container {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 20px; /* Space between button and flashcards */
+    margin-top: 20px;
   }
 
-  .flashcard {
+  .deck {
     width: 200px;
-    height: 150px;
+    height: 100px;
     border-radius: 8px;
     text-align: center;
     display: flex;
@@ -25,115 +25,195 @@ hide: true
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    background-color: #444;
+    color: white;
     transition: transform 0.3s ease;
-    position: relative; /* For positioning labels */
-    font-family: Arial, sans-serif;
+    border: 2px solid #555;
   }
 
-  .flashcard .side-label {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-size: 12px;
-    padding: 2px 6px;
-    border-radius: 4px;
-  }
-
-  .flashcard.front {
-    background-color: #333; /* Dark grey for the question */
-    color: white;
-    border: 2px solid #444;
-  }
-
-  .flashcard.back {
-    background-color: #f9f9f9; /* Light grey for the answer */
-    color: black;
-    border: 2px solid #ccc;
-  }
-
-  .flashcard:hover {
-    transform: scale(1.05); /* Subtle zoom on hover */
+  .deck:hover {
+    transform: scale(1.05);
+    background-color: #555;
   }
 
   .hidden {
     display: none;
   }
 
-  #add-card-form {
+  #add-deck-form {
     margin-bottom: 20px;
   }
 
   .form-group {
     margin-bottom: 10px;
   }
+
+  .flashcard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .flashcard {
+    width: 300px;
+    height: 200px;
+    border-radius: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #333;
+    color: white;
+    border: 2px solid #444;
+    margin-bottom: 10px;
+  }
+
+  .flashcard:hover {
+    background-color: #444;
+  }
 </style>
 
 <div id="flashcard-app">
-  <button id="create-card-btn">Make Flashcard</button>
-  <div id="add-card-form" class="hidden">
-    <div class="form-group">
-      <label for="class-name">Class:</label>
-      <input type="text" id="class-name" placeholder="Enter class name">
+  <button id="create-deck-btn">Make Deck</button>
+  <div id="add-deck-form" class="hidden">
+    <div id="deck-info-phase">
+      <div class="form-group">
+        <label for="deck-title">Deck Title:</label>
+        <input type="text" id="deck-title" placeholder="Enter deck title">
+      </div>
+      <div class="form-group">
+        <label for="class-select">Class:</label>
+        <select id="class-select">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <button id="next-phase-btn">Next</button>
     </div>
-    <div class="form-group">
-      <label for="question">Question:</label>
-      <input type="text" id="question" placeholder="Enter the question">
+    <div id="question-phase" class="hidden">
+      <div class="form-group">
+        <label for="question">Question:</label>
+        <input type="text" id="question" placeholder="Enter question">
+      </div>
+      <div class="form-group">
+        <label for="answer">Answer:</label>
+        <input type="text" id="answer" placeholder="Enter answer">
+      </div>
+      <button id="add-card-btn">Add Flashcard</button>
+      <button id="finish-deck-btn">Finish Deck</button>
     </div>
-    <div class="form-group">
-      <label for="answer">Answer:</label>
-      <input type="text" id="answer" placeholder="Enter the answer">
-    </div>
-    <button id="add-card-btn">Add Flashcard</button>
   </div>
 
-  <div class="flashcard-container" id="flashcard-container"></div>
+  <div class="deck-container" id="deck-container"></div>
+  <div class="flashcard-container hidden" id="flashcard-container">
+    <div class="flashcard hidden" id="flashcard"></div>
+    <button id="next-card-btn" class="hidden">Next Card</button>
+  </div>
 </div>
 
 <script>
-  const createCardBtn = document.getElementById('create-card-btn');
-  const addCardForm = document.getElementById('add-card-form');
+  const createDeckBtn = document.getElementById('create-deck-btn');
+  const addDeckForm = document.getElementById('add-deck-form');
+  const deckInfoPhase = document.getElementById('deck-info-phase');
+  const questionPhase = document.getElementById('question-phase');
+  const deckContainer = document.getElementById('deck-container');
   const flashcardContainer = document.getElementById('flashcard-container');
+  const flashcard = document.getElementById('flashcard');
+  const nextCardBtn = document.getElementById('next-card-btn');
 
-  // Show the flashcard creation form
-  createCardBtn.addEventListener('click', () => {
-    addCardForm.classList.toggle('hidden');
+  let decks = []; // Array to store all decks
+  let currentDeck = null; // Deck currently being viewed
+  let currentCardIndex = 0; // Index of the current card being viewed
+
+  // Show deck creation form
+  createDeckBtn.addEventListener('click', () => {
+    addDeckForm.classList.remove('hidden');
+    deckInfoPhase.classList.remove('hidden');
+    questionPhase.classList.add('hidden');
   });
 
-  // Add a new flashcard
+  // Proceed to question creation phase
+  document.getElementById('next-phase-btn').addEventListener('click', () => {
+    const deckTitle = document.getElementById('deck-title').value.trim();
+    const className = document.getElementById('class-select').value;
+
+    if (deckTitle && className) {
+      currentDeck = { title: deckTitle, class: className, cards: [] };
+      decks.push(currentDeck);
+      deckInfoPhase.classList.add('hidden');
+      questionPhase.classList.remove('hidden');
+    } else {
+      alert('Please provide a deck title and select a class.');
+    }
+  });
+
+  // Add a flashcard to the current deck
   document.getElementById('add-card-btn').addEventListener('click', () => {
-    const className = document.getElementById('class-name').value.trim();
     const question = document.getElementById('question').value.trim();
     const answer = document.getElementById('answer').value.trim();
 
-    if (className && question && answer) {
-      const flashcard = document.createElement('div');
-      flashcard.classList.add('flashcard', 'front');
-      flashcard.innerHTML = `
-        <div class="side-label">Question</div>
-        <div>${className}: ${question}</div>
-      `;
-
-      // Toggle between question and answer on click
-      flashcard.addEventListener('click', () => {
-        const isFront = flashcard.classList.contains('front');
-        flashcard.classList.toggle('front', !isFront);
-        flashcard.classList.toggle('back', isFront);
-        flashcard.innerHTML = isFront
-          ? `<div class="side-label">Answer</div><div>${answer}</div>`
-          : `<div class="side-label">Question</div><div>${className}: ${question}</div>`;
-      });
-
-      flashcardContainer.appendChild(flashcard);
-
-      // Clear form fields
-      document.getElementById('class-name').value = '';
+    if (question && answer) {
+      currentDeck.cards.push({ question, answer });
       document.getElementById('question').value = '';
       document.getElementById('answer').value = '';
-      addCardForm.classList.add('hidden'); // Hide form after adding
     } else {
-      alert('Please fill in all fields.');
+      alert('Please provide a question and an answer.');
+    }
+  });
+
+  // Finish creating the deck
+  document.getElementById('finish-deck-btn').addEventListener('click', () => {
+    addDeckForm.classList.add('hidden');
+    displayDeck(currentDeck);
+  });
+
+  // Display the deck in the deck container
+  function displayDeck(deck) {
+    const deckElement = document.createElement('div');
+    deckElement.classList.add('deck');
+    deckElement.innerHTML = `
+      <h3>${deck.title}</h3>
+      <button class="open-deck-btn">Open Deck</button>
+    `;
+
+    deckElement.querySelector('.open-deck-btn').addEventListener('click', () => {
+      openDeck(deck);
+    });
+
+    deckContainer.appendChild(deckElement);
+  }
+
+  // Open the deck and show flashcards
+  function openDeck(deck) {
+    currentDeck = deck;
+    currentCardIndex = 0;
+    showFlashcard(deck.cards[currentCardIndex]);
+    flashcardContainer.classList.remove('hidden');
+    deckContainer.classList.add('hidden');
+    nextCardBtn.classList.remove('hidden');
+  }
+
+  // Show the current flashcard
+  function showFlashcard(card) {
+    flashcard.textContent = card.question;
+    flashcard.classList.remove('hidden');
+    flashcard.onclick = () => {
+      flashcard.textContent =
+        flashcard.textContent === card.question ? card.answer : card.question;
+    };
+  }
+
+  // Show the next card
+  nextCardBtn.addEventListener('click', () => {
+    if (currentDeck.cards.length > 0) {
+      currentCardIndex = (currentCardIndex + 1) % currentDeck.cards.length;
+      showFlashcard(currentDeck.cards[currentCardIndex]);
     }
   });
 </script>
