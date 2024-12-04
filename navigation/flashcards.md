@@ -25,7 +25,7 @@ hide: true
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: #444;
+    background-color: #f6af75;
     color: white;
     transition: transform 0.3s ease;
     border: 2px solid #555;
@@ -33,7 +33,7 @@ hide: true
 
   .deck:hover {
     transform: scale(1.05);
-    background-color: #555;
+    background-color: #edccb9;
   }
 
   .hidden {
@@ -65,14 +65,19 @@ hide: true
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: #333;
-    color: white;
+    background-color: #f6af75; /* Default for question side */
+    color: black;
     border: 2px solid #444;
     margin-bottom: 10px;
   }
 
+  .flashcard.answer {
+    background-color: #edccb9; /* light canteloupe for answer side */
+  }
+
   .flashcard:hover {
-    background-color: #444;
+    background-color: #d9a586;
+    transform: scale(1.05);
   }
 </style>
 
@@ -83,16 +88,6 @@ hide: true
       <div class="form-group">
         <label for="deck-title">Deck Title:</label>
         <input type="text" id="deck-title" placeholder="Enter deck title">
-      </div>
-      <div class="form-group">
-        <label for="class-select">Class:</label>
-        <select id="class-select">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
       </div>
       <button id="next-phase-btn">Next</button>
     </div>
@@ -114,6 +109,7 @@ hide: true
   <div class="flashcard-container hidden" id="flashcard-container">
     <div class="flashcard hidden" id="flashcard"></div>
     <button id="next-card-btn" class="hidden">Next Card</button>
+    <button id="close-deck-btn" class="hidden">Close Deck</button>
   </div>
 </div>
 
@@ -126,6 +122,7 @@ hide: true
   const flashcardContainer = document.getElementById('flashcard-container');
   const flashcard = document.getElementById('flashcard');
   const nextCardBtn = document.getElementById('next-card-btn');
+  const closeDeckBtn = document.getElementById('close-deck-btn');
 
   let decks = []; // Array to store all decks
   let currentDeck = null; // Deck currently being viewed
@@ -141,15 +138,14 @@ hide: true
   // Proceed to question creation phase
   document.getElementById('next-phase-btn').addEventListener('click', () => {
     const deckTitle = document.getElementById('deck-title').value.trim();
-    const className = document.getElementById('class-select').value;
 
-    if (deckTitle && className) {
-      currentDeck = { title: deckTitle, class: className, cards: [] };
+    if (deckTitle) {
+      currentDeck = { title: deckTitle, cards: [] };
       decks.push(currentDeck);
       deckInfoPhase.classList.add('hidden');
       questionPhase.classList.remove('hidden');
     } else {
-      alert('Please provide a deck title and select a class.');
+      alert('Please provide a deck title.');
     }
   });
 
@@ -197,15 +193,22 @@ hide: true
     flashcardContainer.classList.remove('hidden');
     deckContainer.classList.add('hidden');
     nextCardBtn.classList.remove('hidden');
+    closeDeckBtn.classList.remove('hidden');
   }
 
   // Show the current flashcard
   function showFlashcard(card) {
     flashcard.textContent = card.question;
     flashcard.classList.remove('hidden');
+    flashcard.classList.remove('answer');
     flashcard.onclick = () => {
-      flashcard.textContent =
-        flashcard.textContent === card.question ? card.answer : card.question;
+      if (flashcard.textContent === card.question) {
+        flashcard.textContent = card.answer;
+        flashcard.classList.add('answer');
+      } else {
+        flashcard.textContent = card.question;
+        flashcard.classList.remove('answer');
+      }
     };
   }
 
@@ -215,5 +218,13 @@ hide: true
       currentCardIndex = (currentCardIndex + 1) % currentDeck.cards.length;
       showFlashcard(currentDeck.cards[currentCardIndex]);
     }
+  });
+
+  // Close the deck and return to deck view
+  closeDeckBtn.addEventListener('click', () => {
+    flashcardContainer.classList.add('hidden');
+    deckContainer.classList.remove('hidden');
+    nextCardBtn.classList.add('hidden');
+    closeDeckBtn.classList.add('hidden');
   });
 </script>
