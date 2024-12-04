@@ -48,7 +48,7 @@ permalink: classes/ap/ush/home
   }
 
   function navigateToQuiz() {
-    window.location.href = './quizz.md';
+    window.location.href = './quizz';
   }
 
   fetchLeaderboard();
@@ -88,3 +88,18 @@ permalink: classes/ap/ush/home
     transition: color 0.3s ease;
   }
 </style>
+
+<!-- Back to Index Button -->
+<div style="text-align: center; margin-top: 30px;">
+  <button onclick="goToIndex()" 
+          style="background: #FF7043; color: white; border: none; padding: 10px 20px; font-size: 1em; border-radius: 10px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
+    Back to Index
+  </button>
+</div>
+
+<script>
+  function goToIndex() {
+    window.location.href = '/cantella_frontend/';
+  }
+</script>
+
