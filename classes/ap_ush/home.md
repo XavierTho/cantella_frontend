@@ -25,6 +25,16 @@ permalink: classes/ap/ush/home
       Take Quiz
     </button>
   </section>
+
+  <!-- Flashcards Button -->
+  <section id="flashcards-section" style="text-align: center; margin-top: 20px; animation: fadeIn 2.5s;">
+    <h2 style="color: #FF7043; font-size: 2em;">Study with Flashcards</h2>
+    <p style="color: #BF360C; font-size: 1.2em;">Click below to explore and create flashcards for this class!</p>
+    <button id="open-flashcards" onclick="navigateToFlashcards()" 
+            style="background: linear-gradient(45deg, #FF7043, #FF9E80); border: none; color: white; padding: 15px 30px; font-size: 1.5em; border-radius: 50px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
+      Open Flashcards
+    </button>
+  </section>
 </div>
 
 <script>
@@ -49,6 +59,10 @@ permalink: classes/ap/ush/home
 
   function navigateToQuiz() {
     window.location.href = './quizz';
+  }
+
+  function navigateToFlashcards() {
+    window.location.href = './flash';
   }
 
   fetchLeaderboard();
@@ -102,4 +116,3 @@ permalink: classes/ap/ush/home
     window.location.href = '/cantella_frontend/';
   }
 </script>
-
