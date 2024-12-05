@@ -18,3 +18,17 @@
 
 {%- include head.html -%}
 
+<body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let _paths = window.location.pathname.split("/").filter(Boolean);
+      if (_paths.length > 1) {
+        // not on the main page
+        console.log("not on the main page");
+        /*
+                document
+          .getElementsByClassName("page-content")[0]
+          .classList.remove("hidden-pg");*/
+      }
+    });
+    a
