@@ -4,69 +4,115 @@ title: AP Chemistry
 permalink: classes/ap/chem/home
 ---
 
-<style>
-    #display {
-        color: white;
-        font-weight: bold;
-        font-size: 18px;
-    }
-</style>
+<div class="class-home" style="font-family: Arial, sans-serif; background: linear-gradient(to bottom, #FFF3E0, #FFD8B2); min-height: 100vh; padding: 20px; box-sizing: border-box;">
+  <h1 style="color: #FF9E80; text-align: center; font-size: 3em; animation: fadeIn 1s;">Welcome to AP Chemistry</h1>
 
-<p id="display"></p>
-Answer: <input id ="userAnswer">
-<button onclick="checkAnswer()">Submit</button>
+  <!-- Leaderboard Section -->
+  <section id="leaderboard" style="background-color: #FFE5D0; padding: 20px; border-radius: 15px; margin: 20px auto; max-width: 600px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); animation: slideIn 1.5s;">
+    <h2 style="color: #FF7043; text-align: center;">Leaderboard</h2>
+    <p style="text-align: center; color: #BF360C; font-size: 1.1em;">Top scorers refreshed daily.</p>
+    <ul id="leaderboard-list" style="list-style: none; padding: 0; text-align: center;">
+      <!-- Leaderboard items will be dynamically injected -->
+    </ul>
+  </section>
 
-<p id="result"></p>
+  <!-- Take Quiz Button -->
+  <section id="quiz-section" style="text-align: center; margin-top: 30px; animation: fadeIn 2s;">
+    <h2 style="color: #FF7043; font-size: 2em;">Test Your Knowledge</h2>
+    <p style="color: #BF360C; font-size: 1.2em;">Click below to take the AP Chemistry quiz!</p>
+    <button id="take-quiz" onclick="navigateToQuiz()" 
+            style="background: linear-gradient(45deg, #FF7043, #FF9E80); border: none; color: white; padding: 15px 30px; font-size: 1.5em; border-radius: 50px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
+      Take Quiz
+    </button>
+  </section>
+
+  <!-- Flashcards Button -->
+  <section id="flashcards-section" style="text-align: center; margin-top: 20px; animation: fadeIn 2.5s;">
+    <h2 style="color: #FF7043; font-size: 2em;">Study with Flashcards</h2>
+    <p style="color: #BF360C; font-size: 1.2em;">Click below to explore and create flashcards for this class!</p>
+    <button id="open-flashcards" onclick="navigateToFlashcards()" 
+            style="background: linear-gradient(45deg, #FF7043, #FF9E80); border: none; color: white; padding: 15px 30px; font-size: 1.5em; border-radius: 50px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
+      Open Flashcards
+    </button>
+  </section>
+</div>
 
 <script>
-    // Define set of questions
-    const questions = [
-        "What is the equilibrium constant (K) of the reaction: "
-    ]
+  async function fetchLeaderboard() {
+    try {
+      const response = await fetch('/api/leaderboard/apchem');
+      const leaderboard = await response.json();
 
-    // Define set of reactions
-    const reactions = [
-        "N<sub>2</sub> + 3H<sub>2</sub> <--> 2NH<sub>3</sub>",
-        "N<sub>2</sub>O<sub>4(g)</sub> <--> N<sub>2(g)</sub> + 2O<sub>2(g)</sub>"
-    ]
+      const leaderboardList = document.getElementById('leaderboard-list');
+      leaderboardList.innerHTML = '';
 
-    // Temporary array till we can directly parse and answer the question
-    const correctAnswers = [
-        "K = [NH3]^2/([N2][H2]^3)",
-        "K = [N2][O2]^2/([N2][O4])",
-    ]
-
-    // Don't merge reactions and correctAnswers array into an object
-
-    // Index a random Question & Reaction
-    randomQuestionIndex = [Math.floor((Math.random() * questions.length))]
-    randomReactionIndex = [Math.floor((Math.random() * reactions.length))]
-
-    // Search for random index
-    randomQuestion = questions[randomQuestionIndex]
-    randomReaction = reactions[randomReactionIndex]
-
-    // Set question to be seen
-    let display = randomQuestion + randomReaction
-    console.log(display)
-
-    // Display question to HTML
-    document.getElementById('display').innerHTML = display;
-
-    function checkAnswer() {
-        const userAnswer = document.getElementById('userAnswer').value;
-        const correctAnswer = correctAnswers[randomReactionIndex];
-
-        (userAnswer === correctAnswer) ? console.log(true) : console.log(false)
-
-        isCorrect = (userAnswer.trim() === correctAnswer)
-
-        if (isCorrect) {
-            document.getElementById('result').innerHTML = "Correct! Great job."
-            document.getElementById('result').style.color = "green"
-        } else {
-            document.getElementById('result').innerHTML = "That's incorrect. Try again."
-            document.getElementById('result').style.color = "red"
-        }
+      leaderboard.forEach((entry) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${entry.username}: ${entry.score} points (${new Date(entry.date).toLocaleDateString()})`;
+        listItem.style = "color: #FF7043; margin: 10px 0; font-size: 1.2em; font-weight: bold;";
+        leaderboardList.appendChild(listItem);
+      });
+    } catch (error) {
+      console.error('Error fetching leaderboard:', error);
     }
+  }
+
+  function navigateToQuiz() {
+    window.location.href = './quizz';
+  }
+
+  function navigateToFlashcards() {
+    window.location.href = './flash';
+  }
+
+  fetchLeaderboard();
+</script>
+
+<style>
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Button Hover Effect */
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Leaderboard List Item Hover */
+  #leaderboard-list li:hover {
+    color: #FF9E80;
+    transition: color 0.3s ease;
+  }
+</style>
+
+<!-- Back to Index Button -->
+<div style="text-align: center; margin-top: 30px;">
+  <button onclick="goToIndex()" 
+          style="background: #FF7043; color: white; border: none; padding: 10px 20px; font-size: 1em; border-radius: 10px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
+    Back to Index
+  </button>
+</div>
+
+<script>
+  function goToIndex() {
+    window.location.href = '/cantella_frontend/';
+  }
 </script>
