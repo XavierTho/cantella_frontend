@@ -149,19 +149,56 @@ hide: true
     }
   });
 
-  // Add a flashcard to the current deck
-  document.getElementById('add-card-btn').addEventListener('click', () => {
+document.getElementById('add-card-btn').addEventListener('click', async () => {
     const question = document.getElementById('question').value.trim();
     const answer = document.getElementById('answer').value.trim();
 
     if (question && answer) {
-      currentDeck.cards.push({ question, answer });
-      document.getElementById('question').value = '';
-      document.getElementById('answer').value = '';
+        try {
+            // Define the backend URL
+            const backendURL = 'http://127.0.0.1:8887/api/flashcard';
+
+            // Prepare the payload for the POST request
+            const flashcardData = {
+                title: question,
+                content: answer,
+                user_id: 1 // Replace with the appropriate user_id if necessary
+            };
+
+            // Send the POST request to the backend
+            const response = await fetch(backendURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(flashcardData),
+                credentials: 'include' // Include cookies in the request
+            });
+
+            // Handle the response
+            if (response.ok) {
+                const result = await response.json();
+                alert('Flashcard created successfully!');
+                console.log('Flashcard created:', result);
+
+                // Reset the form fields after success
+                document.getElementById('question').value = '';
+                document.getElementById('answer').value = '';
+            } else {
+                const errorText = await response.text();
+                alert('Failed to create flashcard: ' + errorText);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while creating the flashcard.');
+        }
     } else {
-      alert('Please provide a question and an answer.');
+        alert('Please provide both a question and an answer.');
     }
-  });
+});
+
+
+
 
   // Finish creating the deck
   document.getElementById('finish-deck-btn').addEventListener('click', () => {
