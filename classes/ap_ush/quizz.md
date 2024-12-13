@@ -6,7 +6,12 @@ permalink: classes/ap/ush/quizz
 
 <div class="quiz-page" style="font-family: Arial, sans-serif; background: linear-gradient(to bottom, #FFF3E0, #FFD8B2); min-height: 100vh; padding: 20px; box-sizing: border-box;">
   <h1 style="color: #FF9E80; text-align: center; font-size: 3em; animation: fadeIn 1s;">AP US History Quiz</h1>
-  <p style="text-align: center; color: #BF360C; font-size: 1.2em; animation: fadeIn 1.5s;">Answer the following questions and click submit to see your score!</p>
+
+  <!-- User Name Input -->
+  <div style="text-align: center; margin-bottom: 20px;">
+    <label for="nameInput" style="color: #FF7043; font-size: 1.2em;">Enter Your Name:</label>
+    <input id="nameInput" type="text" placeholder="Your Name" style="padding: 10px; font-size: 1em; margin-top: 10px; border-radius: 10px; border: 1px solid #FF7043;">
+  </div>
 
   <form id="quiz-form" style="max-width: 700px; margin: 20px auto; background-color: #FFE5D0; padding: 20px; border-radius: 15px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); animation: slideIn 2s;">
     <div id="quiz-questions">
@@ -19,18 +24,11 @@ permalink: classes/ap/ush/quizz
   </form>
 
   <p id="quiz-result" style="color: #FF7043; font-size: 1.5em; text-align: center; margin-top: 20px;"></p>
-
-  <!-- Back to Home Button -->
-  <div style="text-align: center; margin-top: 40px;">
-    <button onclick="goBackToHome()"
-            style="background: linear-gradient(45deg, #FF7043, #FF9E80); border: none; color: white; padding: 10px 20px; font-size: 1.2em; border-radius: 30px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
-      Back to Home (Answers will not save)
-    </button>
-  </div>
 </div>
 
 <script>
   let questions = [];
+  let userName = "";
 
   // Fetch quiz questions from the backend
   async function fetchQuestions() {
@@ -45,6 +43,8 @@ permalink: classes/ap/ush/quizz
       if (!Array.isArray(data) || data.length === 0) {
         throw new Error("No questions found or incorrect data format.");
       }
+
+      questions = data;
 
       const quizContainer = document.getElementById('quiz-questions');
       quizContainer.innerHTML = '';
@@ -63,7 +63,6 @@ permalink: classes/ap/ush/quizz
             </label>
           `).join('')}
         `;
-
         quizContainer.appendChild(questionDiv);
       });
     } catch (error) {
@@ -76,6 +75,14 @@ permalink: classes/ap/ush/quizz
   async function submitQuiz(event) {
     event.preventDefault();
 
+    const nameInput = document.getElementById('nameInput');
+    userName = nameInput.value.trim();
+
+    if (!userName) {
+      alert("Please enter your name before submitting the quiz.");
+      return;
+    }
+
     const formData = new FormData(document.getElementById('quiz-form'));
     const answers = questions.map((q, index) => ({
       questionId: q.id,
@@ -86,62 +93,17 @@ permalink: classes/ap/ush/quizz
       const response = await fetch('/api/quiz/apush/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers })
+        body: JSON.stringify({ name: userName, answers })
       });
 
       const result = await response.json();
-      document.getElementById('quiz-result').textContent = `Your score: ${result.score}`;
-      
-      // Redirect to home page after 5 seconds
-      setTimeout(() => window.location.href = './home.md', 5000);
+      document.getElementById('quiz-result').textContent = `${userName}, your score: ${result.score}/10`;
     } catch (error) {
       console.error('Error submitting quiz:', error);
     }
-  }
-
-  // Go back to home immediately
-  function goBackToHome() {
-    alert('You will lose your answers if you leave the quiz.');
-    window.location.href = './home';
   }
 
   // Initialize quiz questions
   document.getElementById('quiz-form').addEventListener('submit', submitQuiz);
   fetchQuestions();
 </script>
-
-<style>
-  /* Animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideIn {
-    from {
-      transform: translateY(50px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  /* Button Hover Effect */
-  button:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Question Hover Effect */
-  .quiz-question:hover {
-    background-color: #FF9E80;
-    color: white;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-</style>
