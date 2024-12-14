@@ -24,16 +24,21 @@ permalink: classes/ap/ush/quizz
   </form>
 
   <p id="quiz-result" style="color: #FF7043; font-size: 1.5em; text-align: center; margin-top: 20px;"></p>
+  <div style="text-align: center; margin-top: 20px;">
+    <button onclick="returnToHome()" 
+            style="background: linear-gradient(45deg, #FF7043, #FF9E80); border: none; color: white; padding: 10px 20px; font-size: 1.2em; border-radius: 30px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
+      Return to Home
+    </button>
+  </div>
 </div>
 
 <script>
   let questions = [];
-  let userName = "";
 
   // Fetch quiz questions from the backend
   async function fetchQuestions() {
     try {
-      const response = await fetch('/api/quiz/apush');
+      const response = await fetch('http://localhost:5003/api/quiz/apush');
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -76,7 +81,7 @@ permalink: classes/ap/ush/quizz
     event.preventDefault();
 
     const nameInput = document.getElementById('nameInput');
-    userName = nameInput.value.trim();
+    const userName = nameInput.value.trim();
 
     if (!userName) {
       alert("Please enter your name before submitting the quiz.");
@@ -89,17 +94,51 @@ permalink: classes/ap/ush/quizz
       answer: formData.get(`q${index}`)
     }));
 
+    console.log("Answers array:", answers); // Debugging
+
+    // Validate if all questions are answered
+    const unanswered = answers.find((a) => !a.answer);
+    if (unanswered) {
+      alert("Please answer all questions before submitting.");
+      return;
+    }
+
+    // Submit answers
     try {
-      const response = await fetch('/api/quiz/apush/submit', {
+      const response = await fetch('http://localhost:5003/api/quiz/apush/submit', { // Correct endpoint
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: userName, answers })
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const result = await response.json();
-      document.getElementById('quiz-result').textContent = `${userName}, your score: ${result.score}/10`;
+      console.log("Result from backend:", result); // Debugging
+
+      // Show result animation and score
+      const resultElement = document.getElementById('quiz-result');
+      resultElement.textContent = `${userName}, your score: ${result.score}/10`;
+      resultElement.style.animation = "popIn 1s";
+
+      // Redirect to home page after 5 seconds
+      setTimeout(() => {
+        alert("All answers are final. Redirecting to the leaderboard.");
+        window.location.href = '{{site.baseurl}}/classes/ap/ush/home'; // Updated to use dynamic base URL
+      }, 5000);
     } catch (error) {
       console.error('Error submitting quiz:', error);
+      alert('An error occurred while submitting the quiz. Please try again.');
+    }
+  }
+
+  function returnToHome() {
+    const baseUrl = "{{site.baseurl}}"; // Use the base URL defined in your site configuration
+    const homePath = `${baseUrl}/classes/ap/ush/home`;
+    if (confirm("Are you sure you want to leave? Unsaved answers will be lost.")) {
+      window.location.href = homePath;
     }
   }
 
@@ -107,3 +146,23 @@ permalink: classes/ap/ush/quizz
   document.getElementById('quiz-form').addEventListener('submit', submitQuiz);
   fetchQuestions();
 </script>
+
+<style>
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  /* Button Hover Effect */
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
+  }
+</style>
