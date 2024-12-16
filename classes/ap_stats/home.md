@@ -3,7 +3,7 @@ layout: post
 title: AP Statistics
 permalink: classes/ap/stats/home
 ---
-
+ma
 <div class="class-home" style="font-family: 'Verdana', sans-serif; background: linear-gradient(to bottom, #E3F2FD, #90CAF9); min-height: 100vh; padding: 20px; box-sizing: border-box;">
   <h1 style="color: #42A5F5; text-align: center; font-size: 3em; animation: fadeIn 1s;">Welcome to AP Statistics</h1>
 
