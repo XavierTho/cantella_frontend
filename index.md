@@ -42,6 +42,7 @@ menu: nav/home.html
         max-width: 800px;
         padding: 1rem;
         text-align: center;
+        display: none; /* Hide by default */
     }
     .class-card {
         background: rgba(255, 255, 255, 0.15);
@@ -61,17 +62,39 @@ menu: nav/home.html
         color: white;
         text-decoration: none;
     }
+    .header {
+        display: none;
+    }
+    .prompt-login {
+        display: none; /* Hidden by default */
+        text-align: center;
+        margin: 2rem auto;
+        font-size: 1.2rem;
+        color: white;
+        background: rgba(255, 0, 0, 0.2);
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    .prompt-login a {
+        color: lightblue;
+        text-decoration: underline;
+    }
 </style>
 
- <div class="motivational-bar" onclick="cycleQuotes()">
+<div class="motivational-bar" onclick="cycleQuotes()">
     <span>💡</span> <span id="motivational-quote">"The best way to predict the future is to create it!"</span>
 </div>
 
- <div class="search-container">
+<div class="search-container">
     <input type="text" id="class-search" placeholder="Search for classes..." oninput="filterClasses()" />
 </div>
 
- <div class="classes-container" id="classes-container">
+<div id="prompt-login" class="prompt-login">
+    <p>Please <a href="{{site.baseurl}}/login">login/sign up</a> to continue.</p>
+</div>
+
+<div id="classes-container" class="classes-container">
     <!-- Class Cards -->
     <div class="class-card"><a href="{{site.baseurl}}/classes/ap/world/home">AP World History</a></div>
     <div class="class-card"><a href="{{site.baseurl}}/classes/ap/chem/home">AP Chemistry</a></div>
@@ -109,33 +132,16 @@ menu: nav/home.html
             classCard.style.display = text.includes(query) ? "block" : "none";
         });
     }
-</script>
 
-
-
-<script>
-        // Fetch data from the backend
-        fetch('http://127.0.0.1:5001/api/xavier')
-            .then(response => response.json()) // Parse JSON response
-            .then(data => {
-                const container = document.getElementById('info-container');
-
-                // Loop through the data to display each person's info
-                data.forEach(person => {
-                    // Create a div for each person's info
-                    const personDiv = document.createElement('div');
-
-                    // Add content to the div
-                    personDiv.innerHTML = `
-                        <p><strong>Name:</strong> ${person.FirstName} ${person.LastName}</p>
-                        <p><strong>Email:</strong> ${person.Email}</p>
-                        <p><strong>Residence:</strong> ${person.Residence}</p>
-                        <hr>
-                    `;
-
-                    // Append the div to the container
-                    container.appendChild(personDiv);
-                });
-            })
-            .catch(error => console.error('Error fetching data:', error));
+    // Check authentication status and show the appropriate content
+    document.addEventListener('DOMContentLoaded', function() {
+        const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+        if (isAuthenticated) {
+            document.getElementById('classes-container').style.display = "block"; // Show the classes container
+            document.getElementById('prompt-login').style.display = "none"; // Hide the login prompt
+        } else {
+            document.getElementById('classes-container').style.display = "none"; // Hide the classes container
+            document.getElementById('prompt-login').style.display = "block"; // Show the login prompt
+        }
+    });
 </script>
