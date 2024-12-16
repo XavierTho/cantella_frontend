@@ -1,0 +1,150 @@
+---
+layout: base
+title: Tutor
+description: Personalized Tutor For All Classes
+hide: false
+menu: nav/index.md
+permalink: /nolanbot/
+---
+<style>
+  .chat-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 50px auto;
+    background: #0e0b00;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  .chat-header {
+    background: #be6800;
+    color: #ffffff;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  #chat-box {
+    height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #0e0202;
+  }
+  .chat-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #F0F0F0;
+  }
+  #question {
+    flex: 1;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  #send-btn {
+    background: #ffffff;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding: 10px 15px;
+    margin-left: 10px;
+    font-size: 1em;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  #send-btn:hover {
+    background: #005F93;
+  }
+  /* Chat Message Styles */
+  .chat-message {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  .chat-message.user {
+    background: rgba(234, 238, 241, 0.941);
+    color: #b36200;
+    text-align: left;
+  }
+  .chat-message.bot {
+    background: #be6800;
+    color: white;
+    text-align: left;
+  }
+</style>
+<div class="chat-container">
+  <div class="chat-header">HomeworkBot</div>
+  <div id="chat-box"></div>
+  <div class="chat-input">
+    <input type="text" id="question" placeholder="Type your message here..." />
+    <button id="send-btn">Send</button>
+  </div>
+</div>
+<script>
+  var pythonURI;
+  if (location.hostname === "localhost") {
+    pythonURI = "http://localhost:8887";
+  } else if (location.hostname === "127.0.0.1") {
+    pythonURI = "http://127.0.0.1:8887";
+  } else {
+    pythonURI = "https://flocker.nighthawkcodingsociety.com";
+  }
+  const fetchOptions = {
+    method: "POST",
+    mode: "cors",
+    cache: "default",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Origin": "client",
+    },
+  };
+  async function sendQuestion(question) {
+    const chatBox = document.getElementById("chat-box");
+    // Display the user's question
+    chatBox.innerHTML += `
+      <div class="chat-message user">
+        <strong>You:</strong> ${question}
+      </div>`;
+    try {
+      // Send the question to the backend
+      const response = await fetch(`${pythonURI}/api/ai/help`, {
+        ...fetchOptions,
+        body: JSON.stringify({ question }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      const aiResponse = data.response || "No response from the AI.";
+      // Display the AI's response
+      chatBox.innerHTML += `
+        <div class="chat-message bot">
+          <strong>CanTeach:</strong> ${aiResponse}
+        </div>`;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      chatBox.innerHTML += `
+        <div class="chat-message bot">
+          <strong>CanTeach:</strong> An error occurred: ${error.message}. Please try again later.
+        </div>`;
+    }
+    document.getElementById("question").value = ""; // Clear input
+    chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+  }
+  // Add event listener for the Send button
+  document.getElementById("send-btn").addEventListener("click", () => {
+    const question = document.getElementById("question").value.trim();
+    if (question) sendQuestion(question);
+  });
+  // Allow pressing Enter to send the question
+  document.getElementById("question").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      const question = document.getElementById("question").value.trim();
+      if (question) sendQuestion(question);
+    }
+  });
+</script>
