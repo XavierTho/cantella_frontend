@@ -18,3 +18,4 @@ plugins:
 header_pages:
   - navigation/flashcards.md
   - navigation/quizzes.md
+  - navigation/about.md
