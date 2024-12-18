@@ -155,8 +155,6 @@ permalink: classes/log
       console.error('Error:', error);
     }
   }
-
-
   // Display study logs in the container
   function displayStudyLogs(logs) {
     studyLogContainer.innerHTML = ''; // Clear the container
