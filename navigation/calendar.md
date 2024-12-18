@@ -57,15 +57,20 @@ hide: true
         document.addEventListener('DOMContentLoaded', function() {
             const calendarEl = document.getElementById('calendar');
 
-            // Basic data structure for events
-            const events = [
-                { title: 'Meeting', start: '2024-12-16' },
-                { title: 'Conference', start: '2024-12-20', end: '2024-12-22' },
-                { title: 'Birthday Party', start: '2024-12-25' }
-            ];
+            // Fetch events from the backend
+            async function fetchEvents() {
+                try {
+                    const response = await fetch('/api/events');
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching events:', error);
+                    return [];
+                }
+            }
 
             // Helper function to render the calendar
-            function renderCalendar() {
+            async function renderCalendar() {
                 const today = new Date();
                 const month = today.getMonth();
                 const year = today.getFullYear();
@@ -76,6 +81,8 @@ hide: true
                 const daysInMonth = lastDayOfMonth.getDate();
                 const dayGrid = document.createElement('div');
                 dayGrid.classList.add('fc-daygrid');
+
+                const events = await fetchEvents();
 
                 for (let day = 1; day <= daysInMonth; day++) {
                     const date = new Date(year, month, day);
@@ -101,7 +108,7 @@ hide: true
                                 title: title,
                                 start: dayDiv.getAttribute('data-date')
                             };
-                            events.push(newEvent);
+                            addEventToBackend(newEvent); // Send to backend
                             renderCalendar(); // Re-render calendar
                             alert('Event added!');
                         }
@@ -112,6 +119,21 @@ hide: true
 
                 calendarEl.innerHTML = ''; // Clear existing content
                 calendarEl.appendChild(dayGrid);
+            }
+
+            // Add event to backend
+            async function addEventToBackend(event) {
+                try {
+                    await fetch('/api/events', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(event)
+                    });
+                } catch (error) {
+                    console.error('Error adding event:', error);
+                }
             }
 
             renderCalendar();
