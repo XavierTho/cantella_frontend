@@ -17,5 +17,8 @@ plugins:
   - jekyll-remote-theme
 header_pages:
   - navigation/flashcards.md
+  - navigation/countdown.html
   - navigation/quizzes.md
-  - navigation/tutor.html
+  - navigation/about.md
+  - navigation/calendar.md
+  - navigation/studylog.md
