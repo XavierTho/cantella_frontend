@@ -378,3 +378,30 @@ document.addEventListener('DOMContentLoaded', fetchFlashcards);
     closeDeckBtn.classList.add('hidden');
   });
 </script>
+
+<button id="import-flashcards">Import Flashcards</button>
+
+<script>
+  document.getElementById('import-flashcards').addEventListener('click', async () => {
+      try {
+          const response = await fetch('http://127.0.0.1:8887/api/import-flashcards', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          });
+
+          if (!response.ok) {
+              const error = await response.json();
+              alert("Error: " + error.error);
+              return;
+          }
+
+          const data = await response.json();
+          alert(`Successfully imported ${data.flashcards.length} flashcards!`);
+      } catch (error) {
+          console.error("Error importing flashcards:", error);
+          alert("An error occurred while importing flashcards.");
+      }
+  });
+</script>
