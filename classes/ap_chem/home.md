@@ -116,3 +116,6 @@ permalink: classes/ap/chem/home
     window.location.href = '/cantella_frontend/';
   }
 </script>
+
+
+
