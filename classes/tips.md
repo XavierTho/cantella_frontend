@@ -16,20 +16,21 @@ permalink: classes/tips
                 font-family: 'Poppins', sans-serif;
                 margin: 0;
                 padding: 0;
-                background: linear-gradient(to bottom right, #FFE5D9, #FFD6A5); /* Cantaloupe tones */
-                color: #333;
+                background: linear-gradient(to bottom, #1A1A1D, #4E4E50); /* Dark gradient */
+                color: #ffffff;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: flex-start;
                 height: 100vh;
+                overflow-x: hidden;
                 padding: 20px;
             }
             h1 {
                 text-align: center;
                 font-size: 3rem;
-                color: #FF8A5B; /* Cantaloupe-inspired orange */
-                text-shadow: 0 0 10px #FF8A5B, 0 0 20px #FF8A5B;
+                color: #FFFFFF;
+                text-shadow: 0 0 15px #FF8A5B, 0 0 30px #FFD6A5;
                 margin: 20px 0;
                 text-transform: uppercase;
             }
@@ -70,28 +71,37 @@ permalink: classes/tips
                 box-shadow: 0 0 30px rgba(255, 138, 91, 0.8), 0 0 50px rgba(255, 138, 91, 0.6);
             }
             .tips-container {
-                background: #FFF4E0; /* Light cantaloupe flesh */
+                background: rgba(255, 255, 255, 0.1); /* Transparent background for holographic feel */
+                color: #FFFFFF; /* Light text for contrast */
                 padding: 25px;
                 border-radius: 20px;
-                box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 0 15px rgba(255, 138, 91, 0.5), 0 0 30px rgba(255, 138, 91, 0.3);
                 text-align: center;
                 width: 90%;
                 max-width: 700px;
                 margin: auto;
+                position: relative;
+                animation: float 3s infinite ease-in-out;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .tips-container:hover {
+                transform: translateY(-10px) scale(1.05);
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5);
             }
             .tips-container h2 {
                 font-size: 2rem;
-                color: #FF8A5B; /* Highlighted cantaloupe color */
+                color: #FFD700; /* Bright yellow */
                 margin-bottom: 15px;
             }
             .tip {
                 display: none;
-                font-size: 1rem;
+                font-size: 1.1rem;
                 margin: 10px 0;
-                padding: 10px;
-                background: rgba(255, 245, 230, 0.9); /* Light cantaloupe highlight */
+                padding: 12px;
+                background: rgba(255, 255, 255, 0.15); /* Slightly opaque background */
+                color: #FFD700; /* Yellow text for holographic effect */
                 border-radius: 10px;
-                box-shadow: 0 0 10px rgba(255, 245, 230, 0.4);
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
                 transition: transform 0.2s ease;
             }
             .tip.active {
@@ -101,6 +111,10 @@ permalink: classes/tips
             @keyframes fadeIn {
                 0% { opacity: 0; transform: translateY(10px); }
                 100% { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
             }
             .reveal-button {
                 margin-top: 20px;
@@ -123,7 +137,7 @@ permalink: classes/tips
             footer {
                 text-align: center;
                 margin: 20px 0;
-                color: rgba(51, 51, 51, 0.8);
+                color: rgba(255, 255, 255, 0.8);
                 font-size: 0.9rem;
             }
         </style>
@@ -141,7 +155,7 @@ permalink: classes/tips
             <p>Select a class to reveal tips!</p>
         </div>
         <footer>
-            Made with 🍈 by Armaghan Zarak
+            Made by Armaghan Zarak 🍈
         </footer>
         <script>
             const apiUrl = 'http://127.0.0.1:8887/api/tips';
