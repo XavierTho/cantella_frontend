@@ -147,7 +147,7 @@ hide: true
     } else {
       alert('Please provide a deck title.');
     }
-  });
+  }); 
 
 document.getElementById('add-card-btn').addEventListener('click', async () => {
     const question = document.getElementById('question').value.trim();
@@ -181,12 +181,20 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
                 alert('Flashcard created successfully!');
                 console.log('Flashcard created:', result);
 
+                // Add the flashcard to the currentDeck.cards array
+                if (currentDeck) {
+                    currentDeck.cards.push({
+                        question: result.title,
+                        answer: result.content,
+                    });
+                }
+
                 // Reset the form fields after success
                 document.getElementById('question').value = '';
                 document.getElementById('answer').value = '';
             } else {
                 const errorText = await response.text();
-                alert('Failed to create flashcard: ' + errorText);
+                alert('Failed to create flashcard, please login or sign up to be an authenticated user!');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -198,64 +206,169 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
 });
 
 
+// Finish creating the deck
+document.getElementById('finish-deck-btn').addEventListener('click', () => {
+    if (!currentDeck) {
+        alert('No deck is currently being created.');
+        return;
+    }
 
+    // If no flashcards are added, create an empty deck
+    if (currentDeck.cards.length === 0) {
+        alert('No flashcards were added, creating an empty deck.');
+    }
 
-  // Finish creating the deck
-  document.getElementById('finish-deck-btn').addEventListener('click', () => {
-    addDeckForm.classList.add('hidden');
+    // Add the deck to the deck container
     displayDeck(currentDeck);
-  });
 
-  // Display the deck in the deck container
-  function displayDeck(deck) {
+    // Reset the form and hide it
+    currentDeck = null; // Clear the current deck
+    addDeckForm.classList.add('hidden');
+    deckInfoPhase.classList.add('hidden');
+    questionPhase.classList.add('hidden');
+
+    alert('Deck created successfully!');
+});
+
+
+
+// Fetch all flashcards from the backend
+async function fetchFlashcards() {
+    try {
+        // Define the backend URL for fetching flashcards
+        const backendURL = 'http://127.0.0.1:8887/api/flashcard';
+
+        // Send a GET request to the backend
+        const response = await fetch(backendURL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include', // Include cookies in the request
+        });
+
+        if (response.ok) {
+            // Parse the response as JSON
+            const flashcards = await response.json();
+            console.log('Fetched flashcards:', flashcards);
+
+            // Group flashcards by deck title (if applicable) or display as one deck
+            const groupedDeck = { title: "Created Flashcards", cards: [] };
+            flashcards.forEach((flashcard) => {
+                groupedDeck.cards.push({
+                    question: flashcard.title,
+                    answer: flashcard.content,
+                });
+            });
+
+            // Display the deck in the deck container
+            displayDeck(groupedDeck);
+        } else {
+            console.error('Failed to fetch flashcards:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error fetching flashcards:', error);
+    }
+}
+
+// Create a new deck when "Create Deck" is clicked
+createDeckBtn.addEventListener('click', () => {
+    addDeckForm.classList.remove('hidden');
+    deckInfoPhase.classList.remove('hidden');
+    questionPhase.classList.add('hidden');
+    currentDeck = { title: "New Deck", cards: [] };
+    decks.push(currentDeck);
+
+    console.log('New deck created:', currentDeck);
+});
+
+// Proceed to question creation phase
+document.getElementById('next-phase-btn').addEventListener('click', () => {
+    const deckTitle = document.getElementById('deck-title').value.trim();
+
+    if (deckTitle) {
+        currentDeck.title = deckTitle; // Update the title of the current deck
+        deckInfoPhase.classList.add('hidden');
+        questionPhase.classList.remove('hidden');
+    } else {
+        alert('Please provide a deck title.');
+    }
+});
+
+// Display the deck in the deck container
+function displayDeck(deck) {
     const deckElement = document.createElement('div');
     deckElement.classList.add('deck');
     deckElement.innerHTML = `
-      <h3>${deck.title}</h3>
-      <button class="open-deck-btn">Open Deck</button>
+        <h3>${deck.title}</h3>
+        <button class="open-deck-btn">Open Deck</button>
     `;
 
+    // Add functionality to open the deck and view flashcards
     deckElement.querySelector('.open-deck-btn').addEventListener('click', () => {
-      openDeck(deck);
+        openDeck(deck);
     });
 
+    // Append the deck to the container
     deckContainer.appendChild(deckElement);
-  }
+}
 
-  // Open the deck and show flashcards
-  function openDeck(deck) {
+// Open the deck and show flashcards
+function openDeck(deck) {
     currentDeck = deck;
     currentCardIndex = 0;
-    showFlashcard(deck.cards[currentCardIndex]);
+
+    // If the deck has cards, show the first card
+    if (deck.cards.length > 0) {
+        showFlashcard(deck.cards[currentCardIndex]);
+    } else {
+        alert('This deck has no flashcards.');
+    }
+
     flashcardContainer.classList.remove('hidden');
     deckContainer.classList.add('hidden');
     nextCardBtn.classList.remove('hidden');
     closeDeckBtn.classList.remove('hidden');
-  }
+}
 
-  // Show the current flashcard
-  function showFlashcard(card) {
+// Show the current flashcard
+function showFlashcard(card) {
     flashcard.textContent = card.question;
     flashcard.classList.remove('hidden');
     flashcard.classList.remove('answer');
-    flashcard.onclick = () => {
-      if (flashcard.textContent === card.question) {
-        flashcard.textContent = card.answer;
-        flashcard.classList.add('answer');
-      } else {
-        flashcard.textContent = card.question;
-        flashcard.classList.remove('answer');
-      }
-    };
-  }
 
-  // Show the next card
-  nextCardBtn.addEventListener('click', () => {
+    // Toggle between question and answer
+    flashcard.onclick = () => {
+        if (flashcard.textContent === card.question) {
+            flashcard.textContent = card.answer;
+            flashcard.classList.add('answer');
+        } else {
+            flashcard.textContent = card.question;
+            flashcard.classList.remove('answer');
+        }
+    };
+}
+
+// Event listener for showing the next card
+nextCardBtn.addEventListener('click', () => {
     if (currentDeck.cards.length > 0) {
-      currentCardIndex = (currentCardIndex + 1) % currentDeck.cards.length;
-      showFlashcard(currentDeck.cards[currentCardIndex]);
+        currentCardIndex = (currentCardIndex + 1) % currentDeck.cards.length;
+        showFlashcard(currentDeck.cards[currentCardIndex]);
     }
-  });
+});
+
+// Event listener for closing the deck
+closeDeckBtn.addEventListener('click', () => {
+    flashcardContainer.classList.add('hidden');
+    deckContainer.classList.remove('hidden');
+    nextCardBtn.classList.add('hidden');
+    closeDeckBtn.classList.add('hidden');
+});
+
+// Fetch and display flashcards when the page loads
+document.addEventListener('DOMContentLoaded', fetchFlashcards);
+
+
 
   // Close the deck and return to deck view
   closeDeckBtn.addEventListener('click', () => {
@@ -263,5 +376,32 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
     deckContainer.classList.remove('hidden');
     nextCardBtn.classList.add('hidden');
     closeDeckBtn.classList.add('hidden');
+  });
+</script>
+
+<button id="import-flashcards">Import Flashcards</button>
+
+<script>
+  document.getElementById('import-flashcards').addEventListener('click', async () => {
+      try {
+          const response = await fetch('http://127.0.0.1:8887/api/import-flashcards', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          });
+
+          if (!response.ok) {
+              const error = await response.json();
+              alert("Error: " + error.error);
+              return;
+          }
+
+          const data = await response.json();
+          alert(`Successfully imported ${data.flashcards.length} flashcards!`);
+      } catch (error) {
+          console.error("Error importing flashcards:", error);
+          alert("An error occurred while importing flashcards.");
+      }
   });
 </script>
