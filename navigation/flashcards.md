@@ -379,7 +379,81 @@ document.addEventListener('DOMContentLoaded', fetchFlashcards);
   });
 </script>
 
+
+<div>
+  <h3>Import Flashcards</h3>
+  <form id="import-form">
+    <label for="amount">Number of Questions:</label>
+    <input type="number" id="amount" name="amount" min="1" value="10">
+    <label for="category">Category:</label>
+    <select id="category" name="category">
+      <option value="">Any Category</option>
+      <option value="9">General Knowledge</option>
+      <option value="10">Entertainment: Books</option>
+      <option value="11">Entertainment: Film</option>
+      <option value="12">Entertainment: Music</option>
+      <option value="13">Entertainment: Musicals & Theatres</option>
+      <option value="14">Entertainment: Television</option>
+      <option value="15">Entertainment: Video Games</option>
+      <option value="16">Entertainment: Board Games</option>
+      <option value="17">Science & Nature</option>
+      <option value="18">Science: Computers</option>
+      <option value="19">Science: Mathematics</option>
+      <option value="20">Mythology</option>
+      <option value="21">Sports</option>
+      <option value="22">Geography</option>
+      <option value="23">History</option>
+      <option value="24">Politics</option>
+      <option value="25">Art</option>
+      <option value="26">Celebrities</option>
+      <option value="27">Animals</option>
+      <option value="28">Vehicles</option>
+      <option value="29">Entertainment: Comics</option>
+      <option value="30">Science: Gadgets</option>
+    </select>
+    <button type="submit">Import Flashcards</button>
+  </form>
+</div>
+
+
+<script>
+  document.getElementById('import-form').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent form submission from refreshing the page
+
+    // Get user inputs
+    const amount = document.getElementById('amount').value || 10; // Default to 10
+    const category = document.getElementById('category').value; // May be empty
+
+    // Construct the API URL
+    let apiUrl = `http://127.0.0.1:8887/api/import-flashcards?amount=${amount}&difficulty=medium`;
+    if (category) {
+      apiUrl += `&category=${category}`;
+    }
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert("Error: " + error.error);
+        return;
+      }
+
+      const data = await response.json();
+      alert(`Successfully imported ${data.flashcards.length} flashcards!`);
+    } catch (error) {
+      console.error("Error importing flashcards:", error);
+      alert("An error occurred while importing flashcards.");
+    }
+  });
+</script>
+
+
 <button id="import-flashcards">Import Flashcards</button>
+
 
 <script>
   document.getElementById('import-flashcards').addEventListener('click', async () => {
