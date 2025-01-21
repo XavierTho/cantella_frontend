@@ -6,36 +6,53 @@ permalink: /gradelog
 ---
 
 <style>
-  .grade-log-container {
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  h2 {
+    text-align: center;
+    margin-top: 20px;
+    color: #444;
+  }
+
+  #create-log-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  #create-log-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+
+  #grade-log-form-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    justify-content: center;
     margin-top: 20px;
   }
 
-  .grade-log {
-    width: 300px;
-    border-radius: 8px;
-    padding: 15px;
-    background-color: #f6f6f6;
-    border: 2px solid #444;
-    text-align: center;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    color: #000; /* Black text */
-    transition: transform 0.3s ease;
-  }
-
-  .grade-log:hover {
-    transform: scale(1.05);
-    background-color: #e0e0e0;
-  }
-
-  .hidden {
-    display: none;
-  }
-
   #grade-log-form {
-    margin-bottom: 20px;
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   #grade-log-form input,
@@ -43,26 +60,86 @@ permalink: /gradelog
   #grade-log-form button {
     display: block;
     width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
+    margin-bottom: 15px;
+    padding: 12px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    color: #000; /* Black text */
+    transition: border-color 0.3s ease;
+  }
+
+  #grade-log-form input:focus,
+  #grade-log-form textarea:focus {
+    border-color: #007BFF;
+    outline: none;
   }
 
   #grade-log-form button {
-    background-color: #4CAF50;
+    background-color: #28a745;
     color: white;
     font-weight: bold;
+    border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
   }
 
   #grade-log-form button:hover {
-    background-color: #45a049;
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+
+  .grade-log-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .grade-log {
+    width: 320px;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .grade-log:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .grade-log h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .grade-log p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #555;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .grade-log {
+      width: 100%;
+      max-width: 300px;
+    }
+
+    #grade-log-form {
+      padding: 15px;
+    }
   }
 </style>
+
 
 <div id="grade-log-app">
   <h2>Grade Log Tracker</h2>
