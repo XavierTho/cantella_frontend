@@ -8,16 +8,89 @@ hide: true
 # Welcome to The Flashcards Page
 
 <style>
+  body {
+    font-family: 'Georgia', serif;
+    background-color: #f9f8f6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h3 {
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 20px;
+    font-weight: normal;
+    font-style: italic;
+  }
+
+  #flashcard-app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  #create-deck-btn {
+    background-color: #6c757d;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 20px 0;
+  }
+
+  #create-deck-btn:hover {
+    background-color: #5a6268;
+  }
+
+  #add-deck-form {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #444;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+
   .deck-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 15px;
+    margin-top: 30px;
+    justify-content: center;
   }
 
   .deck {
-    width: 200px;
-    height: 100px;
+    width: 220px;
+    height: 120px;
     border-radius: 8px;
     text-align: center;
     display: flex;
@@ -25,27 +98,17 @@ hide: true
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: #f6af75;
-    color: white;
-    transition: transform 0.3s ease;
-    border: 2px solid #555;
+    background-color: #eaeaea;
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease, transform 0.2s ease;
   }
 
   .deck:hover {
-    transform: scale(1.05);
-    background-color: #edccb9;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  #add-deck-form {
-    margin-bottom: 20px;
-  }
-
-  .form-group {
-    margin-bottom: 10px;
+    background-color: #d6d6d6;
+    transform: translateY(-2px);
   }
 
   .flashcard-container {
@@ -53,10 +116,17 @@ hide: true
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .flashcard {
-    width: 300px;
+    width: 320px;
     height: 200px;
     border-radius: 8px;
     text-align: center;
@@ -65,24 +135,55 @@ hide: true
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: #f6af75; /* Default for question side */
-    color: black;
-    border: 2px solid #444;
-    margin-bottom: 10px;
+    background: linear-gradient(135deg, #f8c291, #f39c12);
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    border: 2px solid #e67e22;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
   .flashcard.answer {
-    background-color: #edccb9; /* light canteloupe for answer side */
+    background: linear-gradient(135deg, #f39c12, #f8c291);
   }
 
   .flashcard:hover {
-    background-color: #d9a586;
-    transform: scale(1.05);
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 10px;
+  }
+
+  button:hover {
+    background-color: #5a6268;
+  }
+
+  @media screen and (max-width: 600px) {
+    .deck {
+      width: 100%;
+    }
+
+    .flashcard {
+      width: 100%;
+    }
   }
 </style>
 
 <div id="flashcard-app">
-  <button id="create-deck-btn">Make Deck</button>
+  <h1>Flashcards for Every Occasion</h1>
+  <button id="create-deck-btn">+ Create Deck</button>
   <div id="add-deck-form" class="hidden">
     <div id="deck-info-phase">
       <div class="form-group">
@@ -112,6 +213,9 @@ hide: true
     <button id="close-deck-btn" class="hidden">Close Deck</button>
   </div>
 </div>
+
+
+
 
 <script>
   const createDeckBtn = document.getElementById('create-deck-btn');
@@ -206,29 +310,77 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
 });
 
 
-// Finish creating the deck
-document.getElementById('finish-deck-btn').addEventListener('click', () => {
+document.getElementById('finish-deck-btn').addEventListener('click', async () => {
     if (!currentDeck) {
         alert('No deck is currently being created.');
         return;
     }
 
-    // If no flashcards are added, create an empty deck
-    if (currentDeck.cards.length === 0) {
-        alert('No flashcards were added, creating an empty deck.');
+    try {
+        const response = await fetch('http://127.0.0.1:8887/api/deck', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // Include cookies in the request
+            body: JSON.stringify({
+                title: currentDeck.title,
+                user_id: 1, // Replace with actual user ID
+                cards: currentDeck.cards,
+            }),
+        });
+
+        if (response.ok) {
+            alert('Deck created successfully!');
+            console.log('Deck created successfully.');
+
+            // Fetch the updated list of decks
+            await fetchDecks();
+
+            // Reset the form and clear `currentDeck`
+            currentDeck = null;
+            addDeckForm.classList.add('hidden');
+            deckInfoPhase.classList.add('hidden');
+            questionPhase.classList.add('hidden');
+        } else {
+            console.error('Failed to create deck:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error creating deck:', error);
     }
-
-    // Add the deck to the deck container
-    displayDeck(currentDeck);
-
-    // Reset the form and hide it
-    currentDeck = null; // Clear the current deck
-    addDeckForm.classList.add('hidden');
-    deckInfoPhase.classList.add('hidden');
-    questionPhase.classList.add('hidden');
-
-    alert('Deck created successfully!');
 });
+
+
+async function fetchDecks() {
+    try {
+        const response = await fetch('http://127.0.0.1:8887/api/deck', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const fetchedDecks = await response.json();
+            console.log('Fetched decks:', fetchedDecks);
+
+            // Clear the deck container to prevent duplicates
+            deckContainer.innerHTML = '';
+
+            // Display each deck
+            fetchedDecks.forEach(deck => {
+                displayDeck(deck);
+            });
+        } else if (response.status === 401) {
+            alert('You are not authorized. Please log in.');
+            // Optionally, redirect to the login page
+            window.location.href = '/login.html';
+        } else {
+            const error = await response.json();
+            console.error('Failed to fetch decks:', error);
+        }
+    } catch (error) {
+        console.error('Error fetching decks:', error);
+    }
+}
+
 
 
 
@@ -295,59 +447,121 @@ document.getElementById('next-phase-btn').addEventListener('click', () => {
     }
 });
 
-// Display the deck in the deck container
 function displayDeck(deck) {
+    console.log('Displaying deck:', deck); // Log the deck object for debugging
+
     const deckElement = document.createElement('div');
     deckElement.classList.add('deck');
     deckElement.innerHTML = `
         <h3>${deck.title}</h3>
-        <button class="open-deck-btn">Open Deck</button>
+        <div style="display: flex; gap: 5px; justify-content: center; margin-top: 10px;">
+            <button class="open-deck-btn">Open</button>
+            <button class="delete-deck-btn">Delete</button>
+        </div>
     `;
 
-    // Add functionality to open the deck and view flashcards
+    // Attach event listener for opening the deck
     deckElement.querySelector('.open-deck-btn').addEventListener('click', () => {
+        console.log('Deck clicked:', deck); // Log the deck object on button click
         openDeck(deck);
     });
 
-    // Append the deck to the container
+    // Attach event listener for deleting the deck
+    deckElement.querySelector('.delete-deck-btn').addEventListener('click', async () => {
+        const confirmDelete = confirm(`Are you sure you want to delete the deck "${deck.title}"?`);
+        if (confirmDelete) {
+            try {
+                const response = await fetch(`http://127.0.0.1:8887/api/deck/${deck.id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', 
+                });
+
+                if (response.ok) {
+                    alert('Deck deleted successfully!');
+                    // Refresh the decks list
+                    await fetchDecks();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to delete deck: ${error.error}`);
+                }
+            } catch (error) {
+                console.error('Error deleting deck:', error);
+                alert('An error occurred while deleting the deck.');
+            }
+        }
+    });
+
     deckContainer.appendChild(deckElement);
 }
 
-// Open the deck and show flashcards
-function openDeck(deck) {
-    currentDeck = deck;
-    currentCardIndex = 0;
 
-    // If the deck has cards, show the first card
-    if (deck.cards.length > 0) {
-        showFlashcard(deck.cards[currentCardIndex]);
-    } else {
-        alert('This deck has no flashcards.');
+async function openDeck(deck) {
+    console.log('Opening deck:', deck);
+
+    if (!deck.id) {
+        alert('Deck ID is missing!');
+        return;
     }
 
-    flashcardContainer.classList.remove('hidden');
-    deckContainer.classList.add('hidden');
-    nextCardBtn.classList.remove('hidden');
-    closeDeckBtn.classList.remove('hidden');
+    try {
+        const response = await fetch(`http://127.0.0.1:8887/api/deck/${deck.id}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+            const detailedDeck = await response.json();
+            console.log('Detailed deck fetched from API:', detailedDeck);
+
+            currentDeck = detailedDeck;
+            currentCardIndex = 0;
+
+            if (currentDeck.cards.length > 0) {
+                flashcardContainer.classList.remove('hidden'); // Ensure the container is visible
+                deckContainer.classList.add('hidden');
+                nextCardBtn.classList.remove('hidden');
+                closeDeckBtn.classList.remove('hidden');
+
+                showFlashcard(currentDeck.cards[currentCardIndex]);
+            } else {
+                alert('This deck has no flashcards.');
+            }
+        } else {
+            console.error('Failed to fetch deck details:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error fetching deck details:', error);
+    }
 }
 
-// Show the current flashcard
+
+
 function showFlashcard(card) {
-    flashcard.textContent = card.question;
+    const flashcard = document.getElementById('flashcard'); // Re-fetch the flashcard element
+    if (!flashcard) {
+        console.error('Flashcard element not found in the DOM.');
+        return;
+    }
+
+    console.log('Displaying flashcard:', card);
+
+    flashcard.textContent = card.title; // Set the question as the default content
     flashcard.classList.remove('hidden');
     flashcard.classList.remove('answer');
 
     // Toggle between question and answer
     flashcard.onclick = () => {
-        if (flashcard.textContent === card.question) {
-            flashcard.textContent = card.answer;
+        if (flashcard.textContent === card.title) {
+            flashcard.textContent = card.content;
             flashcard.classList.add('answer');
         } else {
-            flashcard.textContent = card.question;
+            flashcard.textContent = card.title;
             flashcard.classList.remove('answer');
         }
     };
 }
+
 
 // Event listener for showing the next card
 nextCardBtn.addEventListener('click', () => {
@@ -366,7 +580,8 @@ closeDeckBtn.addEventListener('click', () => {
 });
 
 // Fetch and display flashcards when the page loads
-document.addEventListener('DOMContentLoaded', fetchFlashcards);
+document.addEventListener('DOMContentLoaded', fetchDecks);
+
 
 
 
@@ -417,38 +632,36 @@ document.addEventListener('DOMContentLoaded', fetchFlashcards);
 
 
 <script>
-  document.getElementById('import-form').addEventListener('submit', async (event) => {
-    event.preventDefault(); // Prevent form submission from refreshing the page
+document.getElementById('import-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-    // Get user inputs
-    const amount = document.getElementById('amount').value || 10; // Default to 10
-    const category = document.getElementById('category').value; // May be empty
+    const amount = document.getElementById('amount').value || 10;
+    const category = document.getElementById('category').value;
 
-    // Construct the API URL
     let apiUrl = `http://127.0.0.1:8887/api/import-flashcards?amount=${amount}&difficulty=medium`;
     if (category) {
-      apiUrl += `&category=${category}`;
+        apiUrl += `&category=${category}`;
     }
 
     try {
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
 
-      if (!response.ok) {
-        const error = await response.json();
-        alert("Error: " + error.error);
-        return;
-      }
-
-      const data = await response.json();
-      alert(`Successfully imported ${data.flashcards.length} flashcards!`);
+        if (response.ok) {
+            const data = await response.json();
+            alert(`Deck "${data.deck.title}" created successfully!`);
+            await fetchDecks(); // Refresh deck list
+        } else {
+            const error = await response.json();
+            alert(`Error: ${error.error}`);
+        }
     } catch (error) {
-      console.error("Error importing flashcards:", error);
-      alert("An error occurred while importing flashcards.");
+        console.error("Error importing flashcards:", error);
+        alert("An error occurred while importing flashcards.");
     }
-  });
+});
 </script>
 
 
