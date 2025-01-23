@@ -1,201 +1,245 @@
 ---
 layout: base
-title: Study Log Tracker
-description: Study Log Tracker
+title: Study Log
+description: Log your study hours
 permalink: classes/log
 ---
-
-<style>
-  .study-log-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  .study-log {
-    width: 300px;
-    border-radius: 8px;
-    padding: 15px;
-    background-color: #f6f6f6;
-    border: 2px solid #444;
-    text-align: center;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    color: #000;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-  }
-
-  .study-log:hover {
-    transform: scale(1.05);
-    background-color: #e0e0e0;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  #study-log-form {
-    margin-bottom: 20px;
-  }
-
-  #study-log-form input,
-  #study-log-form textarea,
-  #study-log-form button {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    color: #000;
-  }
-
-  #study-log-form button {
-    background-color: #4CAF50;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  #study-log-form button:hover {
-    background-color: #45a049;
-  }
-
-  .error {
-    color: red;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-
-  .success {
-    color: green;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-</style>
-
-<div id="study-log-app">
-  <h2>Study Log Tracker</h2>
-  <button id="create-log-btn">Add Study Log</button>
-
-  <div id="study-log-form-container" class="hidden">
-    <form id="study-log-form">
-      <div id="form-messages" class="hidden"></div>
-      <input type="text" id="subject" placeholder="Subject" required>
-      <input type="number" step="0.1" id="hours" placeholder="Hours Studied" required>
-      <textarea id="notes" placeholder="Notes (Optional)"></textarea>
-      <button type="submit">Submit Study Log</button>
-    </form>
-  </div>
-
-  <div class="study-log-container" id="study-log-container"></div>
-</div>
-
-<script>
-  const createLogBtn = document.getElementById('create-log-btn');
-  const studyLogFormContainer = document.getElementById('study-log-form-container');
-  const studyLogForm = document.getElementById('study-log-form');
-  const studyLogContainer = document.getElementById('study-log-container');
-  const formMessages = document.getElementById('form-messages');
-
-  const userId = 1; // Replace this with actual dynamic user ID if needed
-
-  createLogBtn.addEventListener('click', () => {
-    studyLogFormContainer.classList.toggle('hidden');
-    formMessages.classList.add('hidden');
-  });
-
-  studyLogForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    formMessages.innerHTML = '';
-    formMessages.classList.add('hidden');
-
-    const subject = document.getElementById('subject').value.trim();
-    const hours = document.getElementById('hours').value.trim();
-    const notes = document.getElementById('notes').value.trim();
-
-    if (!subject || !hours) {
-      formMessages.textContent = 'Subject and hours are required!';
-      formMessages.className = 'error';
-      formMessages.classList.remove('hidden');
-      return;
-    }
-
-    const data = {
-      user_id: userId,
-      subject,
-      hours_studied: parseFloat(hours),
-      notes
-    };
-
-    try {
-      const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        formMessages.textContent = 'Study Log added successfully!';
-        formMessages.className = 'success';
-        formMessages.classList.remove('hidden');
-        studyLogForm.reset();
-        loadStudyLogs();
-      } else {
-        const errorText = await response.text();
-        formMessages.textContent = `Failed to add study log: ${errorText}`;
-        formMessages.className = 'error';
-        formMessages.classList.remove('hidden');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      formMessages.textContent = 'An error occurred while adding the study log.';
-      formMessages.className = 'error';
-      formMessages.classList.remove('hidden');
-    }
-  });
-
-  async function loadStudyLogs() {
-    try {
-      const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const logs = await response.json();
-        displayStudyLogs(logs);
-      } else {
-        console.error('Failed to load study logs.');
-        studyLogContainer.innerHTML = '<p>No study logs found.</p>';
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-  function displayStudyLogs(logs) {
-    studyLogContainer.innerHTML = '';
-    if (logs.length === 0) {
-      studyLogContainer.innerHTML = '<p>No study logs found.</p>';
-      return;
-    }
-
-    logs.forEach((log) => {
-      const logElement = document.createElement('div');
-      logElement.className = 'study-log';
-      logElement.innerHTML = `
-        <h3>${log.subject}</h3>
-        <p><strong>Hours:</strong> ${log.hours_studied}</p>
-        <p>${log.notes || 'No notes provided.'}</p>
-        <p><small>${new Date(log.date).toLocaleString()}</small></p>
-      `;
-      studyLogContainer.appendChild(logElement);
-    });
-  }
-
-  loadStudyLogs();
-</script>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Study Log</title>
+        <style>
+            body {
+                font-family: 'Verdana', sans-serif;
+                margin: 0;
+                padding: 20px;
+                background: linear-gradient(to bottom, #141e30, #243b55);
+                color: #eeeeee;
+            }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+            }
+            h1, h2 {
+                text-align: center;
+                color: #ffffff;
+            }
+            .log-container ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            .log-container li {
+                background: rgba(255, 255, 255, 0.2);
+                margin: 10px 0;
+                padding: 15px;
+                border-radius: 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+            .log-container li div {
+                margin-bottom: 10px;
+            }
+            .log-container li button {
+                background-color: #ff4c4c;
+                color: white;
+                padding: 5px 10px;
+                margin: 5px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .log-container li button:hover {
+                background-color: #ff1c1c;
+            }
+            .form-container {
+                margin-top: 20px;
+            }
+            .form-container form {
+                display: flex;
+                flex-direction: column;
+            }
+            .form-container label {
+                margin: 10px 0 5px;
+            }
+            .form-container input, .form-container textarea, .form-container button {
+                padding: 10px;
+                margin-bottom: 10px;
+                border: none;
+                border-radius: 5px;
+            }
+            .form-container button {
+                background-color: #4CAF50;
+                color: white;
+                cursor: pointer;
+            }
+            .form-container button:hover {
+                background-color: #45a049;
+            }
+            .error {
+                color: red;
+            }
+            .hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Study Log</h1>
+            <div class="log-container" id="log-container">
+                <h2>Your Study Logs</h2>
+                <ul id="study-log"></ul>
+            </div>
+            <div class="form-container">
+                <h2>Add New Study Log</h2>
+                <form id="study-log-form">
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" required>
+                    <label for="hours">Hours Studied:</label>
+                    <input type="number" id="hours" name="hours" required>
+                    <label for="notes">Notes:</label>
+                    <textarea id="notes" name="notes"></textarea>
+                    <button type="submit">Add Log</button>
+                    <p id="form-messages" class="hidden"></p>
+                </form>
+            </div>
+        </div>
+        <footer>
+            <p style="text-align: center;">Made by Armaghan Zarak 🍈</p>
+        </footer>
+        <script>
+            document.getElementById('study-log-form').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const formMessages = document.getElementById('form-messages');
+                const subject = document.getElementById('subject').value.trim();
+                const hours = document.getElementById('hours').value.trim();
+                const notes = document.getElementById('notes').value.trim();
+                if (!subject || !hours) {
+                    formMessages.textContent = 'Subject and hours are required!';
+                    formMessages.className = 'error';
+                    formMessages.classList.remove('hidden');
+                    return;
+                }
+                const data = {
+                    user_id: 1, // Replace with actual user ID
+                    subject,
+                    hours_studied: parseFloat(hours),
+                    notes
+                };
+                try {
+                    const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+                        formMessages.textContent = 'Study log added successfully!';
+                        formMessages.className = '';
+                        formMessages.classList.remove('hidden');
+                        loadStudyLogs();
+                    } else {
+                        formMessages.textContent = 'Failed to add study log.';
+                        formMessages.className = 'error';
+                        formMessages.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    formMessages.textContent = 'Error adding study log.';
+                    formMessages.className = 'error';
+                    formMessages.classList.remove('hidden');
+                }
+            });
+            async function loadStudyLogs() {
+                try {
+                    const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        const studyLogList = document.getElementById('study-log');
+                        studyLogList.innerHTML = '';
+                        data.forEach(log => {
+                            const listItem = document.createElement('li');
+                            listItem.innerHTML = `
+                                <div><strong>Subject:</strong> ${log.subject}</div>
+                                <div><strong>Hours Studied:</strong> ${log.hours_studied}</div>
+                                <div><strong>Notes:</strong> ${log.notes}</div>
+                                <div><strong>Time:</strong> ${new Date(log.timestamp).toLocaleString()}</div>
+                                <div>
+                                    <button onclick="deleteLog(${log.id})">Delete</button>
+                                    <button onclick="editLog(${log.id})">Edit</button>
+                                </div>
+                            `;
+                            studyLogList.appendChild(listItem);
+                        });
+                    } else {
+                        console.error('Failed to load study logs:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error loading study logs:', error);
+                }
+            }
+            async function deleteLog(logId) {
+                try {
+                    const response = await fetch(`http://127.0.0.1:8887/api/studylognew`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ id: logId }),
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+                        loadStudyLogs();
+                    } else {
+                        console.error('Failed to delete study log:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error deleting study log:', error);
+                }
+            }
+            async function editLog(logId) {
+                const subject = prompt('Enter new subject:');
+                const hours = prompt('Enter new hours studied:');
+                const notes = prompt('Enter new notes:');
+                if (!subject || !hours) {
+                    alert('Subject and hours are required!');
+                    return;
+                }
+                const data = {
+                    id: logId,
+                    subject,
+                    hours_studied: parseFloat(hours),
+                    notes
+                };
+                try {
+                    const response = await fetch(`http://127.0.0.1:8887/api/studylognew`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                        credentials: 'include',
+                    });
+                    if (response.ok) {
+                        loadStudyLogs();
+                    } else {
+                        console.error('Failed to update study log:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error updating study log:', error);
+                }
+            }
+            // Load study logs on page load
+            loadStudyLogs();
+        </script>
+    </body>
+</html>
