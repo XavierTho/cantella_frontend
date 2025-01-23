@@ -16,7 +16,7 @@ permalink: classes/tips
                 font-family: 'Poppins', sans-serif;
                 margin: 0;
                 padding: 0;
-                background: linear-gradient(to bottom, #1A1A1D, #4E4E50); /* Dark gradient */
+                background: linear-gradient(to bottom, #1A1A1D, #4E4E50);
                 color: #ffffff;
                 display: flex;
                 flex-direction: column;
@@ -54,7 +54,7 @@ permalink: classes/tips
                 flex-wrap: wrap;
             }
             button {
-                background: linear-gradient(to right, #FFA756, #FF8A5B); /* Bold cantaloupe gradient */
+                background: linear-gradient(to right, #FFA756, #FF8A5B);
                 color: white;
                 font-size: 1.1rem;
                 border: none;
@@ -71,8 +71,8 @@ permalink: classes/tips
                 box-shadow: 0 0 30px rgba(255, 138, 91, 0.8), 0 0 50px rgba(255, 138, 91, 0.6);
             }
             .tips-container {
-                background: rgba(255, 255, 255, 0.1); /* Transparent background for holographic feel */
-                color: #FFFFFF; /* Light text for contrast */
+                background: rgba(255, 255, 255, 0.1);
+                color: #FFFFFF;
                 padding: 25px;
                 border-radius: 20px;
                 box-shadow: 0 0 15px rgba(255, 138, 91, 0.5), 0 0 30px rgba(255, 138, 91, 0.3);
@@ -81,58 +81,22 @@ permalink: classes/tips
                 max-width: 700px;
                 margin: auto;
                 position: relative;
-                animation: float 3s infinite ease-in-out;
                 transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            .tips-container:hover {
-                transform: translateY(-10px) scale(1.05);
-                box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 50px rgba(255, 215, 0, 0.5);
             }
             .tips-container h2 {
                 font-size: 2rem;
-                color: #FFD700; /* Bright yellow */
+                color: #FFD700;
                 margin-bottom: 15px;
             }
             .tip {
-                display: none;
                 font-size: 1.1rem;
                 margin: 10px 0;
                 padding: 12px;
-                background: rgba(255, 255, 255, 0.15); /* Slightly opaque background */
-                color: #FFD700; /* Yellow text for holographic effect */
+                background: rgba(255, 255, 255, 0.15);
+                color: #FFD700;
                 border-radius: 10px;
                 box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
                 transition: transform 0.2s ease;
-            }
-            .tip.active {
-                display: block;
-                animation: fadeIn 0.5s ease-in-out;
-            }
-            @keyframes fadeIn {
-                0% { opacity: 0; transform: translateY(10px); }
-                100% { opacity: 1; transform: translateY(0); }
-            }
-            @keyframes float {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-10px); }
-            }
-            .reveal-button {
-                margin-top: 20px;
-                padding: 12px 30px;
-                font-size: 1.2rem;
-                border-radius: 20px;
-                border: none;
-                background: linear-gradient(to right, #FF8A5B, #FFA756); /* Bold cantaloupe gradient */
-                color: white;
-                cursor: pointer;
-                font-weight: 700;
-                transition: background 0.3s ease, transform 0.3s;
-                box-shadow: 0px 4px 10px rgba(255, 138, 91, 0.3);
-            }
-            .reveal-button:hover {
-                background: linear-gradient(to right, #FF6F3D, #FF8A5B);
-                transform: scale(1.1);
-                box-shadow: 0px 8px 20px rgba(255, 111, 61, 0.4);
             }
             footer {
                 text-align: center;
@@ -146,10 +110,10 @@ permalink: classes/tips
         <h1>Cantella Tips & Tricks</h1>
         <div class="neon-bar"></div>
         <div class="button-container">
-            <button onclick="fetchTips('Physics')">AP Physics</button>
-            <button onclick="fetchTips('Chemistry')">AP Chemistry</button>
-            <button onclick="fetchTips('CSP')">AP CSP</button>
-            <button onclick="fetchTips('Statistics')">AP Statistics</button>
+            <button onclick="fetchPhysicsTips()">AP Physics</button>
+            <button onclick="fetchChemistryTips()">AP Chemistry</button>
+            <button onclick="fetchCSPTips()">AP CSP</button>
+            <button onclick="fetchStatisticsTips()">AP Statistics</button>
         </div>
         <div id="tips-container" class="tips-container">
             <p>Select a class to reveal tips!</p>
@@ -158,40 +122,61 @@ permalink: classes/tips
             Made by Armaghan Zarak 🍈
         </footer>
         <script>
-            const apiUrl = 'http://127.0.0.1:8887/api/tips';
-            let currentTipIndex = 0;
-            async function fetchTips(className) {
+            const apiBaseUrl = 'http://127.0.0.1:8887/api/tips';
+            function fetchPhysicsTips() {
                 const tipsContainer = document.getElementById('tips-container');
-                tipsContainer.innerHTML = `<p>Loading tips for ${className}...</p>`;
-                try {
-                    const response = await fetch(`${apiUrl}/${className}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        currentTipIndex = 0; // Reset tip index for new class
-                        tipsContainer.innerHTML = `
-                            <h2>${data.class_name} Tips</h2>
-                            <div id="tip-list">
-                                ${data.tips.map(
-                                    (tip, index) => `<div class="tip" id="tip-${index}">${tip}</div>`
-                                ).join('')}
-                            </div>
-                            <button class="reveal-button" onclick="revealNextTip()">Reveal Next Tip</button>
-                        `;
-                    } else {
-                        tipsContainer.innerHTML = `<p style="color: red;">Error: Unable to fetch tips for ${className}.</p>`;
-                    }
-                } catch (error) {
-                    tipsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-                }
+                tipsContainer.innerHTML = '<p>Loading tips for AP Physics...</p>';
+                fetch(`${apiBaseUrl}/Physics`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayTips(data.class_name, data.tips);
+                    })
+                    .catch(error => {
+                        tipsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                    });
             }
-            function revealNextTip() {
-                const tips = document.querySelectorAll('.tip');
-                if (currentTipIndex < tips.length) {
-                    tips[currentTipIndex].classList.add('active');
-                    currentTipIndex++;
-                } else {
-                    alert('All tips revealed for this class!');
-                }
+            function fetchChemistryTips() {
+                const tipsContainer = document.getElementById('tips-container');
+                tipsContainer.innerHTML = '<p>Loading tips for AP Chemistry...</p>';
+                fetch(`${apiBaseUrl}/Chemistry`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayTips(data.class_name, data.tips);
+                    })
+                    .catch(error => {
+                        tipsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                    });
+            }
+            function fetchCSPTips() {
+                const tipsContainer = document.getElementById('tips-container');
+                tipsContainer.innerHTML = '<p>Loading tips for AP CSP...</p>';
+                fetch(`${apiBaseUrl}/CSP`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayTips(data.class_name, data.tips);
+                    })
+                    .catch(error => {
+                        tipsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                    });
+            }
+            function fetchStatisticsTips() {
+                const tipsContainer = document.getElementById('tips-container');
+                tipsContainer.innerHTML = '<p>Loading tips for AP Statistics...</p>';
+                fetch(`${apiBaseUrl}/Statistics`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayTips(data.class_name, data.tips);
+                    })
+                    .catch(error => {
+                        tipsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                    });
+            }
+            function displayTips(className, tips) {
+                const tipsContainer = document.getElementById('tips-container');
+                tipsContainer.innerHTML = `
+                    <h2>${className} Tips</h2>
+                    ${tips.map(tip => `<div class="tip">${tip}</div>`).join('')}
+                `;
             }
         </script>
     </body>
