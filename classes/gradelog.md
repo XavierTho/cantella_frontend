@@ -232,8 +232,8 @@ permalink: /gradelog
       console.error('Error:', error);
     }
   }
-
-  // Display grade logs in the container
+ 
+  // Display grade logs in the container with Edit and Delete buttons
   function displayGradeLogs(logs) {
     gradeLogContainer.innerHTML = ''; // Clear the container
     if (logs.length === 0) {
@@ -249,11 +249,94 @@ permalink: /gradelog
         <p><strong>Grade:</strong> ${log.grade}</p>
         <p>${log.notes}</p>
         <p><small>${new Date(log.date).toLocaleString()}</small></p>
+        <button class="edit-log-btn" data-id="${log.id}">Edit</button>
+        <button class="delete-log-btn" data-id="${log.id}">Delete</button>
       `;
       gradeLogContainer.appendChild(logElement);
     });
+
+    // Add event listeners for Edit and Delete buttons
+    document.querySelectorAll('.edit-log-btn').forEach((btn) => {
+      btn.addEventListener('click', handleEditLog);
+    });
+
+    document.querySelectorAll('.delete-log-btn').forEach((btn) => {
+      btn.addEventListener('click', handleDeleteLog);
+    });
   }
 
-  // Load grade logs on page load
-  loadGradeLogs();
+  // Handle Edit button click
+  async function handleEditLog(event) {
+    const logId = event.target.getAttribute('data-id');
+
+    // Prompt user for new values
+    const subject = prompt('Enter new subject:');
+    const grade = prompt('Enter new grade:');
+    const notes = prompt('Enter new notes (optional):', '');
+
+    if (!subject || !grade) {
+      alert('Subject and grade are required!');
+      return;
+    }
+
+    const data = {
+      id: logId,
+      subject,
+      grade: parseFloat(grade),
+      notes
+    };
+
+    try {
+      const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        alert('Grade Log updated successfully!');
+        loadGradeLogs(); // Refresh logs
+      } else {
+        const errorText = await response.text();
+        alert('Failed to update grade log: ' + errorText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while updating the grade log.');
+    }
+  }
+
+  // Handle Delete button click
+  async function handleDeleteLog(event) {
+    const logId = event.target.getAttribute('data-id');
+
+    if (!confirm('Are you sure you want to delete this grade log?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8887/api/gradelog?id=${logId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        alert('Grade Log deleted successfully!');
+        loadGradeLogs(); // Refresh logs
+      } else {
+        const errorText = await response.text();
+        alert('Failed to delete grade log: ' + errorText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while deleting the grade log.');
+    }
+  }
+
+// Load grade logs on page load
+loadGradeLogs();
+
 </script>
