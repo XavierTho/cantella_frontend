@@ -138,6 +138,14 @@ permalink: /gradelog
       padding: 15px;
     }
   }
+
+  .grade {
+    font-size: 1.5em;
+    color: #4CAF50;
+    background-color: #f0f0f0;
+    padding: 0.2em 0.5em;
+    border-radius: 5px;
+  }
 </style>
 
 
@@ -241,19 +249,106 @@ permalink: /gradelog
       return;
     }
 
-    logs.forEach((log) => {
-      const logElement = document.createElement('div');
-      logElement.className = 'grade-log';
-      logElement.innerHTML = `
-        <h3>${log.subject}</h3>
-        <p><strong>Grade:</strong> ${log.grade}</p>
-        <p>${log.notes}</p>
-        <p><small>${new Date(log.date).toLocaleString()}</small></p>
-        <button class="edit-log-btn" data-id="${log.id}">Edit</button>
-        <button class="delete-log-btn" data-id="${log.id}">Delete</button>
-      `;
-      gradeLogContainer.appendChild(logElement);
+    // Group logs by subject
+    const groupedLogs = logs.reduce((acc, log) => {
+      if (!acc[log.subject]) {
+        acc[log.subject] = [];
+      }
+      acc[log.subject].push(log);
+      return acc;
+    }, {});
+
+    Object.keys(groupedLogs).forEach((subject) => {
+      const subjectElement = document.createElement('div');
+      subjectElement.className = 'subject-group';
+      subjectElement.innerHTML = `<h3>${subject}</h3>`;
+      
+      let totalGrades = 0;
+      let gradeCount = 0;
+
+      groupedLogs[subject].forEach((log) => {
+        const logElement = document.createElement('div');
+        logElement.className = 'grade-log';
+        logElement.innerHTML = `
+          <p><strong>Grade:</strong> <span class="grade">${log.grade}</span></p>
+          <p>${log.notes}</p>
+          <p><small>${new Date(log.date).toLocaleString()}</small></p>
+          <button class="edit-log-btn" data-id="${log.id}">Edit</button>
+          <button class="delete-log-btn" data-id="${log.id}">Delete</button>
+        `;
+        subjectElement.appendChild(logElement);
+
+        totalGrades += parseFloat(log.grade);
+        gradeCount++;
+      });
+
+      const averageGrade = (totalGrades / gradeCount).toFixed(2);
+      const averageGradeElement = document.createElement('p');
+      averageGradeElement.className = 'average-grade';
+      averageGradeElement.innerHTML = `<strong>Average Grade:</strong> <span class="grade">${averageGrade}</span>`;
+      subjectElement.appendChild(averageGradeElement);
+
+      gradeLogContainer.appendChild(subjectElement);
     });
+
+    // Add CSS styles for the grade and subject group
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .grade {
+        font-size: 1.5em;
+        color: #4CAF50;
+        background-color: #f0f0f0;
+        padding: 0.2em 0.5em;
+        border-radius: 5px;
+        transition: transform 0.3s ease;
+      }
+      .grade:hover {
+        transform: scale(1.1);
+      }
+      .subject-group {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .subject-group h3 {
+        margin-top: 0;
+        color: #007BFF;
+      }
+      .grade-log {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fafafa;
+        transition: background-color 0.3s ease;
+      }
+      .grade-log:hover {
+        background-color: #f1f1f1;
+      }
+      .average-grade {
+        margin-top: 10px;
+        font-size: 1.2em;
+        color: #333;
+      }
+      .edit-log-btn, .delete-log-btn {
+        margin-right: 5px;
+        padding: 5px 10px;
+        font-size: 14px;
+        color: white;
+        background-color: #007BFF;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .edit-log-btn:hover, .delete-log-btn:hover {
+        background-color: #0056b3;
+      }
+    `;
+    document.head.appendChild(style);
 
     // Add event listeners for Edit and Delete buttons
     document.querySelectorAll('.edit-log-btn').forEach((btn) => {
