@@ -113,133 +113,132 @@ permalink: classes/log
         <footer>
             <p style="text-align: center;">Made by Armaghan Zarak 🍈</p>
         </footer>
-        <script>
-            document.getElementById('study-log-form').addEventListener('submit', async function(event) {
-                event.preventDefault();
-                const formMessages = document.getElementById('form-messages');
-                const subject = document.getElementById('subject').value.trim();
-                const hours = document.getElementById('hours').value.trim();
-                const notes = document.getElementById('notes').value.trim();
-                if (!subject || !hours) {
-                    formMessages.textContent = 'Subject and hours are required!';
-                    formMessages.className = 'error';
-                    formMessages.classList.remove('hidden');
-                    return;
-                }
-                const data = {
-                    user_id: 1, // Replace with actual user ID
-                    subject,
-                    hours_studied: parseFloat(hours),
-                    notes
-                };
-                try {
-                    const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                        credentials: 'include',
-                    });
-                    if (response.ok) {
-                        formMessages.textContent = 'Study log added successfully!';
-                        formMessages.className = '';
-                        formMessages.classList.remove('hidden');
-                        loadStudyLogs();
-                    } else {
-                        formMessages.textContent = 'Failed to add study log.';
-                        formMessages.className = 'error';
-                        formMessages.classList.remove('hidden');
-                    }
-                } catch (error) {
-                    formMessages.textContent = 'Error adding study log.';
-                    formMessages.className = 'error';
-                    formMessages.classList.remove('hidden');
-                }
+<script>
+    document.getElementById('study-log-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const formMessages = document.getElementById('form-messages');
+        const subject = document.getElementById('subject').value.trim();
+        const hours = document.getElementById('hours').value.trim();
+        const notes = document.getElementById('notes').value.trim();
+        if (!subject || !hours) {
+            formMessages.textContent = 'Subject and hours are required!';
+            formMessages.className = 'error';
+            formMessages.classList.remove('hidden');
+            return;
+        }
+        const data = {
+            user_id: 1, // Replace with actual user ID
+            subject,
+            hours_studied: parseFloat(hours),
+            notes
+        };
+        try {
+            const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                credentials: 'include',
             });
-            async function loadStudyLogs() {
-                try {
-                    const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
-                        credentials: 'include',
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        const studyLogList = document.getElementById('study-log');
-                        studyLogList.innerHTML = '';
-                        data.forEach(log => {
-                            const listItem = document.createElement('li');
-                            listItem.innerHTML = `
-                                <div><strong>Subject:</strong> ${log.subject}</div>
-                                <div><strong>Hours Studied:</strong> ${log.hours_studied}</div>
-                                <div><strong>Notes:</strong> ${log.notes}</div>
-                                <div><strong>Time:</strong> ${new Date(log.timestamp).toLocaleString()}</div>
-                                <div>
-                                    <button onclick="deleteLog(${log.id})">Delete</button>
-                                    <button onclick="editLog(${log.id})">Edit</button>
-                                </div>
-                            `;
-                            studyLogList.appendChild(listItem);
-                        });
-                    } else {
-                        console.error('Failed to load study logs:', response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Error loading study logs:', error);
-                }
+            if (response.ok) {
+                formMessages.textContent = 'Study log added successfully!';
+                formMessages.className = '';
+                formMessages.classList.remove('hidden');
+                loadStudyLogs();
+            } else {
+                formMessages.textContent = 'Failed to add study log.';
+                formMessages.className = 'error';
+                formMessages.classList.remove('hidden');
             }
-            async function deleteLog(logId) {
-                try {
-                    const response = await fetch(`http://127.0.0.1:8887/api/studylognew`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ id: logId }),
-                        credentials: 'include',
-                    });
-                    if (response.ok) {
-                        loadStudyLogs();
-                    } else {
-                        console.error('Failed to delete study log:', response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Error deleting study log:', error);
-                }
+        } catch (error) {
+            formMessages.textContent = 'Error adding study log.';
+            formMessages.className = 'error';
+            formMessages.classList.remove('hidden');
+        }
+    });
+    async function loadStudyLogs() {
+        try {
+            const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
+                credentials: 'include',
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const studyLogList = document.getElementById('study-log');
+                studyLogList.innerHTML = '';
+                data.forEach(log => {
+                    const listItem = document.createElement('li');
+                    const timestamp = new Date(log.date || log.timestamp); // Adjust for backend field
+                    listItem.innerHTML = `
+                        <div><strong>Subject:</strong> ${log.subject}</div>
+                        <div><strong>Hours Studied:</strong> ${log.hours_studied}</div>
+                        <div><strong>Notes:</strong> ${log.notes}</div>
+                        <div><strong>Time:</strong> ${timestamp.toLocaleString()}</div>
+                        <div>
+                            <button onclick="deleteLog(${log.id})">Delete</button>
+                            <button onclick="editLog(${log.id})">Edit</button>
+                        </div>
+                    `;
+                    studyLogList.appendChild(listItem);
+                });
+            } else {
+                console.error('Failed to load study logs:', response.statusText);
             }
-            async function editLog(logId) {
-                const subject = prompt('Enter new subject:');
-                const hours = prompt('Enter new hours studied:');
-                const notes = prompt('Enter new notes:');
-                if (!subject || !hours) {
-                    alert('Subject and hours are required!');
-                    return;
-                }
-                const data = {
-                    id: logId,
-                    subject,
-                    hours_studied: parseFloat(hours),
-                    notes
-                };
-                try {
-                    const response = await fetch(`http://127.0.0.1:8887/api/studylognew`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                        credentials: 'include',
-                    });
-                    if (response.ok) {
-                        loadStudyLogs();
-                    } else {
-                        console.error('Failed to update study log:', response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Error updating study log:', error);
-                }
+        } catch (error) {
+            console.error('Error loading study logs:', error);
+        }
+    }
+    async function deleteLog(logId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8887/api/studylognew`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: logId }),
+                credentials: 'include',
+            });
+            if (response.ok) {
+                loadStudyLogs();
+            } else {
+                console.error('Failed to delete study log:', response.statusText);
             }
-            // Load study logs on page load
-            loadStudyLogs();
-        </script>
-    </body>
-</html>
+        } catch (error) {
+            console.error('Error deleting study log:', error);
+        }
+    }
+    async function editLog(logId) {
+        const subject = prompt('Enter new subject:');
+        const hours = prompt('Enter new hours studied:');
+        const notes = prompt('Enter new notes:');
+        if (!subject || !hours) {
+            alert('Subject and hours are required!');
+            return;
+        }
+        const data = {
+            id: logId,
+            subject,
+            hours_studied: parseFloat(hours),
+            notes
+        };
+        try {
+            const response = await fetch(`http://127.0.0.1:8887/api/studylognew`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                credentials: 'include',
+            });
+            if (response.ok) {
+                loadStudyLogs();
+            } else {
+                console.error('Failed to update study log:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating study log:', error);
+        }
+    }
+    // Load study logs on page load
+    loadStudyLogs();
+</script>

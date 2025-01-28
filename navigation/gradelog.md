@@ -223,52 +223,70 @@ permalink: /gradelog
     }
   });
 
-  // Load grade logs from the backend
+  // Function to load grade logs from the backend
   async function loadGradeLogs() {
     try {
+      // Make a GET request to the backend API to fetch grade logs
       const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
-        credentials: 'include',
+        credentials: 'include', // Include credentials for authentication
       });
 
+      // Check if the response is successful
       if (response.ok) {
+        // Parse the JSON data from the response
         const logs = await response.json();
+        // Call the function to display the grade logs, passing the JSON data
         displayGradeLogs(logs);
       } else {
+        // Log an error message if the response is not successful
         console.error('Failed to load grade logs.');
       }
     } catch (error) {
+      // Log any errors that occur during the fetch operation
       console.error('Error:', error);
     }
   }
- 
-  // Display grade logs in the container with Edit and Delete buttons
+
+  // Function to display grade logs in the DOM
   function displayGradeLogs(logs) {
-    gradeLogContainer.innerHTML = ''; // Clear the container
+    // Clear the container that holds the grade logs
+    gradeLogContainer.innerHTML = '';
+
+    // Check if there are no logs to display
     if (logs.length === 0) {
+      // Display a message indicating no grade logs were found
       gradeLogContainer.innerHTML = '<p>No grade logs found.</p>';
       return;
     }
 
     // Group logs by subject
     const groupedLogs = logs.reduce((acc, log) => {
+      // If the subject is not already a key in the accumulator, add it
       if (!acc[log.subject]) {
         acc[log.subject] = [];
       }
+      // Push the current log into the array for its subject
       acc[log.subject].push(log);
       return acc;
     }, {});
 
+    // Iterate over each subject in the grouped logs
     Object.keys(groupedLogs).forEach((subject) => {
+      // Create a container element for the subject group
       const subjectElement = document.createElement('div');
-      subjectElement.className = 'subject-group';
-      subjectElement.innerHTML = `<h3>${subject}</h3>`;
-      
-      let totalGrades = 0;
+      subjectElement.className = 'subject-group'; // Add a class for styling
+      subjectElement.innerHTML = `<h3>${subject}</h3>`; // Add the subject title
+
+      let totalGrades = 0; // Initialize variables for calculating average grade
       let gradeCount = 0;
 
+      // Iterate through the logs for the current subject
       groupedLogs[subject].forEach((log) => {
+        // Create a container element for the individual grade log
         const logElement = document.createElement('div');
-        logElement.className = 'grade-log';
+        logElement.className = 'grade-log'; // Add a class for styling
+
+        // Convert the JSON data into DOM elements with structured information
         logElement.innerHTML = `
           <p><strong>Grade:</strong> <span class="grade">${log.grade}</span></p>
           <p>${log.notes}</p>
@@ -276,18 +294,24 @@ permalink: /gradelog
           <button class="edit-log-btn" data-id="${log.id}">Edit</button>
           <button class="delete-log-btn" data-id="${log.id}">Delete</button>
         `;
+        // Append the log element to the subject group container
         subjectElement.appendChild(logElement);
 
+        // Accumulate the total grades and count for calculating the average
         totalGrades += parseFloat(log.grade);
         gradeCount++;
       });
 
+      // Calculate the average grade for the subject
       const averageGrade = (totalGrades / gradeCount).toFixed(2);
+      // Create an element to display the average grade
       const averageGradeElement = document.createElement('p');
-      averageGradeElement.className = 'average-grade';
+      averageGradeElement.className = 'average-grade'; // Add a class for styling
       averageGradeElement.innerHTML = `<strong>Average Grade:</strong> <span class="grade">${averageGrade}</span>`;
+      // Append the average grade element to the subject group container
       subjectElement.appendChild(averageGradeElement);
 
+      // Append the subject group container to the main grade log container
       gradeLogContainer.appendChild(subjectElement);
     });
 
@@ -348,6 +372,7 @@ permalink: /gradelog
         background-color: #0056b3;
       }
     `;
+    // Append the style element to the document head
     document.head.appendChild(style);
 
     // Add event listeners for Edit and Delete buttons
