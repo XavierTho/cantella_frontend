@@ -148,3 +148,45 @@ permalink: /nolanbot/
     }
   });
 </script>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tutor</title>
+  <script>
+    async function deleteItem(itemId) {
+      try {
+        const response = await fetch(`/delete-item/${itemId}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          alert(result.message);
+          const itemElement = document.getElementById(`item-${itemId}`);
+          if (itemElement) {
+            itemElement.remove();
+          }
+        } else {
+          const error = await response.json();
+          alert(`Error: ${error.error}`);
+        }
+      } catch (error) {
+        console.error('Error deleting item:', error);
+        alert('An error occurred while deleting the item.');
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Chat Tutor</h1>
+  <div id="chat-items">
+    <div id="data">
+      <p>data</p>
+      <button onclick="deleteItem(1)">Delete</button>
+
+      
+
