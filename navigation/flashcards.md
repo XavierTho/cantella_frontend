@@ -5,7 +5,9 @@ description: Flashcards
 hide: true
 ---
 
+
 # Welcome to The Flashcards Page
+
 
 <style>
   body {
@@ -16,6 +18,7 @@ hide: true
     padding: 0;
   }
 
+
   h1, h3 {
     text-align: center;
     color: #2c3e50;
@@ -23,6 +26,7 @@ hide: true
     font-weight: normal;
     font-style: italic;
   }
+
 
   #flashcard-app {
     display: flex;
@@ -32,6 +36,7 @@ hide: true
     margin: 0 auto;
     padding: 20px;
   }
+
 
   #create-deck-btn {
     background-color: #6c757d;
@@ -45,9 +50,11 @@ hide: true
     margin: 20px 0;
   }
 
+
   #create-deck-btn:hover {
     background-color: #5a6268;
   }
+
 
   #add-deck-form {
     background-color: #fff;
@@ -60,9 +67,11 @@ hide: true
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
+
   .form-group {
     margin-bottom: 15px;
   }
+
 
   .form-group label {
     display: block;
@@ -70,6 +79,7 @@ hide: true
     margin-bottom: 5px;
     color: #444;
   }
+
 
   .form-group input {
     width: 100%;
@@ -80,6 +90,7 @@ hide: true
     font-size: 14px;
   }
 
+
   .deck-container {
     display: flex;
     flex-wrap: wrap;
@@ -87,6 +98,7 @@ hide: true
     margin-top: 30px;
     justify-content: center;
   }
+
 
   .deck {
     width: 220px;
@@ -106,10 +118,12 @@ hide: true
     transition: background-color 0.3s ease, transform 0.2s ease;
   }
 
+
   .deck:hover {
     background-color: #d6d6d6;
     transform: translateY(-2px);
   }
+
 
   .flashcard-container {
     display: flex;
@@ -124,6 +138,8 @@ hide: true
     max-width: 700px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
+ 
+
 
   .flashcard {
     width: 320px;
@@ -145,14 +161,17 @@ hide: true
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
+
   .flashcard.answer {
     background: linear-gradient(135deg, #f39c12, #f8c291);
   }
+
 
   .flashcard:hover {
     transform: scale(1.03);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   }
+
 
   button {
     background-color: #6c757d;
@@ -166,14 +185,17 @@ hide: true
     margin-top: 10px;
   }
 
+
   button:hover {
     background-color: #5a6268;
   }
+
 
   @media screen and (max-width: 600px) {
     .deck {
       width: 100%;
     }
+
 
     .flashcard {
       width: 100%;
@@ -181,30 +203,21 @@ hide: true
   }
 </style>
 
+
 <div id="flashcard-app">
-  <h1>Flashcards for Every Occasion</h1>
+  <h1>Create Flashcards and Decks Now!</h1>
   <button id="create-deck-btn">+ Create Deck</button>
-  <div id="add-deck-form" class="hidden">
-    <div id="deck-info-phase">
-      <div class="form-group">
-        <label for="deck-title">Deck Title:</label>
-        <input type="text" id="deck-title" placeholder="Enter deck title">
-      </div>
-      <button id="next-phase-btn">Next</button>
-    </div>
-    <div id="question-phase" class="hidden">
-      <div class="form-group">
-        <label for="question">Question:</label>
-        <input type="text" id="question" placeholder="Enter question">
-      </div>
-      <div class="form-group">
-        <label for="answer">Answer:</label>
-        <input type="text" id="answer" placeholder="Enter answer">
-      </div>
-      <button id="add-card-btn">Add Flashcard</button>
-      <button id="finish-deck-btn">Finish Deck</button>
-    </div>
+<div id="add-deck-form" class="hidden">
+  <div class="form-group">
+    <label for="deck-title">Deck Title:</label>
+    <input type="text" id="deck-title" placeholder="Enter deck title">
   </div>
+</div>
+
+
+
+
+
 
   <div class="deck-container" id="deck-container"></div>
   <div class="flashcard-container hidden" id="flashcard-container">
@@ -212,7 +225,24 @@ hide: true
     <button id="next-card-btn" class="hidden">Next Card</button>
     <button id="close-deck-btn" class="hidden">Close Deck</button>
   </div>
+  <div id="add-flashcard-form" class="hidden">
+  <h3 id="current-deck-name">Add Flashcard to Deck: <span id="deck-name-placeholder"></span></h3>
+  <div class="form-group">
+    <label for="question">Question:</label>
+    <input type="text" id="question" placeholder="Enter question">
+  </div>
+  <div class="form-group">
+    <label for="answer">Answer:</label>
+    <input type="text" id="answer" placeholder="Enter answer">
+  </div>
+  <button id="add-card-btn">Add Flashcard</button>
 </div>
+
+
+
+
+
+
 
 
 
@@ -228,9 +258,11 @@ hide: true
   const nextCardBtn = document.getElementById('next-card-btn');
   const closeDeckBtn = document.getElementById('close-deck-btn');
 
+
   let decks = []; // Array to store all decks
   let currentDeck = null; // Deck currently being viewed
   let currentCardIndex = 0; // Index of the current card being viewed
+
 
   // Show deck creation form
   createDeckBtn.addEventListener('click', () => {
@@ -239,114 +271,128 @@ hide: true
     questionPhase.classList.add('hidden');
   });
 
-  // Proceed to question creation phase
-  document.getElementById('next-phase-btn').addEventListener('click', () => {
+
+document.getElementById('create-deck-btn').addEventListener('click', async () => {
     const deckTitle = document.getElementById('deck-title').value.trim();
 
-    if (deckTitle) {
-      currentDeck = { title: deckTitle, cards: [] };
-      decks.push(currentDeck);
-      deckInfoPhase.classList.add('hidden');
-      questionPhase.classList.remove('hidden');
-    } else {
-      alert('Please provide a deck title.');
-    }
-  }); 
 
-document.getElementById('add-card-btn').addEventListener('click', async () => {
-    const question = document.getElementById('question').value.trim();
-    const answer = document.getElementById('answer').value.trim();
-
-    if (question && answer) {
-        try {
-            // Define the backend URL
-            const backendURL = 'http://127.0.0.1:8887/api/flashcard';
-
-            // Prepare the payload for the POST request
-            const flashcardData = {
-                title: question,
-                content: answer,
-                user_id: 1 // Replace with the appropriate user_id if necessary
-            };
-
-            // Send the POST request to the backend
-            const response = await fetch(backendURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(flashcardData),
-                credentials: 'include' // Include cookies in the request
-            });
-
-            // Handle the response
-            if (response.ok) {
-                const result = await response.json();
-                alert('Flashcard created successfully!');
-                console.log('Flashcard created:', result);
-
-                // Add the flashcard to the currentDeck.cards array
-                if (currentDeck) {
-                    currentDeck.cards.push({
-                        question: result.title,
-                        answer: result.content,
-                    });
-                }
-
-                // Reset the form fields after success
-                document.getElementById('question').value = '';
-                document.getElementById('answer').value = '';
-            } else {
-                const errorText = await response.text();
-                alert('Failed to create flashcard, please login or sign up to be an authenticated user!');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while creating the flashcard.');
-        }
-    } else {
-        alert('Please provide both a question and an answer.');
-    }
-});
-
-
-document.getElementById('finish-deck-btn').addEventListener('click', async () => {
-    if (!currentDeck) {
-        alert('No deck is currently being created.');
+    if (!deckTitle) {
+        alert('Please provide a deck title.');
         return;
     }
+
 
     try {
         const response = await fetch('http://127.0.0.1:8887/api/deck', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include', // Include cookies in the request
+            credentials: 'include',
+            body: JSON.stringify({ title: deckTitle, user_id: 1 }), // Replace user_id as needed
+        });
+
+
+        if (response.ok) {
+            const newDeck = await response.json();
+            decks.push(newDeck); // Add the new deck to the local array
+            alert(`Deck "${newDeck.title}" created successfully!`);
+            document.getElementById('deck-title').value = ''; // Clear the input
+            displayDeck(newDeck); // Show the new deck
+        } else {
+            alert('Failed to create deck. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error creating deck:', error);
+        alert('An error occurred while creating the deck.');
+    }
+});
+
+
+
+
+
+
+document.getElementById('add-card-btn').addEventListener('click', async () => {
+    const question = document.getElementById('question').value.trim();
+    const answer = document.getElementById('answer').value.trim();
+
+    if (!question || !answer) {
+        alert('Please provide both a question and an answer.');
+        return;
+    }
+
+    if (!currentDeck || !currentDeck.id) {
+        alert('No deck selected. Please select or create a deck first.');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://127.0.0.1:8887/api/flashcard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({
-                title: currentDeck.title,
-                user_id: 1, // Replace with actual user ID
-                cards: currentDeck.cards,
+                title: question,
+                content: answer,
+                deck_id: currentDeck.id, // Include the current deck's ID
+                user_id: 1, // Replace with the actual user ID if needed
             }),
         });
 
         if (response.ok) {
-            alert('Deck created successfully!');
-            console.log('Deck created successfully.');
-
-            // Fetch the updated list of decks
-            await fetchDecks();
-
-            // Reset the form and clear `currentDeck`
-            currentDeck = null;
-            addDeckForm.classList.add('hidden');
-            deckInfoPhase.classList.add('hidden');
-            questionPhase.classList.add('hidden');
+            const newCard = await response.json();
+            currentDeck.cards.push(newCard); // Add to the current deck locally
+            alert(`Flashcard added to ${currentDeck.title}!`);
+            document.getElementById('question').value = '';
+            document.getElementById('answer').value = '';
+            displayFlashcards(currentDeck.cards); // Refresh the flashcards
         } else {
-            console.error('Failed to create deck:', await response.text());
+            alert('Failed to add flashcard. Please try again.');
         }
     } catch (error) {
-        console.error('Error creating deck:', error);
+        console.error('Error adding flashcard:', error);
+        alert('An error occurred while adding the flashcard.');
     }
 });
+
+
+
+
+
+function displayFlashcards(cards) {
+    const container = document.getElementById('flashcard-container');
+    container.innerHTML = ''; // Clear existing flashcards
+
+
+    cards.forEach(card => {
+        const cardElement = document.createElement('div');
+        cardElement.classList.add('flashcard');
+        cardElement.textContent = card.title; // Default to question
+
+
+        // Toggle between question and answer
+        cardElement.onclick = () => {
+            if (cardElement.textContent === card.title) {
+                cardElement.textContent = card.content;
+                cardElement.classList.add('answer');
+            } else {
+                cardElement.textContent = card.title;
+                cardElement.classList.remove('answer');
+            }
+        };
+
+
+        container.appendChild(cardElement);
+    });
+
+
+    if (cards.length === 0) {
+        container.innerHTML = '<p>No flashcards available. Add one to get started!</p>';
+    }
+}
+
+
+
+
 
 
 async function fetchDecks() {
@@ -354,23 +400,23 @@ async function fetchDecks() {
         const response = await fetch('http://127.0.0.1:8887/api/deck', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
+            credentials: 'include',
         });
+
 
         if (response.ok) {
             const fetchedDecks = await response.json();
             console.log('Fetched decks:', fetchedDecks);
 
-            // Clear the deck container to prevent duplicates
-            deckContainer.innerHTML = '';
 
-            // Display each deck
+            deckContainer.innerHTML = ''; // Clear container
+
+
             fetchedDecks.forEach(deck => {
                 displayDeck(deck);
             });
         } else if (response.status === 401) {
             alert('You are not authorized. Please log in.');
-            // Optionally, redirect to the login page
             window.location.href = '/login.html';
         } else {
             const error = await response.json();
@@ -384,11 +430,18 @@ async function fetchDecks() {
 
 
 
+
+
+
+
+
+
 // Fetch all flashcards from the backend
 async function fetchFlashcards() {
     try {
         // Define the backend URL for fetching flashcards
         const backendURL = 'http://127.0.0.1:8887/api/flashcard';
+
 
         // Send a GET request to the backend
         const response = await fetch(backendURL, {
@@ -399,10 +452,12 @@ async function fetchFlashcards() {
             credentials: 'include', // Include cookies in the request
         });
 
+
         if (response.ok) {
             // Parse the response as JSON
             const flashcards = await response.json();
             console.log('Fetched flashcards:', flashcards);
+
 
             // Group flashcards by deck title (if applicable) or display as one deck
             const groupedDeck = { title: "Created Flashcards", cards: [] };
@@ -412,6 +467,7 @@ async function fetchFlashcards() {
                     answer: flashcard.content,
                 });
             });
+
 
             // Display the deck in the deck container
             displayDeck(groupedDeck);
@@ -423,29 +479,19 @@ async function fetchFlashcards() {
     }
 }
 
+
 // Create a new deck when "Create Deck" is clicked
 createDeckBtn.addEventListener('click', () => {
     addDeckForm.classList.remove('hidden');
     deckInfoPhase.classList.remove('hidden');
     questionPhase.classList.add('hidden');
-    currentDeck = { title: "New Deck", cards: [] };
-    decks.push(currentDeck);
-
-    console.log('New deck created:', currentDeck);
+    currentDeck = null; // Reset the current deck to avoid issues
 });
 
-// Proceed to question creation phase
-document.getElementById('next-phase-btn').addEventListener('click', () => {
-    const deckTitle = document.getElementById('deck-title').value.trim();
 
-    if (deckTitle) {
-        currentDeck.title = deckTitle; // Update the title of the current deck
-        deckInfoPhase.classList.add('hidden');
-        questionPhase.classList.remove('hidden');
-    } else {
-        alert('Please provide a deck title.');
-    }
-});
+
+
+
 
 function displayDeck(deck) {
     console.log('Displaying deck:', deck); // Log the deck object for debugging
@@ -474,7 +520,7 @@ function displayDeck(deck) {
                 const response = await fetch(`http://127.0.0.1:8887/api/deck/${deck.id}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include', 
+                    credentials: 'include',
                 });
 
                 if (response.ok) {
@@ -495,7 +541,6 @@ function displayDeck(deck) {
     deckContainer.appendChild(deckElement);
 }
 
-
 async function openDeck(deck) {
     console.log('Opening deck:', deck);
 
@@ -507,26 +552,27 @@ async function openDeck(deck) {
     try {
         const response = await fetch(`http://127.0.0.1:8887/api/deck/${deck.id}`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
         });
 
         if (response.ok) {
             const detailedDeck = await response.json();
-            console.log('Detailed deck fetched from API:', detailedDeck);
-
-            currentDeck = detailedDeck;
+            currentDeck = detailedDeck; // Save the fetched deck details locally
             currentCardIndex = 0;
 
-            if (currentDeck.cards.length > 0) {
-                flashcardContainer.classList.remove('hidden'); // Ensure the container is visible
-                deckContainer.classList.add('hidden');
-                nextCardBtn.classList.remove('hidden');
-                closeDeckBtn.classList.remove('hidden');
+            // Show the current deck name in the flashcard form
+            document.getElementById('deck-name-placeholder').textContent = currentDeck.title;
 
-                showFlashcard(currentDeck.cards[currentCardIndex]);
+            // Show flashcards and allow adding new ones
+            if (currentDeck.cards.length > 0) {
+                displayFlashcards(currentDeck.cards); // Show flashcards
             } else {
-                alert('This deck has no flashcards.');
+                document.getElementById('flashcard-container').innerHTML = '<p>No flashcards yet. Add one!</p>';
             }
+
+            document.getElementById('add-flashcard-form').classList.remove('hidden'); // Show form
+            flashcardContainer.classList.remove('hidden');
+            deckContainer.classList.add('hidden');
         } else {
             console.error('Failed to fetch deck details:', await response.text());
         }
@@ -537,6 +583,14 @@ async function openDeck(deck) {
 
 
 
+
+
+
+
+
+
+
+
 function showFlashcard(card) {
     const flashcard = document.getElementById('flashcard'); // Re-fetch the flashcard element
     if (!flashcard) {
@@ -544,11 +598,14 @@ function showFlashcard(card) {
         return;
     }
 
+
     console.log('Displaying flashcard:', card);
+
 
     flashcard.textContent = card.title; // Set the question as the default content
     flashcard.classList.remove('hidden');
     flashcard.classList.remove('answer');
+
 
     // Toggle between question and answer
     flashcard.onclick = () => {
@@ -563,6 +620,8 @@ function showFlashcard(card) {
 }
 
 
+
+
 // Event listener for showing the next card
 nextCardBtn.addEventListener('click', () => {
     if (currentDeck.cards.length > 0) {
@@ -570,6 +629,7 @@ nextCardBtn.addEventListener('click', () => {
         showFlashcard(currentDeck.cards[currentCardIndex]);
     }
 });
+
 
 // Event listener for closing the deck
 closeDeckBtn.addEventListener('click', () => {
@@ -579,8 +639,13 @@ closeDeckBtn.addEventListener('click', () => {
     closeDeckBtn.classList.add('hidden');
 });
 
+
 // Fetch and display flashcards when the page loads
 document.addEventListener('DOMContentLoaded', fetchDecks);
+
+
+
+
 
 
 
@@ -593,6 +658,8 @@ document.addEventListener('DOMContentLoaded', fetchDecks);
     closeDeckBtn.classList.add('hidden');
   });
 </script>
+
+
 
 
 <div>
@@ -631,23 +698,29 @@ document.addEventListener('DOMContentLoaded', fetchDecks);
 </div>
 
 
+
+
 <script>
 document.getElementById('import-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
+
     const amount = document.getElementById('amount').value || 10;
     const category = document.getElementById('category').value;
+
 
     let apiUrl = `http://127.0.0.1:8887/api/import-flashcards?amount=${amount}&difficulty=medium`;
     if (category) {
         apiUrl += `&category=${category}`;
     }
 
+
     try {
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
+
 
         if (response.ok) {
             const data = await response.json();
@@ -665,7 +738,11 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
 </script>
 
 
+
+
 <button id="import-flashcards">Import Flashcards</button>
+
+
 
 
 <script>
@@ -678,11 +755,13 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
               },
           });
 
+
           if (!response.ok) {
               const error = await response.json();
               alert("Error: " + error.error);
               return;
           }
+
 
           const data = await response.json();
           alert(`Successfully imported ${data.flashcards.length} flashcards!`);
