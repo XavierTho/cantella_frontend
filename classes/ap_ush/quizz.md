@@ -20,6 +20,7 @@ permalink: classes/ap/ush/quizz
     <input id="nameInput" type="text" placeholder="Your Name" style="padding: 10px; font-size: 1em; margin-top: 10px; border-radius: 10px; border: 1px solid #B22234;">
   </div>
 
+
   <!-- Quiz form container -->
   <form id="quiz-form" style="max-width: 700px; margin: 20px auto; background-color: #FFFFFF; padding: 20px; border-radius: 15px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); border: 2px solid #3C3B6E; animation: slideIn 2s;">
     <div id="quiz-questions">
@@ -45,22 +46,108 @@ permalink: classes/ap/ush/quizz
 
   <!-- Button to return to the home page -->
   <div style="text-align: center; margin-top: 20px;">
-    <button onclick="returnToHome()" 
+    <button id="return-home"
             style="background: linear-gradient(45deg, #B22234, #3C3B6E); border: none; color: white; padding: 10px 20px; font-size: 1.2em; border-radius: 30px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
       Return to Home
     </button>
   </div>
 </div>
 
-<script>
+
+
+<style>
+  /* Animations for fade-in effect */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  /* Animation for pop-in effect */
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  /* Animation for flag waving effect */
+  @keyframes wave {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-10deg); }
+    100% { transform: rotate(0deg); }
+  }
+  /* Button hover effect */
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
+  }
+</style>
+
+
+
+
+
+
+
+<!-- Button for edit access -->
+<div style="text-align: center; margin-top: 20px;">
+  <button id="edit-access"
+          style="background: linear-gradient(45deg, #FF8C00, #FFA500); border: none; color: white; padding: 10px 20px; font-size: 1.2em; border-radius: 30px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
+    Edit Access
+  </button>
+</div>
+
+<!-- Hidden edit access container -->
+<div id="edit-container" style="display: none; text-align: center; margin-top: 20px;">
+  <input id="passwordInput" type="password" placeholder="Enter Password" 
+         style="padding: 10px; font-size: 1em; margin-top: 10px; border-radius: 10px; border: 1px solid #FFA500;">
+  <button id="submitPassword"
+          style="background: linear-gradient(45deg, #FF8C00, #FFA500); border: none; color: white; padding: 10px 20px; font-size: 1em; border-radius: 30px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);">
+    Submit
+  </button>
+</div>
+
+<!-- Admin controls for editing leaderboard -->
+<div id="admin-controls" style="display: none; max-width: 700px; margin: 20px auto; text-align: center; background-color: #FFFAF0; padding: 20px; border-radius: 15px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);">
+  <h2>Edit Leaderboard</h2>
+  <!-- Form to add a leaderboard entry -->
+  <div>
+    
+    
+    <button id="addEntry"
+            style="background: linear-gradient(45deg, #32CD32, #228B22); color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">
+      Add Entry
+    </button>
+  </div>
+  <!-- Dropdown to select and delete an entry -->
+  <div style="margin-top: 20px;">
+    <select id="deleteSelect" style="padding: 10px; border-radius: 5px; border: 1px solid #B22234;">
+      <option value="" disabled selected>Select an entry to change</option>
+    </select>
+    <button id="deleteEntry"
+            style="background: linear-gradient(45deg, #FF4500, #DC143C); color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">
+      Delete Entry
+    </button>
+    <input id="newScore" type="number" placeholder="New Score" 
+           style="padding: 10px; border-radius: 5px; border: 1px solid #B22234;">
+    <button id="editEntry"
+            style="background: linear-gradient(45deg,rgb(255, 157, 0),rgb(220, 153, 20)); color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">
+      Edit Entry
+    </button>
+  </div>
+</div>
+
+<script type="module">
+  import { fetchOptions, pythonURI } from "{{site.baseurl}}/assets/js/api/config.js"
   // Array to store the questions fetched from the backend
   let questions = [];
+
+  const returnBtn = document.getElementById('return-home')
+  returnBtn.addEventListener('click', returnToHome)
 
   // Fetch quiz questions from the backend API
   async function fetchQuestions() {
     try {
       // Fetching questions from the APUSH quiz endpoint
-      const response = await fetch('http://localhost:5003/api/quiz/apush');
+      const response = await fetch(pythonURI+'/api/quiz/apush', fetchOptions);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
@@ -114,7 +201,7 @@ permalink: classes/ap/ush/quizz
 
     try {
       // Submit answers to the backend
-      const response = await fetch('http://localhost:5003/api/quiz/apush/submit', {
+      const response = await fetch(pythonURI+'/api/quiz/apush/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: userName, answers })
@@ -132,7 +219,7 @@ permalink: classes/ap/ush/quizz
   // Fetch and display the leaderboard
   async function fetchLeaderboard() {
     try {
-      const response = await fetch('http://localhost:5003/api/leaderboard/apush');
+      const response = await fetch(pythonURI+'/api/leaderboard/apush', fetchOptions);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
@@ -162,30 +249,107 @@ permalink: classes/ap/ush/quizz
   document.getElementById('quiz-form').addEventListener('submit', submitQuiz);
   fetchQuestions(); // Load questions
   fetchLeaderboard(); // Load leaderboard
-</script>
 
-<style>
-  /* Animations for fade-in effect */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+
+
+
+
+
+  // Show password prompt
+document.getElementById('edit-access').addEventListener('click', () => {
+  document.getElementById('edit-container').style.display = 'block';
+});
+
+// Validate password and reveal admin controls
+document.getElementById('submitPassword').addEventListener('click', () => {
+  const password = document.getElementById('passwordInput').value;
+  if (password === 'poop') {
+    document.getElementById('edit-container').style.display = 'none';
+    document.getElementById('admin-controls').style.display = 'block';
+    loadLeaderboardForEdit();
+  } else {
+    alert('Incorrect password!');
   }
-  /* Animation for pop-in effect */
-  @keyframes popIn {
-    0% { transform: scale(0.5); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+});
+
+// Load leaderboard entries into delete dropdown
+async function loadLeaderboardForEdit() {
+  try {
+    const response = await fetch(pythonURI + '/api/leaderboard/apush', fetchOptions);
+    const data = await response.json();
+    const deleteSelect = document.getElementById('deleteSelect');
+    deleteSelect.innerHTML = '<option value="" disabled selected>Select an entry to delete</option>';
+    data.forEach(entry => {
+      const option = document.createElement('option');
+      option.value = entry.id; // Ensure the backend sends a unique ID
+      option.textContent = `${entry.name} - Score: ${entry.score}`;
+      deleteSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error loading leaderboard for edit:', error);
   }
-  /* Animation for flag waving effect */
-  @keyframes wave {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(10deg); }
-    50% { transform: rotate(0deg); }
-    75% { transform: rotate(-10deg); }
-    100% { transform: rotate(0deg); }
+}
+
+// Add a new leaderboard entry
+document.getElementById('editEntry').addEventListener('click', async () => {
+  const score = document.getElementById('newScore').value;
+
+  if (!score) {
+    alert('Please enter new Score');
+    return;
   }
-  /* Button hover effect */
-  button:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
+
+  const selectedId = document.getElementById('deleteSelect').value;
+
+  if (!selectedId) {
+    alert('Please select an entry to delete!');
+    return;
   }
-</style>
+
+  try {
+    const response = await fetch(pythonURI + '/api/leaderboard', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ "id": selectedId, score }),
+    });
+
+    if (!response.ok) throw new Error('Failed to change entry.');
+    alert('Entry changed successfully!');
+    loadLeaderboardForEdit();
+    window.location.reload()
+  } catch (error) {
+    console.error('Error changing entry:', error);
+  }
+});
+
+// Delete a leaderboard entry
+document.getElementById('deleteEntry').addEventListener('click', async () => {
+  const selectedId = document.getElementById('deleteSelect').value;
+
+  if (!selectedId) {
+    alert('Please select an entry to delete!');
+    return;
+  }
+
+  console.log(selectedId)
+
+  try {
+    const response = await fetch(pythonURI + '/api/leaderboard', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ "id": selectedId }),
+    });
+
+    if (!response.ok) throw new Error('Failed to delete entry.');
+    alert('Entry deleted successfully!');
+    loadLeaderboardForEdit();
+    window.location.reload()
+  } catch (error) {
+    console.error('Error deleting entry:', error);
+  }
+});
+
+
+
+
+</script>
