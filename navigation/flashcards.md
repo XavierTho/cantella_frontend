@@ -499,12 +499,47 @@ function displayDeck(deck) {
     const deckElement = document.createElement('div');
     deckElement.classList.add('deck');
     deckElement.innerHTML = `
-        <h3>${deck.title}</h3>
+        <h3 class="deck-title">${deck.title}</h3>
         <div style="display: flex; gap: 5px; justify-content: center; margin-top: 10px;">
             <button class="open-deck-btn">Open</button>
             <button class="delete-deck-btn">Delete</button>
         </div>
     `;
+
+    const titleElement = deckElement.querySelector('.deck-title');
+
+    // Enable editing the title on double-click
+    titleElement.addEventListener('dblclick', () => {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = deck.title;
+        input.classList.add('edit-deck-input');
+
+        titleElement.replaceWith(input);
+
+        // Save the new title when input loses focus or on Enter key
+        input.addEventListener('blur', async () => {
+            const newTitle = input.value.trim();
+            if (newTitle && newTitle !== deck.title) {
+                await editDeckTitle(deck.id, newTitle, input, titleElement, deckElement);
+            } else {
+                input.replaceWith(titleElement); // Revert if no change
+            }
+        });
+
+        input.addEventListener('keydown', async (event) => {
+            if (event.key === 'Enter') {
+                const newTitle = input.value.trim();
+                if (newTitle && newTitle !== deck.title) {
+                    await editDeckTitle(deck.id, newTitle, input, titleElement, deckElement);
+                } else {
+                    input.replaceWith(titleElement); // Revert if no change
+                }
+            }
+        });
+
+        input.focus(); // Automatically focus the input
+    });
 
     // Attach event listener for opening the deck
     deckElement.querySelector('.open-deck-btn').addEventListener('click', () => {
@@ -540,6 +575,34 @@ function displayDeck(deck) {
 
     deckContainer.appendChild(deckElement);
 }
+
+
+async function editDeckTitle(deckId, newTitle, inputElement, titleElement, deckElement) {
+    try {
+        const response = await fetch(`http://127.0.0.1:8887/api/deck/${deckId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ title: newTitle }), // Send the new title in the request body
+        });
+
+        if (response.ok) {
+            const updatedDeck = await response.json();
+            titleElement.textContent = updatedDeck.title; // Update the title in the UI
+            inputElement.replaceWith(titleElement); // Replace input with updated title
+            alert(`Deck updated successfully to: ${updatedDeck.title}`);
+        } else {
+            const error = await response.json();
+            alert(`Error updating deck: ${error.error}`);
+            inputElement.replaceWith(titleElement); // Revert if there's an error
+        }
+    } catch (error) {
+        console.error('Error updating deck:', error);
+        alert('An error occurred while updating the deck.');
+        inputElement.replaceWith(titleElement); // Revert if there's an error
+    }
+}
+
 
 async function openDeck(deck) {
     console.log('Opening deck:', deck);
