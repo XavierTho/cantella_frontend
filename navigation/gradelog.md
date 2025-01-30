@@ -226,7 +226,7 @@ permalink: /gradelog
   // Function to load grade logs from the backend
   async function loadGradeLogs() {
     try {
-      // Make a GET request to the backend API to fetch grade logs
+      // Make a GET request to the backend API to fetch grade logs for the current user
       const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
         credentials: 'include', // Include credentials for authentication
       });
@@ -240,6 +240,22 @@ permalink: /gradelog
       } else {
         // Log an error message if the response is not successful
         console.error('Failed to load grade logs.');
+      }
+
+      // Make a GET request to the backend API to fetch grade logs for all users
+      const allUsersResponse = await fetch('http://127.0.0.1:8887/api/gradelog/all', {
+        credentials: 'include', // Include credentials for authentication
+      });
+
+      // Check if the response is successful
+      if (allUsersResponse.ok) {
+        // Parse the JSON data from the response
+        const allUsersLogs = await allUsersResponse.json();
+        // Call the function to display the average grades for all users
+        displayAllUsersAverageGrades(allUsersLogs);
+      } else {
+        // Log an error message if the response is not successful
+        console.error('Failed to load grade logs for all users.');
       }
     } catch (error) {
       // Log any errors that occur during the fetch operation
@@ -382,6 +398,42 @@ permalink: /gradelog
 
     document.querySelectorAll('.delete-log-btn').forEach((btn) => {
       btn.addEventListener('click', handleDeleteLog);
+    });
+  }
+
+  // Function to display average grades for all users
+  function displayAllUsersAverageGrades(logs) {
+    // Group logs by subject
+    const groupedLogs = logs.reduce((acc, log) => {
+      // If the subject is not already a key in the accumulator, add it
+      if (!acc[log.subject]) {
+        acc[log.subject] = [];
+      }
+      // Push the current log into the array for its subject
+      acc[log.subject].push(log);
+      return acc;
+    }, {});
+
+    // Iterate over each subject in the grouped logs
+    Object.keys(groupedLogs).forEach((subject) => {
+      let totalGrades = 0; // Initialize variables for calculating average grade
+      let gradeCount = 0;
+
+      // Iterate through the logs for the current subject
+      groupedLogs[subject].forEach((log) => {
+        // Accumulate the total grades and count for calculating the average
+        totalGrades += parseFloat(log.grade);
+        gradeCount++;
+      });
+
+      // Calculate the average grade for the subject
+      const averageGrade = (totalGrades / gradeCount).toFixed(2);
+      // Create an element to display the average grade for all users
+      const averageGradeElement = document.createElement('p');
+      averageGradeElement.className = 'average-grade'; // Add a class for styling
+      averageGradeElement.innerHTML = `<strong>All Users Average Grade for ${subject}:</strong> <span class="grade">${averageGrade}</span>`;
+      // Append the average grade element to the main grade log container
+      gradeLogContainer.appendChild(averageGradeElement);
     });
   }
 
