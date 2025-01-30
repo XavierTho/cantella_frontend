@@ -389,26 +389,28 @@ permalink: /gradelog
   async function handleEditLog(event) {
     const logId = event.target.getAttribute('data-id');
 
-    // Prompt user for new values
-    const subject = prompt('Enter new subject:');
-    const grade = prompt('Enter new grade:');
-    const notes = prompt('Enter new notes (optional):', '');
+    // Prompt user for the field to update
+    const field = prompt('Enter the field to update (subject, grade, notes):');
+    if (!field) {
+      alert('Field is required!');
+      return;
+    }
 
-    if (!subject || !grade) {
-      alert('Subject and grade are required!');
+    // Prompt user for the new value
+    const newValue = prompt(`Enter new value for ${field}:`);
+    if (!newValue) {
+      alert('New value is required!');
       return;
     }
 
     const data = {
       id: logId,
-      subject,
-      grade: parseFloat(grade),
-      notes
+      [field]: field === 'grade' ? parseFloat(newValue) : newValue
     };
 
     try {
       const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
