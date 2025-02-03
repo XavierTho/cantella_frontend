@@ -11,7 +11,10 @@ author: Xavier, Nolan, Zafeer, Armaghan, Jackson, Arush
 What time is it? Time for deployment! This blog will serve as reference on how we plan to setup and proceed with the deployment of Cantella.
 
 ## Pre-Deployment Process
-1. Review Frontend & Backend
+1. Review Frontend & Backend (See Diagram Below)
+<img src="{{site.baseurl}}/images/frontend-backend-diagram.png" width="50%">
+
+
 2. Assign Admin Roles
 3. Prepare Config Files
 4. Set up a Test Server 
