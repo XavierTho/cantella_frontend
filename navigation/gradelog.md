@@ -200,7 +200,7 @@ permalink: /gradelog
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
+      const response = await fetch(`${pythonURI}/api/gradelog`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ permalink: /gradelog
   async function loadGradeLogs() {
     try {
       // Make a GET request to the backend API to fetch grade logs for the current user
-      const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
+      const response = await fetch(`${pythonURI}/api/gradelog`, {
         credentials: 'include', // Include credentials for authentication
       });
 
@@ -243,7 +243,7 @@ permalink: /gradelog
       }
 
       // Make a GET request to the backend API to fetch grade logs for all users
-      const allUsersResponse = await fetch('http://127.0.0.1:8887/api/gradelog/all', {
+      const allUsersResponse = await fetch(`${pythonURI}/api/gradelog/all`, {
         credentials: 'include', // Include credentials for authentication
       });
 
@@ -461,7 +461,7 @@ permalink: /gradelog
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
+      const response = await fetch(`${pythonURI}/api/gradelog`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -492,7 +492,7 @@ permalink: /gradelog
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8887/api/gradelog?id=${logId}`, {
+      const response = await fetch(`${pythonURI}/api/gradelog?id=${logId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
