@@ -133,7 +133,7 @@ permalink: classes/log
             notes
         };
         try {
-            const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
+            const response = await fetch(`${pythonuri}/api/studylognew`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ permalink: classes/log
     });
     async function loadStudyLogs() {
         try {
-            const response = await fetch('http://127.0.0.1:8887/api/studylognew', {
+            const response = await fetch(`${pythonuri}/api/studylognew`, {
                 credentials: 'include',
             });
             if (response.ok) {
@@ -190,7 +190,7 @@ permalink: classes/log
     }
     async function deleteLog(logId) {
         try {
-            const response = await fetch(`http://127.0.0.1:8887/api/studylognew`, {
+            const response = await fetch(`${pythonuri}/api/studylognew`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -222,7 +222,7 @@ permalink: classes/log
             notes
         };
         try {
-            const response = await fetch(`http://127.0.0.1:8887/api/studylognew`, {
+            const response = await fetch(`${pythonuri}/api/studylognew`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
