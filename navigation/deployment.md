@@ -16,25 +16,27 @@ What time is it? Time for deployment! This blog will serve as reference on how w
 
 
 2. Assign Admin Roles
+- Related issue: https://github.com/XavierTho/cantela_frontend/issues/70
+
 3. Prepare Config Files
 4. Set up a Test Server 
 5. Choose Port (8223)
 6. Configure AWS Account
 
 ## Deployment Process
-1. Configure AWS EC2 Instance
+### 1. Configure AWS EC2 Instance
 ```
 # Login to AWS EC2
 ssh ubuntu@<aws-ip>
 ```
 
-2. Update System & Install Dependencies
+### 2. Update System & Install Dependencies
 ```
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y docker.io docker-compose nginx certbot python3-certbot-nginx
 ```
 
-3. Clone Repository
+### 3. Clone Repository
 ```
 cd ~
 git clone https://github.com/XavierTho/cantella_backend.git backend
@@ -46,7 +48,7 @@ git clone https://github.com/XavierTho/cantella_frontend.git frontend
 cd frontend
 ```
 
-4. Configure Docker
+### 4. Configure Docker
 `Dockerfile`
 ```
 FROM python:3.11
@@ -68,7 +70,7 @@ services:
     env_file:
       - backend/.env
     ports:
-      - "8087:8087"
+      - "8223:8223"
     volumes:
       - ./backend/instance:/instance
     restart: unless-stopped
@@ -79,10 +81,10 @@ services:
     restart: unless-stopped
 ```
 
-5. Run Docker
+### 5. Run Docker
 `docker-compose up -d --build`
 
-6. Set Up Nginx Reverse Proxy
+### 6. Set Up Nginx Reverse Proxy
 Create an Nginx Config File
 ```
 cd /etc/nginx/sites-available
@@ -110,10 +112,10 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-7. Secure with SSL (HTTPS)
+### 7. Secure with SSL (HTTPS)
 `sudo certbot --nginx`
 
-8. Monitor Server Logs & Troubleshoot
+### 8. Monitor Server Logs & Troubleshoot
 ```
 # Check Nginx logs
 sudo journalctl -u nginx --no-pager --since "10 minutes ago"
@@ -121,7 +123,7 @@ sudo journalctl -u nginx --no-pager --since "10 minutes ago"
 sudo docker logs $(sudo docker ps -q --filter "name=cantella_backend")
 ```
 
-9. Update and Redeploy
+### 9. Update and Redeploy
 ```
 cd ~/backend
 docker-compose down
@@ -129,7 +131,7 @@ git pull
 docker-compose up -d --build
 ```
 
-10. Verify Deployment
+### 10. Verify Deployment
 ```
 docker-compose ps
 docker ps
