@@ -39,7 +39,7 @@ hide: true
   async function fetchCountdown(endpoint, elementId) {
       try {
           // Fetch countdown data from the API
-          const response = await fetch(`http://127.0.0.1:8223/api/${endpoint}`);
+          const response = await fetch(`http://127.0.0.1:8202/api/${endpoint}`);
           if (!response.ok) {
               throw new Error(`Failed to fetch ${endpoint} countdown data.`);
           }

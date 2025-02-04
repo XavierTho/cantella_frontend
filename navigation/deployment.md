@@ -20,7 +20,7 @@ What time is it? Time for deployment! This blog will serve as reference on how w
 
 3. Prepare Config Files
 4. Set up a Test Server 
-5. Choose Port (8223)
+5. Choose Port (8202)
 6. Configure AWS Account
 
 ## Deployment Process
@@ -57,7 +57,7 @@ RUN apt-get update && apt-get install -y python3-pip git
 COPY . /
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install gunicorn
-EXPOSE 8223
+EXPOSE 8202
 CMD [ "gunicorn", "main:app" ]
 ```
 
@@ -70,7 +70,7 @@ services:
     env_file:
       - backend/.env
     ports:
-      - "8223:8223"
+      - "8202:8202"
     volumes:
       - ./backend/instance:/instance
     restart: unless-stopped
@@ -135,6 +135,6 @@ docker-compose up -d --build
 ```
 docker-compose ps
 docker ps
-curl localhost:8223
+curl localhost:8202
 curl localhost:3000
 ```
