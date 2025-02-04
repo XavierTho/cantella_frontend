@@ -159,7 +159,7 @@ permalink: profiles/manage
         </div>
         
         <script>
-            const API_BASE = 'http://127.0.0.1:8887/api/profiles';
+            const API_BASE = 'http://127.0.0.1:8223/api/profiles';
 
             function toggleForm(formId) {
                 const form = document.getElementById(formId);
