@@ -11,81 +11,150 @@ permalink: classes/log
         <title>Study Log</title>
         <style>
             body {
-                font-family: 'Verdana', sans-serif;
+                font-family: 'Inter', sans-serif;
                 margin: 0;
                 padding: 20px;
-                background: linear-gradient(to bottom, #141e30, #243b55);
-                color: #eeeeee;
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                color: #ffffff;
+                min-height: 100vh;
             }
             .container {
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
+                max-width: 900px;
+                margin: 20px auto;
+                padding: 30px;
                 background: rgba(255, 255, 255, 0.1);
-                border-radius: 10px;
+                backdrop-filter: blur(10px);
+                border-radius: 20px;
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+                border: 1px solid rgba(255, 255, 255, 0.18);
             }
             h1, h2 {
                 text-align: center;
                 color: #ffffff;
+                margin-bottom: 30px;
+                font-weight: 600;
             }
             .log-container ul {
                 list-style-type: none;
                 padding: 0;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
             }
             .log-container li {
-                background: rgba(255, 255, 255, 0.2);
-                margin: 10px 0;
-                padding: 15px;
-                border-radius: 10px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                align-items: flex-start;
+                background: rgba(255, 255, 255, 0.15);
+                padding: 20px;
+                border-radius: 15px;
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .log-container li:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             }
             .log-container li div {
-                margin-bottom: 10px;
+                margin-bottom: 12px;
+                font-size: 0.95rem;
+            }
+            .log-container li strong {
+                color: #a8d0ff;
+                font-weight: 500;
+            }
+            .button-group {
+                display: flex;
+                gap: 10px;
+                margin-top: 15px;
             }
             .log-container li button {
-                background-color: #ff4c4c;
-                color: white;
-                padding: 5px 10px;
-                margin: 5px;
+                flex: 1;
+                padding: 8px 15px;
                 border: none;
-                border-radius: 5px;
+                border-radius: 8px;
                 cursor: pointer;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
             }
-            .log-container li button:hover {
-                background-color: #ff1c1c;
+            .edit-btn {
+                background-color: #4CAF50;
+                color: white;
+            }
+            .delete-btn {
+                background-color: #ff4757;
+                color: white;
+            }
+            .edit-btn:hover {
+                background-color: #43a047;
+            }
+            .delete-btn:hover {
+                background-color: #ff3748;
             }
             .form-container {
-                margin-top: 20px;
+                background: rgba(255, 255, 255, 0.15);
+                padding: 30px;
+                border-radius: 15px;
+                margin-top: 30px;
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
             }
             .form-container form {
-                display: flex;
-                flex-direction: column;
+                display: grid;
+                gap: 15px;
             }
             .form-container label {
-                margin: 10px 0 5px;
+                font-size: 0.9rem;
+                color: #a8d0ff;
+                margin-bottom: 5px;
             }
-            .form-container input, .form-container textarea, .form-container button {
-                padding: 10px;
-                margin-bottom: 10px;
-                border: none;
-                border-radius: 5px;
+            .form-container input, 
+            .form-container textarea {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+            }
+            .form-container input:focus, 
+            .form-container textarea:focus {
+                outline: none;
+                border-color: #4CAF50;
+                background: rgba(255, 255, 255, 0.15);
             }
             .form-container button {
                 background-color: #4CAF50;
                 color: white;
+                padding: 12px;
+                border: none;
+                border-radius: 8px;
                 cursor: pointer;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: all 0.3s ease;
             }
             .form-container button:hover {
-                background-color: #45a049;
+                background-color: #43a047;
+                transform: translateY(-2px);
             }
             .error {
-                color: red;
+                color: #ff4757;
+                font-size: 0.9rem;
+                margin-top: 5px;
             }
-            .hidden {
-                display: none;
+            @media (max-width: 768px) {
+                .container {
+                    padding: 20px;
+                    margin: 10px;
+                }
+                .log-container ul {
+                    grid-template-columns: 1fr;
+                }
             }
         </style>
     </head>
@@ -113,7 +182,81 @@ permalink: classes/log
         <footer>
             <p style="text-align: center;">Made by Armaghan Zarak 🍈</p>
         </footer>
-<script>
+<script type="module">
+    import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+    // Make functions globally available
+    window.deleteLog = async function(logId) {
+        try {
+            const response = await fetch(`${pythonURI}/api/studylognew`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: logId }),
+                credentials: 'include',
+            });
+            if (response.ok) {
+                loadStudyLogs();
+            } else {
+                console.error('Failed to delete study log:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error deleting study log:', error);
+        }
+    }
+    window.editLog = async function(logId) {
+        // Get the existing log element to pre-fill current values
+        const logElement = document.querySelector(`li[data-id="${logId}"]`);
+        const currentSubject = logElement.querySelector('[data-field="subject"]').textContent;
+        const currentHours = logElement.querySelector('[data-field="hours"]').textContent;
+        const currentNotes = logElement.querySelector('[data-field="notes"]').textContent;
+        // Ask user which field to edit
+        const fieldToEdit = prompt(
+            'What would you like to edit? Enter:\n' +
+            '1 for Subject\n' +
+            '2 for Hours\n' +
+            '3 for Notes'
+        );
+        if (!fieldToEdit) return;
+        let data = { id: logId };
+        switch (fieldToEdit) {
+            case '1':
+                const newSubject = prompt('Enter new subject:', currentSubject);
+                if (!newSubject) return;
+                data.subject = newSubject;
+                break;
+            case '2':
+                const newHours = prompt('Enter new hours:', currentHours);
+                if (!newHours) return;
+                data.hours_studied = parseFloat(newHours);
+                break;
+            case '3':
+                const newNotes = prompt('Enter new notes:', currentNotes);
+                if (newNotes === null) return; // Allow empty notes, but not cancelled prompt
+                data.notes = newNotes;
+                break;
+            default:
+                alert('Invalid option selected');
+                return;
+        }
+        try {
+            const response = await fetch(`${pythonURI}/api/studylognew`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                credentials: 'include',
+            });
+            if (response.ok) {
+                loadStudyLogs();
+            } else {
+                console.error('Failed to update study log:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating study log:', error);
+        }
+    }
     document.getElementById('study-log-form').addEventListener('submit', async function(event) {
         event.preventDefault();
         const formMessages = document.getElementById('form-messages');
@@ -127,13 +270,13 @@ permalink: classes/log
             return;
         }
         const data = {
-            user_id: 1, // Replace with actual user ID
+            user_id: 1,
             subject,
             hours_studied: parseFloat(hours),
             notes
         };
         try {
-            const response = await fetch(`${pythonuri}/api/studylognew`, {
+            const response = await fetch(`${pythonURI}/api/studylognew`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -159,7 +302,7 @@ permalink: classes/log
     });
     async function loadStudyLogs() {
         try {
-            const response = await fetch(`${pythonuri}/api/studylognew`, {
+            const response = await fetch(`${pythonURI}/api/studylognew`, {
                 credentials: 'include',
             });
             if (response.ok) {
@@ -168,15 +311,15 @@ permalink: classes/log
                 studyLogList.innerHTML = '';
                 data.forEach(log => {
                     const listItem = document.createElement('li');
-                    const timestamp = new Date(log.date || log.timestamp); // Adjust for backend field
+                    listItem.setAttribute('data-id', log.id);
                     listItem.innerHTML = `
-                        <div><strong>Subject:</strong> ${log.subject}</div>
-                        <div><strong>Hours Studied:</strong> ${log.hours_studied}</div>
-                        <div><strong>Notes:</strong> ${log.notes}</div>
-                        <div><strong>Time:</strong> ${timestamp.toLocaleString()}</div>
-                        <div>
-                            <button onclick="deleteLog(${log.id})">Delete</button>
-                            <button onclick="editLog(${log.id})">Edit</button>
+                        <div><strong>Subject:</strong> <span data-field="subject">${log.subject}</span></div>
+                        <div><strong>Hours Studied:</strong> <span data-field="hours">${log.hours_studied}</span></div>
+                        <div><strong>Notes:</strong> <span data-field="notes">${log.notes || 'No notes'}</span></div>
+                        <div><strong>Time:</strong> ${new Date(log.date || log.timestamp).toLocaleString()}</div>
+                        <div class="button-group">
+                            <button class="edit-btn" onclick="editLog(${log.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteLog(${log.id})">Delete</button>
                         </div>
                     `;
                     studyLogList.appendChild(listItem);
@@ -186,57 +329,6 @@ permalink: classes/log
             }
         } catch (error) {
             console.error('Error loading study logs:', error);
-        }
-    }
-    async function deleteLog(logId) {
-        try {
-            const response = await fetch(`${pythonuri}/api/studylognew`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: logId }),
-                credentials: 'include',
-            });
-            if (response.ok) {
-                loadStudyLogs();
-            } else {
-                console.error('Failed to delete study log:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error deleting study log:', error);
-        }
-    }
-    async function editLog(logId) {
-        const subject = prompt('Enter new subject:');
-        const hours = prompt('Enter new hours studied:');
-        const notes = prompt('Enter new notes:');
-        if (!subject || !hours) {
-            alert('Subject and hours are required!');
-            return;
-        }
-        const data = {
-            id: logId,
-            subject,
-            hours_studied: parseFloat(hours),
-            notes
-        };
-        try {
-            const response = await fetch(`${pythonuri}/api/studylognew`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-                credentials: 'include',
-            });
-            if (response.ok) {
-                loadStudyLogs();
-            } else {
-                console.error('Failed to update study log:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error updating study log:', error);
         }
     }
     // Load study logs on page load
