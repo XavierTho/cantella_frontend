@@ -122,7 +122,7 @@ permalink: classes/tips
             Made by Armaghan Zarak 🍈
         </footer>
         <script>
-            const apiBaseUrl = 'http://127.0.0.1:8887/api/tips';
+            const apiBaseUrl = 'http://127.0.0.1:8202/api/tips';
             function fetchPhysicsTips() {
                 const tipsContainer = document.getElementById('tips-container');
                 tipsContainer.innerHTML = '<p>Loading tips for AP Physics...</p>';
