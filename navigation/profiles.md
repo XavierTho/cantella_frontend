@@ -157,6 +157,7 @@ permalink: profiles/manage
                 </form>
             </div>
         </div>
+        
         <script>
             const API_BASE = 'http://127.0.0.1:8887/api/profiles';
 
