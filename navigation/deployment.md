@@ -1,6 +1,6 @@
 ---
 layout: post
-title: AWS Deployment
+title: Deployment
 search_exclude: true
 permalink: /aws-deployment-blog
 author: Xavier, Nolan, Zafeer, Armaghan, Jackson, Arush
