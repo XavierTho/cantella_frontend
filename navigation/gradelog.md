@@ -511,4 +511,7 @@ permalink: /gradelog
       alert('An error occurred while deleting the grade log.');
     }
   }
+
+  // Load grade logs on page load
+  loadGradeLogs();
 </script>
