@@ -165,7 +165,9 @@ permalink: /gradelog
   <div class="grade-log-container" id="grade-log-container"></div>
 </div>
 
-<script>
+<script type="module">
+  import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+
   const createLogBtn = document.getElementById('create-log-btn');
   const gradeLogFormContainer = document.getElementById('grade-log-form-container');
   const gradeLogForm = document.getElementById('grade-log-form');
@@ -509,8 +511,4 @@ permalink: /gradelog
       alert('An error occurred while deleting the grade log.');
     }
   }
-
-// Load grade logs on page load
-loadGradeLogs();
-
 </script>
