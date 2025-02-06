@@ -7,7 +7,7 @@ author: Xavier, Nolan, Zafeer, Armaghan, Jackson, Arush
 ---
 
 <style>
-  p {
+  p,li {
     font-size: 18px;
   }
 </style>
@@ -172,4 +172,15 @@ Now run the following commands:
 9. Test domain name on a browser (http:// only)
 
 ### (4) Certbot Config
+
+> Certbot provides your site a certificate to go from HTTP to **HTTPS**
+
 1. Run `sudo certbot --nginx`
+
+This should be the output:
+
+<img src="{{site.baseurl}}/images/deployment-blog/certbot-command-output.png">
+
+Once on this screen, enter the number corresponding to your subdomain. In the case of mine own website, cantella, I would pick the number 2 based off the image above.
+
+Assuming, you did all the steps before correctly, you will be met with output that includes `Successfully deployed certificate for [subdomain].stu.nighthawkcodingsociety.com`
