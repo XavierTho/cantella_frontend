@@ -6,29 +6,84 @@ permalink: /aws-deployment-blog
 author: Xavier, Nolan, Zafeer, Armaghan, Jackson, Arush
 ---
 
+<style>
+  p {
+    font-size: 18px;
+  }
+</style>
+
 ## Intro
 
 What time is it? Time for deployment! This blog will serve as reference on how we plan to setup and proceed with the deployment of Cantella.
 
 ## Pre-Deployment Process
 1. Review Frontend & Backend (See Diagram Below)
-<img src="{{site.baseurl}}/images/frontend-backend-diagram.png" width="50%">
+<img src="{{site.baseurl}}/images/deployment-blog/frontend-backend-diagram.png" width="50%">
 
 
 2. Assign Admin Roles
 - Related issue: https://github.com/XavierTho/cantela_frontend/issues/70
 
 3. Prepare Config Files
-4. Set up a Test Server 
-5. Choose Port (8202)
-6. Configure AWS Account
+4. Choose Port (8202)
 
 ## Deployment Process
-### 1. Configure AWS EC2 Instance
+### (1) Create a DNS Record
+To create a DNS record, you first have to log into [AWS](https://aws.amazon.com/ec2/)
+
+These are the account details:
 ```
-# Login to AWS EC2
-ssh ubuntu@<aws-ip>
+Account ID: nighthawkcodingsociety
+IAM username: ubuntu
+Password: REDACTED
 ```
+
+Once signed in, you should click the button on the home page titled **Route 53**
+
+<img src="{{site.baseurl}}/images/deployment-blog/route53-button.png" width="100%">
+
+The next step (when on the Route 53 page) is to press the **Hosted zones** section on the column to the left.
+
+<img src="{{site.baseurl}}/images/deployment-blog/hosted-zones.png" width="100%">
+
+Here, click on the hosted zone called `stu.nighthawkcodingsociety.com`
+
+<img src="{{site.baseurl}}/images/deployment-blog/nighthawkcodingsociety-hosted-zone.png">
+
+We have made it to the page where we can create a DNS record. Click the button that says `Create record`
+
+<img src="{{site.baseurl}}/images/deployment-blog/create-record-button.png">
+
+When creating a record you need to put in some information. Here is the following information that should be inputted:
+```
+Record name: name of your project (ex: cantella)
+Record type: A - Routes traffic to an IPv4 address and some AWS resources
+Value: 3.129.109.200
+TTL (seconds): 300
+Routing policy: Simple routing
+```
+
+Here is this info being inputted on the actual site:
+<img src="{{site.baseurl}}/images/deployment-blog/create-record-info.png">
+
+Once all categories have been filled, click the `Create record` button on the bottom right.
+
+If successful, you should receive a notification that a new record was successfully created
+<img src="{{site.baseurl}}/images/deployment-blog/record-creation-notification.png">
+
+At this point, you have successfully created a DNS record (which we will use later on).
+
+### (2) AWS Setup
+First, login into the [AWS Terminal](https://cockpit.stu.nighthawkcodingsociety.com/system/terminal)
+
+Now run the following commands:
+
+1. Change into the correct directory: `cd ~`
+2. Clone your backend repo: `git clone https://github.com/[username]/[repo_name].git`
+3. Navigate into your repo: `cd repo_name`
+4. Build the site: `docker-compose up -d --build`
+5. Test your site: curl localhost:8--- (replace '8---' with your port number)
+
 
 ### 2. Update System & Install Dependencies
 ```
