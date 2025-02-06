@@ -24,8 +24,82 @@ What time is it? Time for deployment! This blog will serve as reference on how w
 2. Assign Admin Roles
 - Related issue: https://github.com/XavierTho/cantela_frontend/issues/70
 
-3. Prepare Config Files
-4. Choose Port (8202)
+### (3) Prepare Config Files
+We selected the port 8202 and updated our config files accordingly
+- main.py 
+```
+  # this runs the flask application on the development server
+  if __name__ == "__main__":
+      # change name for testing
+      app.run(debug=True, host="0.0.0.0", port="8202")
+```
+
+- Dockerfile
+```
+  FROM docker.io/python:3.11
+
+  WORKDIR /
+
+  # --- [Install python and pip] ---
+  RUN apt-get update && apt-get upgrade -y && \
+      apt-get install -y python3 python3-pip git
+  COPY . /
+
+  RUN pip install --no-cache-dir -r requirements.txt
+  RUN pip install gunicorn
+
+  ENV GUNICORN_CMD_ARGS="--workers=1 --bind=0.0.0.0:8202"
+
+  EXPOSE 8202
+
+  # Define environment variable
+  ENV FLASK_ENV=production
+
+  CMD [ "gunicorn", "main:app" ]
+```
+
+- docker-compose.yml
+```
+      version: '3'
+      services:
+              web:
+                      image: cantella
+                      build: .
+                      env_file:
+                              - .env
+                      ports:
+                              - "8202:8202"
+                      volumes:
+                              - ./instance:/instance
+                      restart: unless-stopped
+```
+
+
+- nginx_file
+```
+server {
+    listen 80;
+    listen [::]:80;
+    server_name cantella.stu.nighthawkcodingsociety.com ; # Change server name to the one on R53
+    # Configure CORS Headers
+    location / { 
+        proxy_pass http://localhost:8202; # Change port to port on docker
+        # Simple requests
+        if ($request_method ~* "(GET|POST|PUT|DELETE)") { # Customize Request methods based on your needs
+                add_header "Access-Control-Allow-Origin"  *;
+        }
+        # Preflighted requests 
+        if ($request_method = OPTIONS ) {
+                add_header "Access-Control-Allow-Credentials" "true" always;
+                add_header "Access-Control-Allow-Origin"  "https://xaviertho.github.io" always;
+                add_header "Access-Control-Allow-Methods" "GET, POST, PUT, DELETE, OPTIONS, HEAD"; # Make sure the request methods above match here
+                add_header "Access-Control-Allow-Headers" "Authorization, Origin, X-Requested-With, Content-Type, Accept";
+                return 200;
+        }
+    }
+}
+```
+
 
 ## Deployment Process
 ### (1) Create a DNS Record
