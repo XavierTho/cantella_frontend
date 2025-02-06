@@ -22,9 +22,9 @@ What time is it? Time for deployment! This blog will serve as reference on how w
 
 
 ### (2) Create a Burndown Checklist
-- Related issue: https://github.com/XavierTho/cantela_frontend/issues/70
+- [Related issue](https://github.com/XavierTho/cantela_frontend/issues/70)
 
-Checklist includes tasks to deploy and system admins
+The checklist includes tasks to do before, during, and after deployment and additionally team roles.
 
 ### (3) Prepare Config Files
 We selected the port 8202 and updated our config files accordingly
@@ -184,3 +184,35 @@ This should be the output:
 Once on this screen, enter the number corresponding to your subdomain. In the case of mine own website, cantella, I would pick the number 2 based off the image above.
 
 Assuming, you did all the steps before correctly, you will be met with output that includes `Successfully deployed certificate for [subdomain].stu.nighthawkcodingsociety.com`
+
+
+## Post-Deployment Process
+
+### Updating Repo in the AWS Terminal
+When you edit and commit changes on VSCode, they don't automatically get changed on AWS. The following steps show how this can be done.
+
+1. Navigate to the initial directory: `cd ~`
+2. Navigate into your repo's directory: `cd repo_name`
+3. Shutdown the subdomain: `docker-compose down`
+4. Pull in any changes: `git pull`
+5. Reinitialize the subdomain: `docker-compose up -d`
+
+
+**Below, you can see me implementing these steps accordingly.**
+
+<img src="{{site.baseurl}}/images/deployment-blog/updating-aws-repo.png">
+
+### Update Index Page
+Once, you get your subdomain fully setup, you can access the link online.
+
+Here is our link for [reference](https://cantella.stu.nighthawkcodingsociety.com/)
+
+However, initially, all our pages will look like this by default.
+
+<img src="{{site.baseurl}}/images/deployment-blog/python-home-page.png">
+
+In order to change this (and you should), you need to access the file on your backend.
+
+The relative path to the file is: `templates/index.html`
+
+Here, you can begin changing the site to your heart's content.
