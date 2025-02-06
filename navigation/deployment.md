@@ -17,17 +17,42 @@ author: Xavier, Nolan, Zafeer, Armaghan, Jackson, Arush
 What time is it? Time for deployment! This blog will serve as reference on how we plan to setup and proceed with the deployment of Cantella.
 
 ## Pre-Deployment Process
-1. Review Frontend & Backend (See Diagram Below)
+
+### (1) Verify Function of Frontend & Backend
+Before deploying, all features should work! If it doesn't work locally, it won't work on AWS.
+
 <img src="{{site.baseurl}}/images/deployment-blog/frontend-backend-diagram.png" width="50%">
 
 
-### (2) Create a Burndown Checklist
+### (2) Create a Burndown List
 - [Related issue](https://github.com/XavierTho/cantela_frontend/issues/70)
 
 The checklist includes tasks to do before, during, and after deployment and additionally team roles.
 
 ### (3) Prepare Config Files
 We selected the port 8202 and updated our config files accordingly
+
+#### Frontend Files
+- config.yml
+```
+Server: https://flask2025.nighthawkcodingsociety.com/
+Domain: nighthawkcodingsociety.com
+Subdomain: flask2025
+```
+
+- assets/js/api/config.js
+```
+export var pythonURI;
+if (location.hostname === "localhost") {
+        pythonURI = "http://localhost:8202";
+} else if (location.hostname === "127.0.0.1") {
+        pythonURI = "http://127.0.0.1:8202";
+} else {
+        pythonURI =  "https://cantella.stu.nighthawkcodingsociety.com";
+}
+```
+
+#### Backend Files
 - main.py 
 ```
   # this runs the flask application on the development server
@@ -100,6 +125,13 @@ server {
         }
     }
 }
+```
+
+- _init__.py
+
+```
+# Allowed servers for cross-origin resource sharing (CORS), these are GitHub Pages and localhost for GitHub Pages testing
+cors = CORS(app, supports_credentials=True, origins=['http://localhost:8202', 'http://127.0.0.1:8202', 'https://xaviertho.github.io'])
 ```
 
 
