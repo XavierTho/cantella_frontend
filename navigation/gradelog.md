@@ -165,7 +165,9 @@ permalink: /gradelog
   <div class="grade-log-container" id="grade-log-container"></div>
 </div>
 
-<script>
+<script type="module">
+  import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+
   const createLogBtn = document.getElementById('create-log-btn');
   const gradeLogFormContainer = document.getElementById('grade-log-form-container');
   const gradeLogForm = document.getElementById('grade-log-form');
@@ -200,7 +202,7 @@ permalink: /gradelog
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
+      const response = await fetch(`${pythonURI}/api/gradelog`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -226,8 +228,8 @@ permalink: /gradelog
   // Function to load grade logs from the backend
   async function loadGradeLogs() {
     try {
-      // Make a GET request to the backend API to fetch grade logs
-      const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
+      // Make a GET request to the backend API to fetch grade logs for the current user
+      const response = await fetch(`${pythonURI}/api/gradelog`, {
         credentials: 'include', // Include credentials for authentication
       });
 
@@ -240,6 +242,22 @@ permalink: /gradelog
       } else {
         // Log an error message if the response is not successful
         console.error('Failed to load grade logs.');
+      }
+
+      // Make a GET request to the backend API to fetch grade logs for all users
+      const allUsersResponse = await fetch(`${pythonURI}/api/gradelog/all`, {
+        credentials: 'include', // Include credentials for authentication
+      });
+
+      // Check if the response is successful
+      if (allUsersResponse.ok) {
+        // Parse the JSON data from the response
+        const allUsersLogs = await allUsersResponse.json();
+        // Call the function to display the average grades for all users
+        displayAllUsersAverageGrades(allUsersLogs);
+      } else {
+        // Log an error message if the response is not successful
+        console.error('Failed to load grade logs for all users.');
       }
     } catch (error) {
       // Log any errors that occur during the fetch operation
@@ -385,30 +403,68 @@ permalink: /gradelog
     });
   }
 
+  // Function to display average grades for all users
+  function displayAllUsersAverageGrades(logs) {
+    // Group logs by subject
+    const groupedLogs = logs.reduce((acc, log) => {
+      // If the subject is not already a key in the accumulator, add it
+      if (!acc[log.subject]) {
+        acc[log.subject] = [];
+      }
+      // Push the current log into the array for its subject
+      acc[log.subject].push(log);
+      return acc;
+    }, {});
+
+    // Iterate over each subject in the grouped logs
+    Object.keys(groupedLogs).forEach((subject) => {
+      let totalGrades = 0; // Initialize variables for calculating average grade
+      let gradeCount = 0;
+
+      // Iterate through the logs for the current subject
+      groupedLogs[subject].forEach((log) => {
+        // Accumulate the total grades and count for calculating the average
+        totalGrades += parseFloat(log.grade);
+        gradeCount++;
+      });
+
+      // Calculate the average grade for the subject
+      const averageGrade = (totalGrades / gradeCount).toFixed(2);
+      // Create an element to display the average grade for all users
+      const averageGradeElement = document.createElement('p');
+      averageGradeElement.className = 'average-grade'; // Add a class for styling
+      averageGradeElement.innerHTML = `<strong>All Users Average Grade for ${subject}:</strong> <span class="grade">${averageGrade}</span>`;
+      // Append the average grade element to the main grade log container
+      gradeLogContainer.appendChild(averageGradeElement);
+    });
+  }
+
   // Handle Edit button click
   async function handleEditLog(event) {
     const logId = event.target.getAttribute('data-id');
 
-    // Prompt user for new values
-    const subject = prompt('Enter new subject:');
-    const grade = prompt('Enter new grade:');
-    const notes = prompt('Enter new notes (optional):', '');
+    // Prompt user for the field to update
+    const field = prompt('Enter the field to update (subject, grade, notes):');
+    if (!field) {
+      alert('Field is required!');
+      return;
+    }
 
-    if (!subject || !grade) {
-      alert('Subject and grade are required!');
+    // Prompt user for the new value
+    const newValue = prompt(`Enter new value for ${field}:`);
+    if (!newValue) {
+      alert('New value is required!');
       return;
     }
 
     const data = {
       id: logId,
-      subject,
-      grade: parseFloat(grade),
-      notes
+      [field]: field === 'grade' ? parseFloat(newValue) : newValue
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8887/api/gradelog', {
-        method: 'PUT',
+      const response = await fetch(`${pythonURI}/api/gradelog`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -438,7 +494,7 @@ permalink: /gradelog
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:8887/api/gradelog?id=${logId}`, {
+      const response = await fetch(`${pythonURI}/api/gradelog?id=${logId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -456,7 +512,6 @@ permalink: /gradelog
     }
   }
 
-// Load grade logs on page load
-loadGradeLogs();
-
+  // Load grade logs on page load
+  loadGradeLogs();
 </script>
