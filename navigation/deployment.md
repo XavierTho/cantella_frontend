@@ -35,9 +35,9 @@ We selected the port 8202 and updated our config files accordingly
 #### Frontend Files
 - config.yml
 ```
-Server: https://flask2025.nighthawkcodingsociety.com/
+Server: https://cantella.nighthawkcodingsociety.com/
 Domain: nighthawkcodingsociety.com
-Subdomain: flask2025
+Subdomain: cantella
 ```
 
 - assets/js/api/config.js
