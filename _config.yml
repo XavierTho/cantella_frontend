@@ -26,6 +26,6 @@ header_pages:
   - navigation/deployment.md
 
 
-Server: https://flask2025.nighthawkcodingsociety.com/
+Server: https://cantella.nighthawkcodingsociety.com/
 Domain: nighthawkcodingsociety.com
-Subdomain: flask2025
+Subdomain: cantella
