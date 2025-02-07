@@ -1,24 +1,25 @@
 ---
 layout: base
 title: Tutor
-description: Personalized Tutor For All Classes
-hide: false
+description: Personalized Tutor All Classes
+hide: false 
 menu: nav/index.md
 permalink: /nolanbot/
 ---
+
 <style>
   .chat-container {
     width: 100%;
     max-width: 600px;
     margin: 50px auto;
-    background: #0e0b00;
+    background: #0E0B00;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
   }
   .chat-header {
-    background: #be6800;
-    color: #ffffff;
+    background: #BE6800;
+    color: #FFFFFF;
     padding: 15px;
     text-align: center;
     font-size: 1.2em;
@@ -28,8 +29,8 @@ permalink: /nolanbot/
     height: 400px;
     overflow-y: auto;
     padding: 20px;
-    background: #f9f9f9;
-    border-bottom: 1px solid #0e0202;
+    background: #F9F9F9;
+    border-bottom: 1px solid #0E0202;
   }
   .chat-input {
     display: flex;
@@ -45,7 +46,7 @@ permalink: /nolanbot/
     border-radius: 4px;
   }
   #send-btn {
-    background: #ffffff;
+    background: #FFFFFF;
     color: rgb(255, 255, 255);
     border: none;
     padding: 10px 15px;
@@ -66,11 +67,11 @@ permalink: /nolanbot/
   }
   .chat-message.user {
     background: rgba(234, 238, 241, 0.941);
-    color: #b36200;
+    color: #B36200;
     text-align: left;
   }
   .chat-message.bot {
-    background: #be6800;
+    background: #BE6800;
     color: white;
     text-align: left;
   }
@@ -92,8 +93,9 @@ permalink: /nolanbot/
   } else {
     pythonURI = "https://flocker.nighthawkcodingsociety.com";
   }
+  
   const fetchOptions = {
-    method: "POST",
+    method: "GET",
     mode: "cors",
     cache: "default",
     credentials: "include",
@@ -102,91 +104,172 @@ permalink: /nolanbot/
       "X-Origin": "client",
     },
   };
-  async function sendQuestion(question) {
-    const chatBox = document.getElementById("chat-box");
-    // Display the user's question
-    chatBox.innerHTML += `
-      <div class="chat-message user">
-        <strong>You:</strong> ${question}
-      </div>`;
-    try {
-      // Send the question to the backend
-      const response = await fetch(`${pythonURI}/api/ai/help`, {
-        ...fetchOptions,
-        body: JSON.stringify({ question }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      const aiResponse = data.response || "No response from the AI.";
-      // Display the AI's response
-      chatBox.innerHTML += `
-        <div class="chat-message bot">
-          <strong>CanTeach:</strong> ${aiResponse}
-        </div>`;
-    } catch (error) {
-      console.error("Fetch error:", error);
-      chatBox.innerHTML += `
-        <div class="chat-message bot">
-          <strong>CanTeach:</strong> An error occurred: ${error.message}. Please try again later.
-        </div>`;
+  async function deleteQ(question) {
+    const response = await fetch(`${pythonURI}/api/ai/delete`, {
+      ...fetchOptions,
+      method: "DELETE",
+      body: JSON.stringify({ question }),
+    });
+    const data = await response.json();
+    if (data.error) {
+      alert(data.error);
+      return;
     }
-    document.getElementById("question").value = ""; // Clear input
-    chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+    // Find and remove both question and response divs
+    const questionDiv = document.querySelector(`div[data-q="${question}"]`);
+    const responseDiv = questionDiv?.nextElementSibling; // Response is usually the next sibling
+    if (questionDiv) questionDiv.remove();
+    if (responseDiv) responseDiv.remove();
   }
-  // Add event listener for the Send button
-  document.getElementById("send-btn").addEventListener("click", () => {
-    const question = document.getElementById("question").value.trim();
-    if (question) sendQuestion(question);
-  });
-  // Allow pressing Enter to send the question
-  document.getElementById("question").addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      const question = document.getElementById("question").value.trim();
-      if (question) sendQuestion(question);
+  async function updateQ(oldQuestion) {
+    const newQuestion = prompt("Enter the updated question:");
+    if (!newQuestion) {
+        alert("Update canceled: No new question provided.");
+        return;
     }
-  });
-</script>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>tutor</title>
-  <script>
-    async function deleteItem(itemId) {
-      try {
-        const response = await fetch(`/delete-item/${itemId}`, {
-          method: 'DELETE',
+    try {
+        // Send the old and new questions to the backend
+        const response = await fetch(`${pythonURI}/api/ai/update`, {
+            ...fetchOptions,
+            method: "PUT",
+            body: JSON.stringify({ oldQuestion, newQuestion }),
         });
-
-        if (response.ok) {
-          const result = await response.json();
-          alert(result.message);
-          const itemElement = document.getElementById(`item-${itemId}`);
-          if (itemElement) {
-            itemElement.remove();
-          }
-        } else {
-          const error = await response.json();
-          alert(`Error: ${error.error}`);
+        const data = await response.json();
+        if (data.error) {
+            alert(`Error: ${data.error}`);
+            return;
         }
-      } catch (error) {
-        console.error('Error deleting item:', error);
-        alert('An error occurred while deleting the item.');
-      }
+        // Get the new response generated by the backend
+        const updatedResponse = data.response;
+        // Dynamically update the frontend with the new question and response
+        const questionDiv = document.querySelector(
+            `div[data-q="${oldQuestion}"]`
+        );
+        if (questionDiv) {
+            // Update the question in the DOM
+            questionDiv.querySelector(".question-text").innerText = newQuestion;
+            questionDiv.setAttribute("data-q", newQuestion);
+            questionDiv.querySelector("button[onclick^='deleteQ']").setAttribute(
+                "onclick",
+                `deleteQ('${newQuestion}')`
+            );
+            questionDiv.querySelector("button[onclick^='updateQ']").setAttribute(
+                "onclick",
+                `updateQ('${newQuestion}')`
+            );
+        }
+        const responseDiv = document.querySelector(
+            `div[data-r="${oldQuestion}"]`
+        );
+        if (responseDiv) {
+            // Update the response in the DOM
+            responseDiv.querySelector(".response-text").innerText = updatedResponse;
+            responseDiv.setAttribute("data-r", newQuestion);
+        }
+        alert("Update successful!");
+    } catch (error) {
+        console.error("Error updating the question and response:", error);
+        alert("An error occurred while updating. Please try again.");
     }
-  </script>
-</head>
-<body>
-  <h1>Chat Tutor</h1>
-  <div id="chat-items">
-    <div id="data">
-      <p>data</p>
-      <button onclick="deleteItem(1)">Delete</button>
+}
+async function sendQuestion(question) {
+  const chatBox = document.getElementById("chat-box");
+  chatBox.innerHTML += `
+      <div data-q="${question}" style="margin-bottom: 20px; background: rgba(232, 244, 255, 0.85); padding: 15px; border-radius: 8px;">
+          <strong style="color: #0056B3;">You:</strong>
+          <span style="color: #0056B3;" class="question-text">${question}</span>
+          <button onclick="deleteQ('${question}')">Delete</button>
+          <button onclick="updateQ('${question}')">Update</button>
+      </div>`;
 
-      
+  try {
+      const response = await fetch(`${pythonURI}/api/ai/help`, {
+          ...fetchOptions,
+          method: "POST",
+          body: JSON.stringify({ question }),
+      });
 
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Response from backend:", data);
+
+      const aiResponse = data.response || "Error: Unable to fetch response.";
+      chatBox.innerHTML += `
+          <div data-r="${question}" style="margin-bottom: 20px; background: #0077BE; padding: 15px; border-radius: 8px; color: white;">
+              <strong>Cantella:</strong>
+              <span class="response-text">${aiResponse}</span>
+          </div>`;
+  } catch (error) {
+      console.error("Error fetching response:", error);
+      chatBox.innerHTML += `
+          <div style="color: red; margin-top: 10px;">
+              Error: Unable to connect to the server. Please try again later.
+          </div>`;
+  }
+
+  document.getElementById("question").value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+
+// Fetch all stored questions and responses from the backend
+async function fetchAllLogs() {
+  const chatBox = document.getElementById("chat-box");
+  chatBox.innerHTML = ""; // Clear existing chat logs
+  try {
+      const response = await fetch(`${pythonURI}/api/ai/logs`, {
+          ...fetchOptions,
+          method: "GET",
+      });
+      const logs = await response.json();
+      if (logs.error) {
+          alert(`Error fetching logs: ${logs.error}`);
+          return;
+      }
+      // Populate the frontend with the fetched logs
+      logs.forEach((log) => {
+          const { question, response } = log;
+          // Add question to the chat box
+          chatBox.innerHTML += `
+              <div data-q="${question}" style="margin-bottom: 20px; background: rgba(232, 244, 255, 0.85); padding: 15px; border-radius: 8px;">
+                  <strong style="color: #0056B3;">You:</strong>
+                  <span style="color: #0056B3;" class="question-text">${question}</span>
+                  <button onclick="deleteQ('${question}')">Delete</button>
+                  <button onclick="updateQ('${question}')">Update</button>
+              </div>`;
+          // Add response to the chat box
+          chatBox.innerHTML += `
+              <div data-r="${question}" style="margin-bottom: 20px; background: #0077BE; padding: 15px; border-radius: 8px; color: white;">
+                  <strong>Poseidon:</strong>
+                  <span class="response-text">${response}</span>
+              </div>`;
+      });
+  } catch (error) {
+      console.error("Error fetching logs:", error);
+      alert("Failed to fetch logs. Please try again.");
+  }
+}
+// Call fetchAllLogs on page load
+window.onload = fetchAllLogs;
+
+</script>
+<!-- Optional CSS -->
+<style>
+  /* Chatbox Scrollbar Styling */
+  #chat-box::-webkit-scrollbar {
+    width: 8px;
+  }
+  #chat-box::-webkit-scrollbar-thumb {
+    background: #b35a00;
+    /* Match header and footer */
+    border-radius: 5px;
+  }
+  /* Button Hover Effect */
+  button:hover {
+    background-color: #be7200;
+    color: white;
+  }
+</style>
