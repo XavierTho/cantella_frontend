@@ -184,13 +184,25 @@ At this point, you have successfully created a DNS record (which we will use lat
 ### (2) AWS Setup
 First, login into the [AWS Terminal](https://cockpit.stu.nighthawkcodingsociety.com/system/terminal)
 
+<img src ="{{site.baseurl}}/images/deployment-blog/aws-terminal.png">
+
 Now run the following commands:
 
 1. Change into the correct directory: `cd ~`
 2. Clone your backend repo: `git clone https://github.com/[username]/[repo_name].git`
 3. Navigate into your repo: `cd repo_name`
-4. Build the site: `docker-compose up -d --build`
-5. Test your site: curl localhost:8--- (replace '8---' with your port number)
+4. Create an .env file: `nano .env`
+The .env file should have the following info:
+```
+# User Defaults
+ADMIN_USER='tob./scry'
+ADMIN_PASSWORD='123Toby!'
+DEFAULT_USER='hop'
+DEFAULT_PASSWORD='123Hop!'
+```
+5. Build the site: `docker-compose up -d --build`
+6. Test your site: curl localhost:8--- (replace '8---' with your port number)
+- For curl, if you see the content of one of your backend files, you know you succeeded
 
 ### (3) Nginx Setup
 1. Change into the correct directory: `cd ~`
@@ -213,7 +225,7 @@ This should be the output:
 
 <img src="{{site.baseurl}}/images/deployment-blog/certbot-command-output.png">
 
-Once on this screen, enter the number corresponding to your subdomain. In the case of mine own website, cantella, I would pick the number 2 based off the image above.
+Once on this screen, enter the number corresponding to your subdomain. In the case of my own website, cantella, I would pick the number 2 based off the image above.
 
 Assuming, you did all the steps before correctly, you will be met with output that includes `Successfully deployed certificate for [subdomain].stu.nighthawkcodingsociety.com`
 
