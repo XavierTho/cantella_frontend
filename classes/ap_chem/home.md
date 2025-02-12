@@ -4,117 +4,138 @@ title: AP Chemistry
 permalink: classes/ap/chem/home
 ---
 
-<div class="class-home" style="font-family: Arial, sans-serif; background: linear-gradient(to bottom, #FFF3E0, #FFD8B2); min-height: 100vh; padding: 20px; box-sizing: border-box;">
-  <h1 style="color: #FF9E80; text-align: center; font-size: 3em; animation: fadeIn 1s;">Welcome to AP Chemistry</h1>
+<div class="chemistry-lab" style="font-family: 'Courier New', monospace; background: linear-gradient(45deg, #1a1a1a, #2d2d2d); min-height: 100vh; padding: 20px; box-sizing: border-box; color: #00ff00;">
+  
+  <!-- Lab Warning Banner -->
+  <div class="warning-banner" style="background: #333; padding: 20px; border-radius: 15px; text-align: center; margin: 20px auto; max-width: 600px; border: 2px solid #ff0; box-shadow: 0 0 20px rgba(255,255,0,0.3); animation: pulse 2s infinite;">
+    <h1 style="color: #ff0; font-size: 3em; margin-bottom: 10px; text-shadow: 0 0 10px #ff0;">⚗️ LAB IN PROGRESS ⚗️</h1>
+    <p style="font-size: 1.5em; color: #0f0;">Our scientists are still mixing the perfect formula!</p>
+  </div>
 
-  <!-- Leaderboard Section -->
-  <section id="leaderboard" style="background-color: #FFE5D0; padding: 20px; border-radius: 15px; margin: 20px auto; max-width: 600px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); animation: slideIn 1.5s;">
-    <h2 style="color: #FF7043; text-align: center;">Leaderboard</h2>
-    <p style="text-align: center; color: #BF360C; font-size: 1.1em;">Top scorers refreshed daily.</p>
-    <ul id="leaderboard-list" style="list-style: none; padding: 0; text-align: center;">
-      <!-- Leaderboard items will be dynamically injected -->
-    </ul>
-  </section>
+  <!-- Animated Lab Elements -->
+  <div class="lab-scene" style="text-align: center; margin: 40px 0;">
+    <!-- Bubbling Beaker -->
+    <div class="beaker" style="font-size: 5em; animation: bubble 2s infinite;">
+      🧪
+      <div class="bubbles" style="position: absolute; color: #0ff; font-size: 0.3em;">
+        ⚬ ⚬ ⚬
+      </div>
+    </div>
+    
+    <!-- Spinning Molecule -->
+    <div class="molecule" style="font-size: 4em; animation: spin 4s linear infinite;">
+      ⚛️
+    </div>
+    
+    <!-- Flashing Lab Equipment -->
+    <div class="equipment" style="font-size: 3em; animation: flash 3s infinite;">
+      🔬 ⚗️ 🧫
+    </div>
+  </div>
 
-  <!-- Take Quiz Button -->
-  <section id="quiz-section" style="text-align: center; margin-top: 30px; animation: fadeIn 2s;">
-    <h2 style="color: #FF7043; font-size: 2em;">Test Your Knowledge</h2>
-    <p style="color: #BF360C; font-size: 1.2em;">Click below to take the AP Chemistry quiz!</p>
-    <button id="take-quiz" onclick="navigateToQuiz()" 
-            style="background: linear-gradient(45deg, #FF7043, #FF9E80); border: none; color: white; padding: 15px 30px; font-size: 1.5em; border-radius: 50px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
-      Take Quiz
+  <!-- Chemical Message -->
+  <div class="formula-box" style="background: #333; padding: 20px; border-radius: 15px; margin: 20px auto; max-width: 500px; text-align: center; border: 2px solid #0ff;">
+    <h2 style="color: #0ff; font-family: 'Courier New', monospace;">Coming Soon™</h2>
+    <p style="font-size: 1.2em; color: #0f0;">Synthesizing Educational Excellence</p>
+    <p style="font-family: monospace; color: #ff0;">
+      2(Knowledge) + Effort → Success + Energy
+    </p>
+  </div>
+
+  <!-- Back Button -->
+  <div style="text-align: center; margin-top: 20px;">
+    <button onclick="goToIndex()" 
+            style="background: #333; color: #0f0; border: 2px solid #0f0; padding: 10px 25px; font-size: 1.2em; border-radius: 8px; cursor: pointer; box-shadow: 0 0 15px rgba(0,255,0,0.3); transition: all 0.3s;">
+      🧪 Return to Safe Zone
     </button>
-  </section>
-
-  <!-- Flashcards Button -->
-  <section id="flashcards-section" style="text-align: center; margin-top: 20px; animation: fadeIn 2.5s;">
-    <h2 style="color: #FF7043; font-size: 2em;">Study with Flashcards</h2>
-    <p style="color: #BF360C; font-size: 1.2em;">Click below to explore and create flashcards for this class!</p>
-    <button id="open-flashcards" onclick="navigateToFlashcards()" 
-            style="background: linear-gradient(45deg, #FF7043, #FF9E80); border: none; color: white; padding: 15px 30px; font-size: 1.5em; border-radius: 50px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
-      Open Flashcards
-    </button>
-  </section>
+  </div>
 </div>
-
-<script>
-  async function fetchLeaderboard() {
-    try {
-      const response = await fetch('/api/leaderboard/apchem');
-      const leaderboard = await response.json();
-
-      const leaderboardList = document.getElementById('leaderboard-list');
-      leaderboardList.innerHTML = '';
-
-      leaderboard.forEach((entry) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${entry.username}: ${entry.score} points (${new Date(entry.date).toLocaleDateString()})`;
-        listItem.style = "color: #FF7043; margin: 10px 0; font-size: 1.2em; font-weight: bold;";
-        leaderboardList.appendChild(listItem);
-      });
-    } catch (error) {
-      console.error('Error fetching leaderboard:', error);
-    }
-  }
-
-  function navigateToQuiz() {
-    window.location.href = './quizz';
-  }
-
-  function navigateToFlashcards() {
-    window.location.href = './flash';
-  }
-
-  fetchLeaderboard();
-</script>
 
 <style>
-  /* Animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
   }
 
-  @keyframes slideIn {
-    from {
-      transform: translateY(50px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+  @keyframes bubble {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
   }
 
-  /* Button Hover Effect */
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes flash {
+    0%, 100% { opacity: 1; text-shadow: 0 0 20px #0ff; }
+    50% { opacity: 0.5; text-shadow: 0 0 10px #0ff; }
+  }
+
+  .bubbles {
+    animation: float 2s infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) translateX(-50%); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(-40px) translateX(-30%); opacity: 0; }
+  }
+
   button:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
+    background: #0f0 !important;
+    color: #000 !important;
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(0,255,0,0.5);
   }
 
-  /* Leaderboard List Item Hover */
-  #leaderboard-list li:hover {
-    color: #FF9E80;
-    transition: color 0.3s ease;
+  .formula-box {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .formula-box::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,255,255,0.2), transparent);
+    animation: scan 3s infinite;
+  }
+
+  @keyframes scan {
+    0% { left: -100%; }
+    100% { left: 100%; }
   }
 </style>
-
-<!-- Back to Index Button -->
-<div style="text-align: center; margin-top: 30px;">
-  <button onclick="goToIndex()" 
-          style="background: #FF7043; color: white; border: none; padding: 10px 20px; font-size: 1em; border-radius: 10px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s, box-shadow 0.2s;">
-    Back to Index
-  </button>
-</div>
 
 <script>
   function goToIndex() {
     window.location.href = '/cantella_frontend/';
   }
+
+  // Add some fun lab sounds
+  document.querySelector('.beaker').addEventListener('click', () => {
+    new Audio('https://example.com/bubble.mp3').play().catch(() => {});
+  });
+
+  // Create floating chemical formulas
+  function createFormula() {
+    const formulas = ['H₂O', 'NaCl', 'CO₂', 'C₆H₁₂O₆', 'H₂SO₄'];
+    const formula = document.createElement('div');
+    formula.textContent = formulas[Math.floor(Math.random() * formulas.length)];
+    formula.style.position = 'absolute';
+    formula.style.left = Math.random() * 100 + 'vw';
+    formula.style.top = '-20px';
+    formula.style.color = '#0ff';
+    formula.style.animation = 'fall 10s linear';
+    document.querySelector('.chemistry-lab').appendChild(formula);
+    setTimeout(() => formula.remove(), 10000);
+  }
+
+  setInterval(createFormula, 2000);
 </script>
 
 
