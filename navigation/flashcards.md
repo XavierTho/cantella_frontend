@@ -270,7 +270,7 @@ hide: true
     deckInfoPhase.classList.remove('hidden');
     questionPhase.classList.add('hidden');
   });
-
+<script type="module">
 import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
 document.getElementById('create-deck-btn').addEventListener('click', async () => {
     const deckTitle = document.getElementById('deck-title').value.trim();
@@ -704,7 +704,8 @@ closeDeckBtn.addEventListener('click', () => {
 
 // Fetch and display flashcards when the page loads
 document.addEventListener('DOMContentLoaded', fetchDecks);
-
+        fetchDecks();
+        fetchFlashcards();
 
 
 
