@@ -45,11 +45,9 @@ menu: nav/home.html
         display: none; /* Hide by default */
     }
     .class-card {
-        background: rgba(255, 255, 255, 0.15);
         padding: 1rem;
         margin: 0.5rem 0;
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         font-size: 1.2rem;
         cursor: pointer;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -80,6 +78,66 @@ menu: nav/home.html
         color: lightblue;
         text-decoration: underline;
     }
+    /* AP World History - Ancient/Archaeological theme */
+    .class-card.world {
+        background: rgba(139,69,19,0.8);
+        border: 2px solid #8b4513;
+        box-shadow: 0 4px 6px rgba(139,69,19,0.3);
+        font-family: 'Papyrus', fantasy;
+    }
+    .class-card.world a {
+        color: #d4b483;
+    }
+    .class-card.world:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(139,69,19,0.5);
+    }
+
+    /* AP CSP - Matrix/Hacker theme */
+    .class-card.csp {
+        background: #1a1a1a;
+        border: 2px solid #0f0;
+        box-shadow: 0 0 10px rgba(0,255,0,0.3);
+        font-family: 'Courier New', monospace;
+        animation: glitch 10s infinite;
+    }
+    .class-card.csp a {
+        color: #0f0;
+    }
+    .class-card.csp:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 20px rgba(0,255,0,0.5);
+    }
+
+    /* AP US History - Patriotic theme */
+    .class-card.ush {
+        background: linear-gradient(45deg, #002868, #041E42);
+        border: 3px solid #bf0a30;
+        box-shadow: 0 4px 6px rgba(255,255,255,0.2);
+        font-family: 'Times New Roman', serif;
+    }
+    .class-card.ush a {
+        color: #fff;
+    }
+    .class-card.ush:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(255,255,255,0.4);
+    }
+
+    /* AP Chemistry - Lab/Science theme */
+    .class-card.chem {
+        background: #333;
+        border: 2px solid #ff0;
+        box-shadow: 0 0 10px rgba(255,255,0,0.2);
+        font-family: 'Courier New', monospace;
+    }
+    .class-card.chem a {
+        color: #0f0;
+    }
+    .class-card.chem:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 20px rgba(255,255,0,0.4);
+    }
 </style>
 
 <div class="motivational-bar" onclick="cycleQuotes()">
@@ -96,12 +154,18 @@ menu: nav/home.html
 
 <div id="classes-container" class="classes-container">
     <!-- Class Cards -->
-    <div class="class-card"><a href="{{site.baseurl}}/classes/ap/world/home">AP World History</a></div>
-    <div class="class-card"><a href="{{site.baseurl}}/classes/ap/chem/home">AP Chemistry</a></div>
-    <div class="class-card"><a href="{{site.baseurl}}/classes/ap/physics/home">AP Physics</a></div>
-    <div class="class-card"><a href="{{site.baseurl}}/classes/ap/csp/home">AP CSP</a></div>
-    <div class="class-card"><a href="{{site.baseurl}}/classes/ap/ush/home">AP US History</a></div>
-    <div class="class-card"><a href="{{site.baseurl}}/classes/ap/stats/home">AP Statistics</a></div>
+    <div class="class-card world">
+        <a href="{{site.baseurl}}/classes/ap/world/home">📜 AP World History</a>
+    </div>
+    <div class="class-card csp">
+        <a href="{{site.baseurl}}/classes/ap/csp/home">💻 AP CSP</a>
+    </div>
+    <div class="class-card chem">
+        <a href="{{site.baseurl}}/classes/ap/chem/home">⚗️ AP Chemistry</a>
+    </div>
+    <div class="class-card ush">
+        <a href="{{site.baseurl}}/classes/ap/ush/home">🦅 AP US History</a>
+    </div>
 </div>
 
 <script>
