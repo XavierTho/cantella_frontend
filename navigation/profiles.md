@@ -5,7 +5,6 @@ description: Manage user profiles
 permalink: profiles/manage
 ---
 
-
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -45,11 +44,16 @@ permalink: profiles/manage
                 border-radius: 10px;
                 cursor: pointer;
                 transition: all 0.3s;
+                position: relative;
+                overflow: hidden;
             }
             .button-container button:hover {
                 background: #fff;
                 color: #333;
                 transform: scale(1.05);
+            }
+            .button-container button:active {
+                transform: scale(0.95);
             }
             .profile-container {
                 display: flex;
@@ -103,10 +107,32 @@ permalink: profiles/manage
                 border: none;
                 border-radius: 5px;
                 cursor: pointer;
-                transition: background 0.3s;
+                transition: all 0.3s;
+                position: relative;
+                overflow: hidden;
             }
             form button:hover {
                 background: #eee;
+                transform: scale(1.05);
+            }
+            form button:active {
+                transform: scale(0.95);
+            }
+            form button::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                background: rgba(0, 0, 0, 0.1);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.3s, height 0.3s;
+            }
+            form button:active::after {
+                width: 150px;
+                height: 150px;
             }
         </style>
     </head>
@@ -115,7 +141,8 @@ permalink: profiles/manage
             <h1>Student Social Media - Profiles</h1>
             <div class="button-container">
                 <button onclick="toggleForm('create-profile-form-container')">Create New Profile</button>
-                <button onclick="toggleForm('edit-container')">Edit / Delete Profile</button>
+                <button onclick="editProfile()">Edit Profile</button>
+                <button onclick="deleteProfile()">Delete Profile</button>
             </div>
             <div class="profile-container" id="profile-container">
                 <!-- Profiles will be dynamically added here -->
@@ -134,111 +161,119 @@ permalink: profiles/manage
                     <button type="submit">Submit</button>
                 </form>
             </div>
-            <div class="form-container" id="edit-container">
-                <h2>Edit Profile</h2>
-                <form id="edit-profile-form">
-                    <label for="edit-id">Profile ID:</label>
-                    <input type="number" id="edit-id" name="edit-id" required>
-                    <label for="edit-name">Name:</label>
-                    <input type="text" id="edit-name" name="edit-name">
-                    <label for="edit-classes">Classes (comma-separated):</label>
-                    <input type="text" id="edit-classes" name="edit-classes">
-                    <label for="edit-favorite_class">Favorite Class:</label>
-                    <input type="text" id="edit-favorite_class" name="edit-favorite_class">
-                    <label for="edit-grade">Grade:</label>
-                    <input type="text" id="edit-grade" name="edit-grade">
-                    <button type="button" onclick="submitEditProfile()">Save Changes</button>
-                </form>
-                <h2>Delete Profile</h2>
-                <form id="delete-profile-form">
-                    <label for="delete-id">Profile ID:</label>
-                    <input type="number" id="delete-id" name="delete-id" required>
-                    <button type="button" onclick="deleteProfile()">Delete</button>
-                </form>
-            </div>
         </div>
-        
-        <script>
-            const API_BASE = 'http://127.0.0.1:8202/api/profiles';
+
+        <script type="module">
+            import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+            
+            const API_BASE = `${pythonURI}/api/profiles`;
 
             function toggleForm(formId) {
                 const form = document.getElementById(formId);
-                form.style.display = form.style.display === 'block' ? 'none' : 'block';
+                form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
             }
 
-            async function loadProfiles() {
-                const response = await fetch(API_BASE);
-                const profiles = await response.json();
-                const profileContainer = document.getElementById('profile-container');
-                profileContainer.innerHTML = '';
+            document.getElementById('create-profile-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const formData = {
+                    name: document.getElementById('name').value,
+                    classes: document.getElementById('classes').value.split(',').map(cls => cls.trim()),
+                    favorite_class: document.getElementById('favorite_class').value,
+                    grade: document.getElementById('grade').value
+                };
 
-                profiles.forEach(profile => {
-                    const profileDiv = document.createElement('div');
-                    profileDiv.classList.add('profile');
-                    profileDiv.innerHTML = `
-                        <div class="profile-id">ID: ${profile.id}</div>
-                        <h3>${profile.name}</h3>
-                        <p><strong>Classes:</strong> ${profile.classes.join(', ')}</p>
-                        <p><strong>Favorite Class:</strong> ${profile.favorite_class}</p>
-                        <p><strong>Grade:</strong> ${profile.grade}</p>
-                    `;
-                    profileContainer.appendChild(profileDiv);
-                });
-            }
-
-            document.getElementById('create-profile-form').addEventListener('submit', async (event) => {
-                event.preventDefault();
-
-                const name = document.getElementById('name').value;
-                const classes = document.getElementById('classes').value.split(',').map(cls => cls.trim());
-                const favorite_class = document.getElementById('favorite_class').value;
-                const grade = document.getElementById('grade').value;
-
-                const data = { name, classes, favorite_class, grade };
-
-                await fetch(API_BASE, {
+                // Send the data to the backend
+                fetch(API_BASE, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
                 });
 
-                loadProfiles();
+                // Clear and close the form
                 document.getElementById('create-profile-form').reset();
                 toggleForm('create-profile-form-container');
+                
+                // Alert user to reload
+                alert('Profile created! Click OK to view your new profile.');
+                
+                loadProfiles();
             });
 
-            async function submitEditProfile() {
-                const id = document.getElementById('edit-id').value;
-                const name = document.getElementById('edit-name').value;
-                const classes = document.getElementById('edit-classes').value.split(',').map(cls => cls.trim());
-                const favorite_class = document.getElementById('edit-favorite_class').value;
-                const grade = document.getElementById('edit-grade').value;
+            async function loadProfiles() {
+                try {
+                    const response = await fetch(API_BASE);
+                    if (!response.ok) {
+                        throw new Error(`Failed to load profiles: ${response.status}`);
+                    }
+                    const profiles = await response.json();
+                    const profileContainer = document.getElementById('profile-container');
+                    profileContainer.innerHTML = '';
 
-                const data = { id: parseInt(id, 10), name, classes, favorite_class, grade };
+                    profiles.forEach(profile => {
+                        const profileDiv = document.createElement('div');
+                        profileDiv.classList.add('profile');
+                        profileDiv.innerHTML = `
+                            <div class="profile-id">ID: ${profile.id}</div>
+                            <h3>${profile.name}</h3>
+                            <p><strong>Classes:</strong> ${profile.classes.join(', ')}</p>
+                            <p><strong>Favorite Class:</strong> ${profile.favorite_class}</p>
+                            <p><strong>Grade:</strong> ${profile.grade}</p>
+                        `;
+                        profileContainer.appendChild(profileDiv);
+                    });
+                } catch (error) {
+                    console.error('Error loading profiles:', error);
+                }
+            }
 
+            async function editProfile() {
+                const id = prompt('Enter the Profile ID you want to edit:');
+                if (!id) return;
+
+                const fieldToEdit = prompt(
+                    'What would you like to edit? Enter:\n' +
+                    '1 for Name\n' +
+                    '2 for Classes\n' +
+                    '3 for Favorite Class\n' +
+                    '4 for Grade'
+                );
+                if (!fieldToEdit) return;
+
+                let data = { id: parseInt(id, 10) };
+                switch (fieldToEdit) {
+                    case '1':
+                        data.name = prompt('Enter new name:');
+                        break;
+                    case '2':
+                        data.classes = prompt('Enter new classes (comma-separated):').split(',').map(cls => cls.trim());
+                        break;
+                    case '3':
+                        data.favorite_class = prompt('Enter new favorite class:');
+                        break;
+                    case '4':
+                        data.grade = prompt('Enter new grade:');
+                        break;
+                    default:
+                        alert('Invalid option selected');
+                        return;
+                }
                 await fetch(API_BASE, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
                 });
-
-                loadProfiles();
-                toggleForm('edit-container');
+                await loadProfiles();
             }
 
             async function deleteProfile() {
-                const id = document.getElementById('delete-id').value;
-
+                const id = prompt('Enter the Profile ID to delete:');
+                if (!id) return;
                 await fetch(API_BASE, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: parseInt(id, 10) }),
                 });
-
-                loadProfiles();
-                toggleForm('edit-container');
+                await loadProfiles();
             }
 
             loadProfiles();
