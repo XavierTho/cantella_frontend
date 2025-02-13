@@ -248,50 +248,13 @@ hide: true
 
 
 
-<script>
-    const possibleURIs = [
-        "http://localhost:8202",
-        "http://127.0.0.1:8202",
-        "https://cantella.stu.nighthawkcodingsociety.com"
-    ];
-
-    let pythonURI = null; // Will store the first working API URL
-
-    const fetchOptions = {
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-        credentials: "include",
-    };
-
-    async function findWorkingPythonURI() {
-        for (const uri of possibleURIs) {
-            try {
-                const response = await fetch(`${uri}/api/status`, {
-                    method: "GET",
-                    ...fetchOptions
-                });
-
-                if (response.ok) {
-                    pythonURI = uri; // Set to the first successful URI
-                    console.log("Using pythonURI:", pythonURI);
-                    return;
-                }
-            } catch (error) {
-                console.warn(`Failed to connect to ${uri}:`, error);
-            }
-        }
-        console.error("No working pythonURI found!");
-    }
-
-    findWorkingPythonURI(); // Run the test
-</script>
+<script type="module">
+  import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+  console.log("Python URI:", pythonURI); // Check if it's correctly imported
 
 
 
 
-<script>
   const createDeckBtn = document.getElementById('create-deck-btn');
   const addDeckForm = document.getElementById('add-deck-form');
   const deckInfoPhase = document.getElementById('deck-info-phase');
