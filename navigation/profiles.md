@@ -162,74 +162,17 @@ permalink: profiles/manage
                 </form>
             </div>
         </div>
-
         <script type="module">
             import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
-            
             const API_BASE = `${pythonURI}/api/profiles`;
-
-            function toggleForm(formId) {
+            // Make functions globally available
+            window.toggleForm = function(formId) {
                 const form = document.getElementById(formId);
                 form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
             }
-
-            document.getElementById('create-profile-form').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const formData = {
-                    name: document.getElementById('name').value,
-                    classes: document.getElementById('classes').value.split(',').map(cls => cls.trim()),
-                    favorite_class: document.getElementById('favorite_class').value,
-                    grade: document.getElementById('grade').value
-                };
-
-                // Send the data to the backend
-                fetch(API_BASE, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                // Clear and close the form
-                document.getElementById('create-profile-form').reset();
-                toggleForm('create-profile-form-container');
-                
-                // Alert user to reload
-                alert('Profile created! Click OK to view your new profile.');
-                
-                loadProfiles();
-            });
-
-            async function loadProfiles() {
-                try {
-                    const response = await fetch(API_BASE);
-                    if (!response.ok) {
-                        throw new Error(`Failed to load profiles: ${response.status}`);
-                    }
-                    const profiles = await response.json();
-                    const profileContainer = document.getElementById('profile-container');
-                    profileContainer.innerHTML = '';
-
-                    profiles.forEach(profile => {
-                        const profileDiv = document.createElement('div');
-                        profileDiv.classList.add('profile');
-                        profileDiv.innerHTML = `
-                            <div class="profile-id">ID: ${profile.id}</div>
-                            <h3>${profile.name}</h3>
-                            <p><strong>Classes:</strong> ${profile.classes.join(', ')}</p>
-                            <p><strong>Favorite Class:</strong> ${profile.favorite_class}</p>
-                            <p><strong>Grade:</strong> ${profile.grade}</p>
-                        `;
-                        profileContainer.appendChild(profileDiv);
-                    });
-                } catch (error) {
-                    console.error('Error loading profiles:', error);
-                }
-            }
-
-            async function editProfile() {
+            window.editProfile = async function(logId) {
                 const id = prompt('Enter the Profile ID you want to edit:');
                 if (!id) return;
-
                 const fieldToEdit = prompt(
                     'What would you like to edit? Enter:\n' +
                     '1 for Name\n' +
@@ -238,7 +181,6 @@ permalink: profiles/manage
                     '4 for Grade'
                 );
                 if (!fieldToEdit) return;
-
                 let data = { id: parseInt(id, 10) };
                 switch (fieldToEdit) {
                     case '1':
@@ -257,25 +199,97 @@ permalink: profiles/manage
                         alert('Invalid option selected');
                         return;
                 }
-                await fetch(API_BASE, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                });
-                await loadProfiles();
+                try {
+                    const response = await fetch(API_BASE, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                        credentials: 'include'
+                    });                    
+                    if (response.ok) {
+                        loadProfiles();
+                    } else {
+                        console.error('Failed to update profile:', await response.text());
+                    }
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                }
             }
-
-            async function deleteProfile() {
+            window.deleteProfile = async function() {
                 const id = prompt('Enter the Profile ID to delete:');
                 if (!id) return;
-                await fetch(API_BASE, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: parseInt(id, 10) }),
-                });
-                await loadProfiles();
+                try {
+                    const response = await fetch(API_BASE, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: parseInt(id, 10) }),
+                        credentials: 'include'
+                    });
+                    if (response.ok) {
+                        loadProfiles();
+                    } else {
+                        console.error('Failed to delete profile:', await response.text());
+                    }
+                } catch (error) {
+                    console.error('Error deleting profile:', error);
+                }
             }
-
+            document.getElementById('create-profile-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const formData = {
+                    name: document.getElementById('name').value,
+                    classes: document.getElementById('classes').value.split(',').map(cls => cls.trim()),
+                    favorite_class: document.getElementById('favorite_class').value,
+                    grade: document.getElementById('grade').value
+                };
+                try {
+                    const response = await fetch(API_BASE, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                        credentials: 'include'
+                    });
+                    if (response.ok) {
+                        document.getElementById('create-profile-form').reset();
+                        toggleForm('create-profile-form-container');
+                        loadProfiles();
+                    } else {
+                        console.error('Failed to create profile:', await response.text());
+                    }
+                } catch (error) {
+                    console.error('Error creating profile:', error);
+                }
+            });
+            async function loadProfiles() {
+                try {
+                    const response = await fetch(API_BASE, {
+                        credentials: 'include'
+                    });
+                    if (response.ok) {
+                        const profiles = await response.json();
+                        const profileContainer = document.getElementById('profile-container');
+                        profileContainer.innerHTML = '';
+                        profiles.forEach(profile => {
+                            const profileDiv = document.createElement('div');
+                            profileDiv.classList.add('profile');
+                            profileDiv.setAttribute('data-id', profile.id);
+                            profileDiv.innerHTML = `
+                                <div class="profile-id">ID: ${profile.id}</div>
+                                <h3>${profile.name}</h3>
+                                <p><strong>Classes:</strong> ${profile.classes.join(', ')}</p>
+                                <p><strong>Favorite Class:</strong> ${profile.favorite_class}</p>
+                                <p><strong>Grade:</strong> ${profile.grade}</p>
+                            `;
+                            profileContainer.appendChild(profileDiv);
+                        });
+                    } else {
+                        console.error('Failed to load profiles:', await response.text());
+                    }
+                } catch (error) {
+                    console.error('Error loading profiles:', error);
+                }
+            }
+            // Load profiles when the page loads
             loadProfiles();
         </script>
     </body>
