@@ -194,80 +194,38 @@ button:hover {
 
 <div id="flashcard-app">
   <h1>Create Flashcards and Decks Now!</h1>
-
-  <!-- Section for Creating Deck -->
-  <div id="create-deck-section">
-    <button id="create-deck-btn">+ Create Deck</button>
-    <div id="add-deck-form" class="hidden">
-      <div class="form-group">
-        <label for="deck-title">Deck Title:</label>
-        <input type="text" id="deck-title" placeholder="Enter deck title">
-      </div>
-    </div>
-  </div>
-
-  <!-- Section for Opening Flashcards -->
-  <div id="open-flashcards-section">
-    <div class="deck-container" id="deck-container"></div>
-  </div>
-
-  <!-- Section for Adding Flashcards -->
-  <div id="add-flashcard-section" class="hidden">
-    <div class="flashcard-container hidden" id="flashcard-container">
-      <div class="flashcard hidden" id="flashcard"></div>
-      <button id="next-card-btn" class="hidden">Next Card</button>
-      <button id="close-deck-btn" class="hidden">Close Deck</button>
-    </div>
-    <div id="add-flashcard-form" class="hidden">
-      <h3 id="current-deck-name">Add Flashcard to Deck: <span id="deck-name-placeholder"></span></h3>
-      <div class="form-group">
-        <label for="question">Question:</label>
-        <input type="text" id="question" placeholder="Enter question">
-      </div>
-      <div class="form-group">
-        <label for="answer">Answer:</label>
-        <input type="text" id="answer" placeholder="Enter answer">
-      </div>
-      <button id="add-card-btn">Add Flashcard</button>
-    </div>
-  </div>
-
-  <!-- Section for Importing Flashcards -->
-  <div id="import-flashcards-section">
-    <h3>Import Flashcards</h3>
-    <form id="import-form">
-      <label for="amount">Number of Questions:</label>
-      <input type="number" id="amount" name="amount" min="1" value="10">
-      <label for="category">Category:</label>
-      <select id="category" name="category">
-        <option value="">Any Category</option>
-        <option value="9">General Knowledge</option>
-        <option value="10">Entertainment: Books</option>
-        <option value="11">Entertainment: Film</option>
-        <option value="12">Entertainment: Music</option>
-        <option value="13">Entertainment: Musicals & Theatres</option>
-        <option value="14">Entertainment: Television</option>
-        <option value="15">Entertainment: Video Games</option>
-        <option value="16">Entertainment: Board Games</option>
-        <option value="17">Science & Nature</option>
-        <option value="18">Science: Computers</option>
-        <option value="19">Science: Mathematics</option>
-        <option value="20">Mythology</option>
-        <option value="21">Sports</option>
-        <option value="22">Geography</option>
-        <option value="23">History</option>
-        <option value="24">Politics</option>
-        <option value="25">Art</option>
-        <option value="26">Celebrities</option>
-        <option value="27">Animals</option>
-        <option value="28">Vehicles</option>
-        <option value="29">Entertainment: Comics</option>
-        <option value="30">Science: Gadgets</option>
-      </select>
-      <button type="submit">Import Flashcards</button>
-    </form>
+  <button id="create-deck-btn">+ Create Deck</button>
+<div id="add-deck-form" class="hidden">
+  <div class="form-group">
+    <label for="deck-title">Deck Title:</label>
+    <input type="text" id="deck-title" placeholder="Enter deck title">
   </div>
 </div>
+
+
+
+
+
+
+  <div class="deck-container" id="deck-container"></div>
+  <div class="flashcard-container hidden" id="flashcard-container">
+    <div class="flashcard hidden" id="flashcard"></div>
+    <button id="next-card-btn" class="hidden">Next Card</button>
+    <button id="close-deck-btn" class="hidden">Close Deck</button>
+  </div>
+  <div id="add-flashcard-form" class="hidden">
+  <h3 id="current-deck-name">Add Flashcard to Deck: <span id="deck-name-placeholder"></span></h3>
+  <div class="form-group">
+    <label for="question">Question:</label>
+    <input type="text" id="question" placeholder="Enter question">
+  </div>
+  <div class="form-group">
+    <label for="answer">Answer:</label>
+    <input type="text" id="answer" placeholder="Enter answer">
+  </div>
+  <button id="add-card-btn">Add Flashcard</button>
+</div>
+
 
 
 
@@ -802,34 +760,31 @@ document.addEventListener('DOMContentLoaded', fetchDecks);
 
 
 
-
 <script>
 document.getElementById('import-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-
+    event.preventDefault(); // Prevent form from reloading the page
 
     const amount = document.getElementById('amount').value || 10;
     const category = document.getElementById('category').value;
 
+    // Ensure pythonURI is defined
+    const pythonURI = 'http://127.0.0.1:5000';  // Replace with your actual backend URL
 
     let apiUrl = `${pythonURI}/api/import-flashcards?amount=${amount}&difficulty=medium`;
     if (category) {
         apiUrl += `&category=${category}`;
     }
 
-
     try {
         const response = await fetch(apiUrl, {
-            ...fetchOptions,
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
         });
-
 
         if (response.ok) {
             const data = await response.json();
-            alert(`Deck "${data.deck.title}" created successfully!`);
-            await fetchDecks(); // Refresh deck list
+            alert(`Successfully imported ${data.flashcards.length} flashcards!`);
+            await fetchDecks(); // Refresh deck list after import
         } else {
             const error = await response.json();
             alert(`Error: ${error.error}`);
@@ -839,40 +794,4 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
         alert("An error occurred while importing flashcards.");
     }
 });
-</script>
-
-
-
-
-<button id="import-flashcards">Import Flashcards</button>
-
-
-
-
-<script>
-  document.getElementById('import-flashcards').addEventListener('click', async () => {
-      try {
-          const response = await fetch(`${pythonURI}/api/import-flashcards`, {
-              ...fetchOptions,
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-          });
-
-
-          if (!response.ok) {
-              const error = await response.json();
-              alert("Error: " + error.error);
-              return;
-          }
-
-
-          const data = await response.json();
-          alert(`Successfully imported ${data.flashcards.length} flashcards!`);
-      } catch (error) {
-          console.error("Error importing flashcards:", error);
-          alert("An error occurred while importing flashcards.");
-      }
-  });
 </script>
