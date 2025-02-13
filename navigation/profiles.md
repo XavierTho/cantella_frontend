@@ -135,6 +135,9 @@ permalink: profiles/manage
                 height: 150px;
             }
         </style>
+        <!-- Add SweetAlert2 CSS and JS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
         <div class="container">
@@ -252,12 +255,34 @@ permalink: profiles/manage
                     if (response.ok) {
                         document.getElementById('create-profile-form').reset();
                         toggleForm('create-profile-form-container');
-                        loadProfiles();
+                        // Using SweetAlert2 for a nicer popup
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Profile created successfully! Click OK to view your profile.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
                     } else {
                         console.error('Failed to create profile:', await response.text());
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to create profile. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 } catch (error) {
                     console.error('Error creating profile:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while creating the profile.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
             async function loadProfiles() {
