@@ -34,15 +34,51 @@ h1, h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 900px;
-    width: 90%;
+    max-width: 1000px;
+    width: 100%;
     margin: 20px auto;
+}
+
+/* Layout Containers */
+.top-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+}
+
+/* Bottom Section (Hidden Until Deck is Opened) */
+.bottom-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Individual Feature Boxes */
+#add-deck-box, #open-deck-box, #flashcard-box, #add-flashcard-box {
+    width: 48%;
     padding: 20px;
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px);
-    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
     box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.3);
     border: 2px solid rgba(255, 215, 0, 0.2);
+    text-align: center;
+}
+
+/* Import Box Always Visible */
+#import-box {
+    width: 100%;
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    text-align: center;
 }
 
 button {
@@ -50,8 +86,8 @@ button {
     color: black;
     border: none;
     border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 16px;
+    padding: 10px 16px;
+    font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: bold;
@@ -61,7 +97,6 @@ button {
 button:hover {
     background: linear-gradient(135deg, #d97706, #92400e);
     transform: scale(1.05);
-    box-shadow: 0px 4px 15px rgba(255, 215, 0, 0.7);
 }
 
 #add-deck-form {
@@ -84,18 +119,18 @@ button:hover {
     color: white;
 }
 
+/* Deck Display */
 .deck-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 30px;
+    gap: 10px;
     justify-content: center;
 }
 
 .deck {
-    width: 240px;
-    height: 140px;
-    border-radius: 12px;
+    width: 200px;
+    height: 120px;
+    border-radius: 10px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -104,7 +139,7 @@ button:hover {
     cursor: pointer;
     background: linear-gradient(135deg, #d97706, #92400e);
     color: #facc15;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     transition: all 0.3s ease;
     box-shadow: 0 6px 15px rgba(255, 223, 0, 0.5);
@@ -193,38 +228,53 @@ button:hover {
 
 
 <div id="flashcard-app">
-  <h1>Create Flashcards and Decks Now!</h1>
-  <button id="create-deck-btn">+ Create Deck</button>
-<div id="add-deck-form" class="hidden">
-  <div class="form-group">
-    <label for="deck-title">Deck Title:</label>
-    <input type="text" id="deck-title" placeholder="Enter deck title">
+  <div class="top-container">
+    <!-- Left Box: Add Deck Feature -->
+    <div id="add-deck-box">
+      <h2>Create a New Deck</h2>
+      <button id="create-deck-btn">+ Create Deck</button>
+      <div id="add-deck-form" class="hidden">
+        <div class="form-group">
+          <label for="deck-title">Deck Title:</label>
+          <input type="text" id="deck-title" placeholder="Enter deck title">
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Box: Open Deck Feature -->
+<div id="open-deck-box">
+      <h2>Your Decks</h2>
+      <div class="deck-container" id="deck-container"></div>
+    </div>
   </div>
-</div>
 
+  <!-- This section only appears after clicking "Open Deck" -->
+  <div class="bottom-container hidden" id="deck-interaction">
+    <div id="flashcard-box">
+      <h2>Flashcards</h2>
+      <div class="flashcard-container hidden" id="flashcard-container">
+        <div class="flashcard hidden" id="flashcard"></div>
+        <button id="next-card-btn" class="hidden">Next Card</button>
+        <button id="close-deck-btn" class="hidden">Close Deck</button>
+      </div>
+    </div>
 
-
-
-
-
-  <div class="deck-container" id="deck-container"></div>
-  <div class="flashcard-container hidden" id="flashcard-container">
-    <div class="flashcard hidden" id="flashcard"></div>
-    <button id="next-card-btn" class="hidden">Next Card</button>
-    <button id="close-deck-btn" class="hidden">Close Deck</button>
+<div id="add-flashcard-box">
+      <h2>Add a Flashcard</h2>
+      <div id="add-flashcard-form" class="hidden">
+        <h3 id="current-deck-name">Add Flashcard to Deck: <span id="deck-name-placeholder"></span></h3>
+        <div class="form-group">
+          <label for="question">Question:</label>
+          <input type="text" id="question" placeholder="Enter question">
+        </div>
+        <div class="form-group">
+          <label for="answer">Answer:</label>
+          <input type="text" id="answer" placeholder="Enter answer">
+        </div>
+        <button id="add-card-btn">Add Flashcard</button>
+      </div>
+    </div>
   </div>
-  <div id="add-flashcard-form" class="hidden">
-  <h3 id="current-deck-name">Add Flashcard to Deck: <span id="deck-name-placeholder"></span></h3>
-  <div class="form-group">
-    <label for="question">Question:</label>
-    <input type="text" id="question" placeholder="Enter question">
-  </div>
-  <div class="form-group">
-    <label for="answer">Answer:</label>
-    <input type="text" id="answer" placeholder="Enter answer">
-  </div>
-  <button id="add-card-btn">Add Flashcard</button>
-</div>
 
 
 
@@ -618,22 +668,19 @@ async function openDeck(deck) {
 
         if (response.ok) {
             const detailedDeck = await response.json();
-            currentDeck = detailedDeck; // Save the fetched deck details locally
+            currentDeck = detailedDeck;
             currentCardIndex = 0;
 
-            // Show the current deck name in the flashcard form
             document.getElementById('deck-name-placeholder').textContent = currentDeck.title;
 
-            // Show flashcards and allow adding new ones
             if (currentDeck.cards.length > 0) {
-                displayFlashcards(currentDeck.cards); // Show flashcards
+                displayFlashcards(currentDeck.cards);
             } else {
                 document.getElementById('flashcard-container').innerHTML = '<p>No flashcards yet. Add one!</p>';
             }
 
-            document.getElementById('add-flashcard-form').classList.remove('hidden'); // Show form
-            flashcardContainer.classList.remove('hidden');
-            deckContainer.classList.add('hidden');
+            document.getElementById('add-flashcard-form').classList.remove('hidden');
+            document.getElementById('deck-interaction').classList.remove('hidden');
         } else {
             console.error('Failed to fetch deck details:', await response.text());
         }
@@ -641,6 +688,7 @@ async function openDeck(deck) {
         console.error('Error fetching deck details:', error);
     }
 }
+
 
 
 
@@ -767,9 +815,6 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
     const amount = document.getElementById('amount').value || 10;
     const category = document.getElementById('category').value;
 
-    // Ensure pythonURI is defined
-    const pythonURI = 'http://127.0.0.1:5000';  // Replace with your actual backend URL
-
     let apiUrl = `${pythonURI}/api/import-flashcards?amount=${amount}&difficulty=medium`;
     if (category) {
         apiUrl += `&category=${category}`;
@@ -777,6 +822,7 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
 
     try {
         const response = await fetch(apiUrl, {
+            ...fetchOptions,
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
