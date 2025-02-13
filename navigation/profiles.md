@@ -219,8 +219,6 @@ permalink: profiles/manage
             <h1>Student Social Media - Profiles</h1>
             <div class="button-container">
                 <button onclick="toggleForm('create-profile-form-container')">Create New Profile</button>
-                <button onclick="editProfile()">Edit Profile</button>
-                <button onclick="deleteProfile()">Delete Profile</button>
             </div>
             <div class="profile-container" id="profile-container">
                 <!-- Profiles will be dynamically added here -->
