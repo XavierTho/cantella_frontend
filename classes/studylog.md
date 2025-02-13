@@ -10,24 +10,21 @@ permalink: classes/log
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Study Log</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             body {
-                font-family: 'Inter', sans-serif;
+                font-family: 'Arial', sans-serif;
                 margin: 0;
                 padding: 20px;
-                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-                color: #ffffff;
+                background: linear-gradient(to bottom, #ff9966, #ff5e62);
+                color: #f9f9f9;
                 min-height: 100vh;
             }
             .container {
-                max-width: 900px;
-                margin: 20px auto;
-                padding: 30px;
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                border-radius: 20px;
-                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-                border: 1px solid rgba(255, 255, 255, 0.18);
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 20px;
             }
             h1, h2 {
                 text-align: center;
@@ -35,45 +32,39 @@ permalink: classes/log
                 margin-bottom: 30px;
                 font-weight: 600;
             }
-            .log-container ul {
-                list-style-type: none;
+            #study-log {
+                list-style: none;
                 padding: 0;
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                display: flex;
+                flex-wrap: wrap;
                 gap: 20px;
+                justify-content: center;
             }
-            .log-container li {
-                background: rgba(255, 255, 255, 0.15);
-                padding: 20px;
-                border-radius: 15px;
-                backdrop-filter: blur(5px);
+            #study-log li {
+                background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                border-radius: 15px;
+                padding: 20px;
+                width: 300px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                transition: transform 0.3s;
             }
-            .log-container li:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            }
-            .log-container li div {
-                margin-bottom: 12px;
-                font-size: 0.95rem;
-            }
-            .log-container li strong {
-                color: #a8d0ff;
-                font-weight: 500;
+            #study-log li:hover {
+                transform: scale(1.05);
             }
             .button-group {
                 display: flex;
+                justify-content: flex-end;
                 gap: 10px;
-                margin-top: 10px;
+                margin-top: 15px;
             }
             .edit-btn, .delete-btn {
-                background: none;
-                border: none;
                 padding: 8px;
-                cursor: pointer;
+                border: none;
                 border-radius: 50%;
-                transition: all 0.3s ease;
+                cursor: pointer;
+                transition: all 0.3s;
                 width: 35px;
                 height: 35px;
                 display: flex;
@@ -81,123 +72,47 @@ permalink: classes/log
                 justify-content: center;
             }
             .edit-btn {
-                background-color: rgba(76, 175, 80, 0.2);
-                color: #4CAF50;
+                background: rgba(255, 255, 255, 0.2);
+                color: #fff;
             }
             .delete-btn {
-                background-color: rgba(244, 67, 54, 0.2);
-                color: #f44336;
+                background: rgba(255, 87, 87, 0.2);
+                color: #fff;
             }
-            .edit-btn:hover {
-                background-color: rgba(76, 175, 80, 0.3);
+            .edit-btn:hover, .delete-btn:hover {
                 transform: translateY(-2px);
-            }
-            .delete-btn:hover {
-                background-color: rgba(244, 67, 54, 0.3);
-                transform: translateY(-2px);
-            }
-            .fa-pencil-alt, .fa-trash-alt {
-                font-size: 1rem;
-            }
-            .form-container {
-                background: rgba(255, 255, 255, 0.15);
-                padding: 30px;
-                border-radius: 15px;
-                margin-top: 30px;
-                backdrop-filter: blur(5px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-            .form-container form {
-                display: grid;
-                gap: 15px;
-            }
-            .form-container label {
-                font-size: 0.9rem;
-                color: #a8d0ff;
-                margin-bottom: 5px;
-            }
-            .form-container input, 
-            .form-container textarea {
-                width: 100%;
-                padding: 12px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 8px;
-                background: rgba(255, 255, 255, 0.1);
-                color: white;
-                font-size: 1rem;
-                transition: all 0.3s ease;
-            }
-            .form-container input:focus, 
-            .form-container textarea:focus {
-                outline: none;
-                border-color: #4CAF50;
-                background: rgba(255, 255, 255, 0.15);
-            }
-            .form-container button {
-                background-color: #4CAF50;
-                color: white;
-                padding: 12px;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                transition: all 0.3s ease;
-            }
-            .form-container button:hover {
-                background-color: #43a047;
-                transform: translateY(-2px);
-            }
-            .error {
-                color: #ff4757;
-                font-size: 0.9rem;
-                margin-top: 5px;
-            }
-            @media (max-width: 768px) {
-                .container {
-                    padding: 20px;
-                    margin: 10px;
-                }
-                .log-container ul {
-                    grid-template-columns: 1fr;
-                }
+                background: rgba(255, 255, 255, 0.3);
             }
             .edit-input {
                 width: 100%;
                 padding: 8px;
                 margin: 4px 0;
+                background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 8px;
-                background: rgba(255, 255, 255, 0.1);
                 color: white;
                 font-size: 1rem;
             }
             .edit-input:focus {
                 outline: none;
-                border-color: #4CAF50;
+                border-color: #ff9966;
                 background: rgba(255, 255, 255, 0.15);
             }
-            textarea.edit-input {
-                min-height: 60px;
-                resize: vertical;
+            /* Custom SweetAlert2 styling */
+            .swal2-popup {
+                background: rgba(255, 255, 255, 0.95) !important;
+                backdrop-filter: blur(10px) !important;
+                border-radius: 15px !important;
             }
-            .save-btn {
-                background-color: #4CAF50;
-                color: white;
-                padding: 8px 15px;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: 500;
-                text-transform: uppercase;
-                font-size: 0.8rem;
-                letter-spacing: 0.5px;
-                transition: all 0.3s ease;
+            .swal2-title {
+                color: #ff5e62 !important;
             }
-            .save-btn:hover {
-                background-color: #43a047;
-                transform: translateY(-2px);
+            .swal2-confirm {
+                background: #ff9966 !important;
+                border-radius: 8px !important;
+            }
+            .swal2-confirm:hover {
+                background: #ff5e62 !important;
             }
         </style>
     </head>
@@ -231,18 +146,38 @@ permalink: classes/log
     const deleteSound = new Audio('{{site.baseurl}}/images/sounds/delete.mp3');
     // Make functions globally available
     window.deleteLog = async function(logId) {
-        if (confirm('Are you sure you want to delete this log?')) {
+        const result = await Swal.fire({
+            title: 'Delete Study Log?',
+            text: 'Are you sure you want to delete this log?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, keep it',
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdrop: `
+                rgba(255, 153, 102, 0.4)
+                url("{{site.baseurl}}/assets/sounds/delete.mp3")
+                left top
+                no-repeat
+            `
+        });
+        if (result.isConfirmed) {
             try {
                 const response = await fetch(`${pythonURI}/api/studylognew`, {
                     method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: logId }),
                     credentials: 'include',
                 });
                 if (response.ok) {
-                    deleteSound.play(); // Play delete sound
+                    deleteSound.play();
+                    await Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Your study log has been deleted.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                     loadStudyLogs();
                 }
             } catch (error) {
@@ -319,7 +254,7 @@ permalink: classes/log
                     newEditButton.onclick = () => editLog(logId);
                     saveButton.replaceWith(newEditButton);
                     // Show success message
-                    alert('Study log updated successfully!');
+                    await showSuccessMessage();
                 }
             } catch (error) {
                 console.error('Error updating study log:', error);
@@ -407,4 +342,16 @@ permalink: classes/log
     }
     // Load study logs on page load
     loadStudyLogs();
+    // Update success message for editing
+    const showSuccessMessage = async () => {
+        await Swal.fire({
+            title: 'Success!',
+            text: 'Study log updated successfully!',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdrop: 'rgba(255, 153, 102, 0.4)'
+        });
+    }
 </script>
