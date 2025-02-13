@@ -248,11 +248,47 @@ hide: true
 
 
 
-<script type="module">
-  import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+<script>
+    const possibleURIs = [
+        "http://localhost:8202",
+        "http://127.0.0.1:8202",
+        "https://cantella.stu.nighthawkcodingsociety.com"
+    ];
 
-  console.log("Python URI:", pythonURI); // Check if it's correctly imported
+    let pythonURI = null; // Will store the first working API URL
+
+    const fetchOptions = {
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+    };
+
+    async function findWorkingPythonURI() {
+        for (const uri of possibleURIs) {
+            try {
+                const response = await fetch(`${uri}/api/status`, {
+                    method: "GET",
+                    ...fetchOptions
+                });
+
+                if (response.ok) {
+                    pythonURI = uri; // Set to the first successful URI
+                    console.log("Using pythonURI:", pythonURI);
+                    return;
+                }
+            } catch (error) {
+                console.warn(`Failed to connect to ${uri}:`, error);
+            }
+        }
+        console.error("No working pythonURI found!");
+    }
+
+    findWorkingPythonURI(); // Run the test
 </script>
+
+
 
 
 <script>
@@ -279,10 +315,10 @@ hide: true
     questionPhase.classList.add('hidden');
   });
 
+
+
 document.getElementById('create-deck-btn').addEventListener('click', async () => {
     const deckTitle = document.getElementById('deck-title').value.trim();
-
-
     if (!deckTitle) {
         alert('Please provide a deck title.');
         return;
