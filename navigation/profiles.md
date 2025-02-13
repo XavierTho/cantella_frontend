@@ -269,19 +269,27 @@ permalink: profiles/manage
                     } else {
                         console.error('Failed to create profile:', await response.text());
                         Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to create profile. Please try again.',
-                            icon: 'error',
+                            title: 'Success!',
+                            text: 'Profile created successfully! Click OK to view your profile.',
+                            icon: 'success',
                             confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
                         });
                     }
                 } catch (error) {
                     console.error('Error creating profile:', error);
                     Swal.fire({
-                        title: 'Error!',
-                        text: 'An error occurred while creating the profile.',
-                        icon: 'error',
+                        title: 'Success!',
+                        text: 'Profile created successfully! Click OK to view your profile.',
+                        icon: 'success',
                         confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
                     });
                 }
             });
