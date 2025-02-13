@@ -247,10 +247,15 @@ hide: true
 
 
 
+
+<script type="module">
+  import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+
+  console.log("Python URI:", pythonURI); // Check if it's correctly imported
+</script>
+
+
 <script>
-
-import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
-
   const createDeckBtn = document.getElementById('create-deck-btn');
   const addDeckForm = document.getElementById('add-deck-form');
   const deckInfoPhase = document.getElementById('deck-info-phase');
