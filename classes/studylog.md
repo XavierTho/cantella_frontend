@@ -156,6 +156,42 @@ permalink: classes/log
                     grid-template-columns: 1fr;
                 }
             }
+            .edit-input {
+                width: 100%;
+                padding: 8px;
+                margin: 4px 0;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                font-size: 1rem;
+            }
+            .edit-input:focus {
+                outline: none;
+                border-color: #4CAF50;
+                background: rgba(255, 255, 255, 0.15);
+            }
+            textarea.edit-input {
+                min-height: 60px;
+                resize: vertical;
+            }
+            .save-btn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 8px 15px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 500;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+            }
+            .save-btn:hover {
+                background-color: #43a047;
+                transform: translateY(-2px);
+            }
         </style>
     </head>
     <body>
@@ -205,57 +241,81 @@ permalink: classes/log
         }
     }
     window.editLog = async function(logId) {
-        // Get the existing log element to pre-fill current values
+        // Get the existing log element to edit
         const logElement = document.querySelector(`li[data-id="${logId}"]`);
-        const currentSubject = logElement.querySelector('[data-field="subject"]').textContent;
-        const currentHours = logElement.querySelector('[data-field="hours"]').textContent;
-        const currentNotes = logElement.querySelector('[data-field="notes"]').textContent;
-        // Ask user which field to edit
-        const fieldToEdit = prompt(
-            'What would you like to edit? Enter:\n' +
-            '1 for Subject\n' +
-            '2 for Hours\n' +
-            '3 for Notes'
-        );
-        if (!fieldToEdit) return;
-        let data = { id: logId };
-        switch (fieldToEdit) {
-            case '1':
-                const newSubject = prompt('Enter new subject:', currentSubject);
-                if (!newSubject) return;
-                data.subject = newSubject;
-                break;
-            case '2':
-                const newHours = prompt('Enter new hours:', currentHours);
-                if (!newHours) return;
-                data.hours_studied = parseFloat(newHours);
-                break;
-            case '3':
-                const newNotes = prompt('Enter new notes:', currentNotes);
-                if (newNotes === null) return; // Allow empty notes, but not cancelled prompt
-                data.notes = newNotes;
-                break;
-            default:
-                alert('Invalid option selected');
-                return;
-        }
-        try {
-            const response = await fetch(`${pythonURI}/api/studylognew`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-                credentials: 'include',
-            });
-            if (response.ok) {
-                loadStudyLogs();
-            } else {
-                console.error('Failed to update study log:', response.statusText);
+        const subjectSpan = logElement.querySelector('[data-field="subject"]');
+        const hoursSpan = logElement.querySelector('[data-field="hours"]');
+        const notesSpan = logElement.querySelector('[data-field="notes"]');
+        // Create input fields
+        const subjectInput = document.createElement('input');
+        subjectInput.type = 'text';
+        subjectInput.value = subjectSpan.textContent;
+        subjectInput.className = 'edit-input';
+        const hoursInput = document.createElement('input');
+        hoursInput.type = 'number';
+        hoursInput.step = '0.1';
+        hoursInput.value = hoursSpan.textContent;
+        hoursInput.className = 'edit-input';
+        const notesInput = document.createElement('textarea');
+        notesInput.value = notesSpan.textContent;
+        notesInput.className = 'edit-input';
+        // Replace spans with inputs
+        subjectSpan.replaceWith(subjectInput);
+        hoursSpan.replaceWith(hoursInput);
+        notesSpan.replaceWith(notesInput);
+        // Create save button
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.className = 'save-btn';
+        // Replace edit button with save button
+        const editButton = logElement.querySelector('.edit-btn');
+        editButton.replaceWith(saveButton);
+        // Add save functionality
+        saveButton.onclick = async function() {
+            const data = {
+                id: logId,
+                subject: subjectInput.value,
+                hours_studied: parseFloat(hoursInput.value),
+                notes: notesInput.value
+            };
+            try {
+                const response = await fetch(`${pythonURI}/api/studylognew`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                    credentials: 'include',
+                });
+                if (response.ok) {
+                    // Update the display with new values
+                    const newSubjectSpan = document.createElement('span');
+                    newSubjectSpan.textContent = data.subject;
+                    newSubjectSpan.setAttribute('data-field', 'subject');
+                    const newHoursSpan = document.createElement('span');
+                    newHoursSpan.textContent = data.hours_studied;
+                    newHoursSpan.setAttribute('data-field', 'hours');
+                    const newNotesSpan = document.createElement('span');
+                    newNotesSpan.textContent = data.notes;
+                    newNotesSpan.setAttribute('data-field', 'notes');
+                    // Replace inputs with new spans
+                    subjectInput.replaceWith(newSubjectSpan);
+                    hoursInput.replaceWith(newHoursSpan);
+                    notesInput.replaceWith(newNotesSpan);
+                    // Restore edit button
+                    const newEditButton = document.createElement('button');
+                    newEditButton.textContent = 'Edit';
+                    newEditButton.className = 'edit-btn';
+                    newEditButton.onclick = () => editLog(logId);
+                    saveButton.replaceWith(newEditButton);
+                    // Show success message
+                    alert('Study log updated successfully!');
+                }
+            } catch (error) {
+                console.error('Error updating study log:', error);
+                alert('Error updating study log. Please try again.');
             }
-        } catch (error) {
-            console.error('Error updating study log:', error);
-        }
+        };
     }
     document.getElementById('study-log-form').addEventListener('submit', async function(event) {
         event.preventDefault();
