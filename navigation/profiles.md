@@ -134,6 +134,64 @@ permalink: profiles/manage
                 width: 150px;
                 height: 150px;
             }
+            .button-group {
+                display: flex;
+                gap: 10px;
+                margin-top: 15px;
+            }
+            
+            .edit-btn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 8px 15px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+            }
+            
+            .delete-btn {
+                background-color: #ff4757;
+                color: white;
+                padding: 8px 15px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+            }
+            
+            .edit-input {
+                width: 100%;
+                padding: 8px;
+                margin: 4px 0;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                font-size: 1rem;
+            }
+            
+            .save-btn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 8px 15px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 500;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+            }
         </style>
         <!-- Add SweetAlert2 CSS and JS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -173,68 +231,154 @@ permalink: profiles/manage
                 const form = document.getElementById(formId);
                 form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
             }
-            window.editProfile = async function(logId) {
-                const id = prompt('Enter the Profile ID you want to edit:');
-                if (!id) return;
-                const fieldToEdit = prompt(
-                    'What would you like to edit? Enter:\n' +
-                    '1 for Name\n' +
-                    '2 for Classes\n' +
-                    '3 for Favorite Class\n' +
-                    '4 for Grade'
-                );
-                if (!fieldToEdit) return;
-                let data = { id: parseInt(id, 10) };
-                switch (fieldToEdit) {
-                    case '1':
-                        data.name = prompt('Enter new name:');
-                        break;
-                    case '2':
-                        data.classes = prompt('Enter new classes (comma-separated):').split(',').map(cls => cls.trim());
-                        break;
-                    case '3':
-                        data.favorite_class = prompt('Enter new favorite class:');
-                        break;
-                    case '4':
-                        data.grade = prompt('Enter new grade:');
-                        break;
-                    default:
-                        alert('Invalid option selected');
-                        return;
-                }
-                try {
-                    const response = await fetch(API_BASE, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data),
-                        credentials: 'include'
-                    });                    
-                    if (response.ok) {
-                        loadProfiles();
-                    } else {
-                        console.error('Failed to update profile:', await response.text());
+            window.editProfile = async function(profileId) {
+                const profileElement = document.querySelector(`div[data-id="${profileId}"]`);
+                const nameSpan = profileElement.querySelector('[data-field="name"]');
+                const classesSpan = profileElement.querySelector('[data-field="classes"]');
+                const favoriteClassSpan = profileElement.querySelector('[data-field="favorite_class"]');
+                const gradeSpan = profileElement.querySelector('[data-field="grade"]');
+
+                // Create input fields
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.value = nameSpan.textContent;
+                nameInput.className = 'edit-input';
+
+                const classesInput = document.createElement('input');
+                classesInput.type = 'text';
+                classesInput.value = classesSpan.textContent;
+                classesInput.className = 'edit-input';
+
+                const favoriteClassInput = document.createElement('input');
+                favoriteClassInput.type = 'text';
+                favoriteClassInput.value = favoriteClassSpan.textContent;
+                favoriteClassInput.className = 'edit-input';
+
+                const gradeInput = document.createElement('input');
+                gradeInput.type = 'text';
+                gradeInput.value = gradeSpan.textContent;
+                gradeInput.className = 'edit-input';
+
+                // Replace spans with inputs
+                nameSpan.replaceWith(nameInput);
+                classesSpan.replaceWith(classesInput);
+                favoriteClassSpan.replaceWith(favoriteClassInput);
+                gradeSpan.replaceWith(gradeInput);
+
+                // Create save button
+                const saveButton = document.createElement('button');
+                saveButton.textContent = 'Save';
+                saveButton.className = 'save-btn';
+
+                // Replace edit button with save button
+                const editButton = profileElement.querySelector('.edit-btn');
+                editButton.replaceWith(saveButton);
+
+                // Add save functionality
+                saveButton.onclick = async function() {
+                    const data = {
+                        id: profileId,
+                        name: nameInput.value,
+                        classes: classesInput.value.split(',').map(cls => cls.trim()),
+                        favorite_class: favoriteClassInput.value,
+                        grade: gradeInput.value
+                    };
+
+                    try {
+                        const response = await fetch(API_BASE, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data),
+                            credentials: 'include'
+                        });
+
+                        if (response.ok) {
+                            // Update the display with new values
+                            const newNameSpan = document.createElement('span');
+                            newNameSpan.textContent = data.name;
+                            newNameSpan.setAttribute('data-field', 'name');
+
+                            const newClassesSpan = document.createElement('span');
+                            newClassesSpan.textContent = data.classes.join(', ');
+                            newClassesSpan.setAttribute('data-field', 'classes');
+
+                            const newFavoriteClassSpan = document.createElement('span');
+                            newFavoriteClassSpan.textContent = data.favorite_class;
+                            newFavoriteClassSpan.setAttribute('data-field', 'favorite_class');
+
+                            const newGradeSpan = document.createElement('span');
+                            newGradeSpan.textContent = data.grade;
+                            newGradeSpan.setAttribute('data-field', 'grade');
+
+                            // Replace inputs with new spans
+                            nameInput.replaceWith(newNameSpan);
+                            classesInput.replaceWith(newClassesSpan);
+                            favoriteClassInput.replaceWith(newFavoriteClassSpan);
+                            gradeInput.replaceWith(newGradeSpan);
+
+                            // Restore edit button
+                            const newEditButton = document.createElement('button');
+                            newEditButton.textContent = 'Edit';
+                            newEditButton.className = 'edit-btn';
+                            newEditButton.onclick = () => editProfile(profileId);
+                            saveButton.replaceWith(newEditButton);
+
+                            // Show success message
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Profile updated successfully!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error updating profile:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to update profile. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     }
-                } catch (error) {
-                    console.error('Error updating profile:', error);
-                }
+                };
             }
-            window.deleteProfile = async function() {
-                const id = prompt('Enter the Profile ID to delete:');
-                if (!id) return;
+            window.deleteProfile = async function(profileId) {
                 try {
-                    const response = await fetch(API_BASE, {
-                        method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ id: parseInt(id, 10) }),
-                        credentials: 'include'
+                    const result = await Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
                     });
-                    if (response.ok) {
-                        loadProfiles();
-                    } else {
-                        console.error('Failed to delete profile:', await response.text());
+
+                    if (result.isConfirmed) {
+                        const response = await fetch(API_BASE, {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: profileId }),
+                            credentials: 'include'
+                        });
+
+                        if (response.ok) {
+                            loadProfiles();
+                            Swal.fire(
+                                'Deleted!',
+                                'Your profile has been deleted.',
+                                'success'
+                            );
+                        }
                     }
                 } catch (error) {
                     console.error('Error deleting profile:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete profile. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
             }
             document.getElementById('create-profile-form').addEventListener('submit', async function(e) {
@@ -308,10 +452,14 @@ permalink: profiles/manage
                             profileDiv.setAttribute('data-id', profile.id);
                             profileDiv.innerHTML = `
                                 <div class="profile-id">ID: ${profile.id}</div>
-                                <h3>${profile.name}</h3>
-                                <p><strong>Classes:</strong> ${profile.classes.join(', ')}</p>
-                                <p><strong>Favorite Class:</strong> ${profile.favorite_class}</p>
-                                <p><strong>Grade:</strong> ${profile.grade}</p>
+                                <h3><span data-field="name">${profile.name}</span></h3>
+                                <p><strong>Classes:</strong> <span data-field="classes">${profile.classes.join(', ')}</span></p>
+                                <p><strong>Favorite Class:</strong> <span data-field="favorite_class">${profile.favorite_class}</span></p>
+                                <p><strong>Grade:</strong> <span data-field="grade">${profile.grade}</span></p>
+                                <div class="button-group">
+                                    <button class="edit-btn" onclick="editProfile(${profile.id})">Edit</button>
+                                    <button class="delete-btn" onclick="deleteProfile(${profile.id})">Delete</button>
+                                </div>
                             `;
                             profileContainer.appendChild(profileDiv);
                         });
