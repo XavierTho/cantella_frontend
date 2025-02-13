@@ -11,232 +11,270 @@ hide: true
 
 <style>
   body {
-    font-family: 'Georgia', serif;
-    background-color: #f9f8f6;
-    color: #333;
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: #e5e7eb;
     margin: 0;
     padding: 0;
-  }
-
-
-  h1, h3 {
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 20px;
-    font-weight: normal;
-    font-style: italic;
-  }
-
-
-  #flashcard-app {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
+    min-height: 100vh;
+}
 
-
-  #create-deck-btn {
-    background-color: #6c757d;
-    color: #fff;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin: 20px 0;
-  }
-
-
-  #create-deck-btn:hover {
-    background-color: #5a6268;
-  }
-
-
-  #add-deck-form {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
+h1, h3 {
+    text-align: center;
+    color: #facc15;
+    text-shadow: 2px 2px 5px rgba(255, 223, 0, 0.5);
     margin-top: 20px;
+    font-weight: bold;
+}
+
+#flashcard-app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1000px;
+    width: 100%;
+    margin: 20px auto;
+}
+
+/* Layout Containers */
+.top-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+}
+
+/* Bottom Section (Hidden Until Deck is Opened) */
+.bottom-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Individual Feature Boxes */
+#add-deck-box, #open-deck-box, #flashcard-box, #add-flashcard-box {
+    width: 48%;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    text-align: center;
+}
+
+/* Import Box Always Visible */
+#import-box {
+    width: 100%;
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    text-align: center;
+}
+
+button {
+    background: linear-gradient(135deg, #facc15, #d97706);
+    color: black;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0px 4px 15px rgba(255, 215, 0, 0.5);
+}
+
+button:hover {
+    background: linear-gradient(135deg, #d97706, #92400e);
+    transform: scale(1.05);
+}
+
+#add-deck-form {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
     width: 100%;
     max-width: 600px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
+    box-shadow: 0 4px 20px rgba(255, 223, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
 
-
-  .form-group {
-    margin-bottom: 15px;
-  }
-
-
-  .form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #444;
-  }
-
-
-  .form-group input {
+.form-group input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: inherit;
-    font-size: 14px;
-  }
+    padding: 12px;
+    border: 2px solid #facc15;
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.1);
+    color: white;
+}
 
-
-  .deck-container {
+/* Deck Display */
+.deck-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 30px;
+    gap: 10px;
     justify-content: center;
-  }
+}
 
-
-  .deck {
-    width: 220px;
+.deck {
+    width: 200px;
     height: 120px;
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: #eaeaea;
-    color: #2c3e50;
+    background: linear-gradient(135deg, #d97706, #92400e);
+    color: #facc15;
     font-size: 18px;
     font-weight: bold;
-    border: 1px solid #ccc;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(255, 223, 0, 0.5);
+    animation: glow 4s infinite alternate;
+}
 
+.deck:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(255, 223, 0, 0.7);
+}
 
-  .deck:hover {
-    background-color: #d6d6d6;
-    transform: translateY(-2px);
-  }
-
-
-  .flashcard-container {
+.flashcard-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 25px;
+    border-radius: 12px;
+    border: 2px solid #facc15;
     width: 100%;
     max-width: 700px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
- 
+    box-shadow: 0 6px 15px rgba(255, 223, 0, 0.3);
+}
 
-
-  .flashcard {
-    width: 320px;
-    height: 200px;
-    border-radius: 8px;
+.flashcard {
+    width: 340px;
+    height: 220px;
+    border-radius: 12px;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background: linear-gradient(135deg, #f8c291, #f39c12);
-    color: #fff;
-    font-size: 16px;
+    background: linear-gradient(135deg, #facc15, #d97706);
+    color: black;
+    font-size: 18px;
     font-weight: bold;
-    margin-bottom: 15px;
-    border: 2px solid #e67e22;
-    transition: transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
 
+.flashcard.answer {
+    background: linear-gradient(135deg, #d97706, #facc15);
+    transform: rotateY(180deg);
+}
 
-  .flashcard.answer {
-    background: linear-gradient(135deg, #f39c12, #f8c291);
-  }
+.flashcard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(255, 215, 0, 0.5);
+}
 
-
-  .flashcard:hover {
-    transform: scale(1.03);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  }
-
-
-  button {
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-top: 10px;
-  }
-
-
-  button:hover {
-    background-color: #5a6268;
-  }
-
-
-  @media screen and (max-width: 600px) {
-    .deck {
-      width: 100%;
+/* Flashcard Flip Animation */
+@keyframes flip {
+    from {
+        transform: rotateY(0deg);
     }
+    to {
+        transform: rotateY(180deg);
+    }
+}
 
+/* Deck Glow Animation */
+@keyframes glow {
+    from {
+        box-shadow: 0px 6px 15px rgba(255, 223, 0, 0.3);
+    }
+    to {
+        box-shadow: 0px 6px 20px rgba(255, 223, 0, 0.7);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .deck {
+        width: 100%;
+    }
 
     .flashcard {
-      width: 100%;
+        width: 100%;
     }
-  }
+}
 </style>
 
 
 <div id="flashcard-app">
-  <h1>Create Flashcards and Decks Now!</h1>
-  <button id="create-deck-btn">+ Create Deck</button>
-<div id="add-deck-form" class="hidden">
-  <div class="form-group">
-    <label for="deck-title">Deck Title:</label>
-    <input type="text" id="deck-title" placeholder="Enter deck title">
+  <div class="top-container">
+    <!-- Left Box: Add Deck Feature -->
+    <div id="add-deck-box">
+      <h2>Create a New Deck</h2>
+      <button id="create-deck-btn">+ Create Deck</button>
+      <div id="add-deck-form" class="hidden">
+        <div class="form-group">
+          <label for="deck-title">Deck Title:</label>
+          <input type="text" id="deck-title" placeholder="Enter deck title">
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Box: Open Deck Feature -->
+<div id="open-deck-box">
+      <h2>Your Decks</h2>
+      <div class="deck-container" id="deck-container"></div>
+    </div>
   </div>
-</div>
 
+  <!-- This section only appears after clicking "Open Deck" -->
+  <div class="bottom-container hidden" id="deck-interaction">
+    <div id="flashcard-box">
+      <h2>Flashcards</h2>
+      <div class="flashcard-container hidden" id="flashcard-container">
+        <div class="flashcard hidden" id="flashcard"></div>
+        <button id="next-card-btn" class="hidden">Next Card</button>
+        <button id="close-deck-btn" class="hidden">Close Deck</button>
+      </div>
+    </div>
 
-
-
-
-
-  <div class="deck-container" id="deck-container"></div>
-  <div class="flashcard-container hidden" id="flashcard-container">
-    <div class="flashcard hidden" id="flashcard"></div>
-    <button id="next-card-btn" class="hidden">Next Card</button>
-    <button id="close-deck-btn" class="hidden">Close Deck</button>
+<div id="add-flashcard-box">
+      <h2>Add a Flashcard</h2>
+      <div id="add-flashcard-form" class="hidden">
+        <h3 id="current-deck-name">Add Flashcard to Deck: <span id="deck-name-placeholder"></span></h3>
+        <div class="form-group">
+          <label for="question">Question:</label>
+          <input type="text" id="question" placeholder="Enter question">
+        </div>
+        <div class="form-group">
+          <label for="answer">Answer:</label>
+          <input type="text" id="answer" placeholder="Enter answer">
+        </div>
+        <button id="add-card-btn">Add Flashcard</button>
+      </div>
+    </div>
   </div>
-  <div id="add-flashcard-form" class="hidden">
-  <h3 id="current-deck-name">Add Flashcard to Deck: <span id="deck-name-placeholder"></span></h3>
-  <div class="form-group">
-    <label for="question">Question:</label>
-    <input type="text" id="question" placeholder="Enter question">
-  </div>
-  <div class="form-group">
-    <label for="answer">Answer:</label>
-    <input type="text" id="answer" placeholder="Enter answer">
-  </div>
-  <button id="add-card-btn">Add Flashcard</button>
-</div>
 
 
 
@@ -247,7 +285,14 @@ hide: true
 
 
 
-<script>
+
+<script type="module">
+  import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+  console.log("Python URI:", pythonURI); // Check if it's correctly imported
+
+
+
+
   const createDeckBtn = document.getElementById('create-deck-btn');
   const addDeckForm = document.getElementById('add-deck-form');
   const deckInfoPhase = document.getElementById('deck-info-phase');
@@ -270,12 +315,11 @@ hide: true
     deckInfoPhase.classList.remove('hidden');
     questionPhase.classList.add('hidden');
   });
-<script type="module">
-import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+
+
+
 document.getElementById('create-deck-btn').addEventListener('click', async () => {
     const deckTitle = document.getElementById('deck-title').value.trim();
-
-
     if (!deckTitle) {
         alert('Please provide a deck title.');
         return;
@@ -283,7 +327,8 @@ document.getElementById('create-deck-btn').addEventListener('click', async () =>
 
 
     try {
-        const response = await fetch(`${pythonURI}/api/deck` {
+        const response = await fetch(`${pythonURI}/api/deck`, {
+            ...fetchOptions,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -327,6 +372,7 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
 
     try {
         const response = await fetch(`${pythonURI}/api/flashcard`, {
+            ...fetchOptions,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -398,6 +444,7 @@ function displayFlashcards(cards) {
 async function fetchDecks() {
     try {
         const response = await fetch(`${pythonURI}/api/deck`, {
+            ...fetchOptions,
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -439,11 +486,10 @@ async function fetchDecks() {
 // Fetch all flashcards from the backend
 async function fetchFlashcards() {
     try {
-        // Define the backend URL for fetching flashcards
-        const backendURL = `${pythonURI}/api/flashcard`;
 
         // Send a GET request to the backend
-        const response = await fetch(backendURL, {
+        const response = await fetch(`${pythonURI}/api/flashcard`, {
+            ...fetchOptions,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -552,6 +598,7 @@ function displayDeck(deck) {
         if (confirmDelete) {
             try {
                 const response = await fetch(`${pythonURI}/api/deck/${deck.id}`, {
+                    ...fetchOptions,
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -579,6 +626,7 @@ function displayDeck(deck) {
 async function editDeckTitle(deckId, newTitle, inputElement, titleElement, deckElement) {
     try {
         const response = await fetch(`${pythonURI}/api/deck/${deckId}`, {
+            ...fetchOptions,
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -613,28 +661,26 @@ async function openDeck(deck) {
 
     try {
         const response = await fetch(`${pythonURI}/api/deck/${deck.id}`, {
+            ...fetchOptions,
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
 
         if (response.ok) {
             const detailedDeck = await response.json();
-            currentDeck = detailedDeck; // Save the fetched deck details locally
+            currentDeck = detailedDeck;
             currentCardIndex = 0;
 
-            // Show the current deck name in the flashcard form
             document.getElementById('deck-name-placeholder').textContent = currentDeck.title;
 
-            // Show flashcards and allow adding new ones
             if (currentDeck.cards.length > 0) {
-                displayFlashcards(currentDeck.cards); // Show flashcards
+                displayFlashcards(currentDeck.cards);
             } else {
                 document.getElementById('flashcard-container').innerHTML = '<p>No flashcards yet. Add one!</p>';
             }
 
-            document.getElementById('add-flashcard-form').classList.remove('hidden'); // Show form
-            flashcardContainer.classList.remove('hidden');
-            deckContainer.classList.add('hidden');
+            document.getElementById('add-flashcard-form').classList.remove('hidden');
+            document.getElementById('deck-interaction').classList.remove('hidden');
         } else {
             console.error('Failed to fetch deck details:', await response.text());
         }
@@ -642,6 +688,7 @@ async function openDeck(deck) {
         console.error('Error fetching deck details:', error);
     }
 }
+
 
 
 
@@ -704,8 +751,7 @@ closeDeckBtn.addEventListener('click', () => {
 
 // Fetch and display flashcards when the page loads
 document.addEventListener('DOMContentLoaded', fetchDecks);
-        fetchDecks();
-        fetchFlashcards();
+
 
 
 
@@ -762,33 +808,29 @@ document.addEventListener('DOMContentLoaded', fetchDecks);
 
 
 
-
 <script>
 document.getElementById('import-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-
+    event.preventDefault(); // Prevent form from reloading the page
 
     const amount = document.getElementById('amount').value || 10;
     const category = document.getElementById('category').value;
-
 
     let apiUrl = `${pythonURI}/api/import-flashcards?amount=${amount}&difficulty=medium`;
     if (category) {
         apiUrl += `&category=${category}`;
     }
 
-
     try {
         const response = await fetch(apiUrl, {
+            ...fetchOptions,
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
         });
-
 
         if (response.ok) {
             const data = await response.json();
-            alert(`Deck "${data.deck.title}" created successfully!`);
-            await fetchDecks(); // Refresh deck list
+            alert(`Successfully imported ${data.flashcards.length} flashcards!`);
+            await fetchDecks(); // Refresh deck list after import
         } else {
             const error = await response.json();
             alert(`Error: ${error.error}`);
@@ -798,39 +840,4 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
         alert("An error occurred while importing flashcards.");
     }
 });
-</script>
-
-
-
-
-<button id="import-flashcards">Import Flashcards</button>
-
-
-
-
-<script>
-  document.getElementById('import-flashcards').addEventListener('click', async () => {
-      try {
-          const response = await fetch('${pythonURI}/api/import-flashcards', {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-          });
-
-
-          if (!response.ok) {
-              const error = await response.json();
-              alert("Error: " + error.error);
-              return;
-          }
-
-
-          const data = await response.json();
-          alert(`Successfully imported ${data.flashcards.length} flashcards!`);
-      } catch (error) {
-          console.error("Error importing flashcards:", error);
-          alert("An error occurred while importing flashcards.");
-      }
-  });
 </script>
