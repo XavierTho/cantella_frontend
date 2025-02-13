@@ -248,6 +248,9 @@ hide: true
 
 
 <script>
+
+import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+
   const createDeckBtn = document.getElementById('create-deck-btn');
   const addDeckForm = document.getElementById('add-deck-form');
   const deckInfoPhase = document.getElementById('deck-info-phase');
@@ -282,7 +285,8 @@ document.getElementById('create-deck-btn').addEventListener('click', async () =>
 
 
     try {
-        const response = await fetch('http://127.0.0.1:8202/api/deck', {
+        const response = await fetch(`${pythonURI}/api/deck`, {
+            ...fetchOptions,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -325,7 +329,8 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
     }
 
     try {
-        const response = await fetch('http://127.0.0.1:8202/api/flashcard', {
+        const response = await fetch(`${pythonURI}/api/flashcard`, {
+            ...fetchOptions,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -396,7 +401,8 @@ function displayFlashcards(cards) {
 
 async function fetchDecks() {
     try {
-        const response = await fetch('http://127.0.0.1:8202/api/deck', {
+        const response = await fetch(`${pythonURI}/api/deck`, {
+            ...fetchOptions,
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -438,11 +444,10 @@ async function fetchDecks() {
 // Fetch all flashcards from the backend
 async function fetchFlashcards() {
     try {
-        // Define the backend URL for fetching flashcards
-        const backendURL = 'http://127.0.0.1:8202/api/flashcard';
 
         // Send a GET request to the backend
-        const response = await fetch(backendURL, {
+        const response = await fetch(`${pythonURI}/api/flashcard`, {
+            ...fetchOptions,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -550,7 +555,8 @@ function displayDeck(deck) {
         const confirmDelete = confirm(`Are you sure you want to delete the deck "${deck.title}"?`);
         if (confirmDelete) {
             try {
-                const response = await fetch(`http://127.0.0.1:8202/api/deck/${deck.id}`, {
+                const response = await fetch(`${pythonURI}/api/deck/${deck.id}`, {
+                    ...fetchOptions,
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -577,7 +583,8 @@ function displayDeck(deck) {
 
 async function editDeckTitle(deckId, newTitle, inputElement, titleElement, deckElement) {
     try {
-        const response = await fetch(`http://127.0.0.1:8202/api/deck/${deckId}`, {
+        const response = await fetch(`${pythonURI}/api/deck/${deckId}`, {
+            ...fetchOptions,
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -611,7 +618,8 @@ async function openDeck(deck) {
     }
 
     try {
-        const response = await fetch(`http://127.0.0.1:8202/api/deck/${deck.id}`, {
+        const response = await fetch(`${pythonURI}/api/deck/${deck.id}`, {
+            ...fetchOptions,
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
@@ -770,7 +778,7 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
     const category = document.getElementById('category').value;
 
 
-    let apiUrl = `http://127.0.0.1:8202/api/import-flashcards?amount=${amount}&difficulty=medium`;
+    let apiUrl = `${pythonURI}/api/import-flashcards?amount=${amount}&difficulty=medium`;
     if (category) {
         apiUrl += `&category=${category}`;
     }
@@ -778,6 +786,7 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
 
     try {
         const response = await fetch(apiUrl, {
+            ...fetchOptions,
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -809,7 +818,8 @@ document.getElementById('import-form').addEventListener('submit', async (event) 
 <script>
   document.getElementById('import-flashcards').addEventListener('click', async () => {
       try {
-          const response = await fetch('http://127.0.0.1:8202/api/import-flashcards', {
+          const response = await fetch(`${pythonURI}/api/import-flashcards`, {
+              ...fetchOptions,
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
