@@ -141,31 +141,33 @@ permalink: profiles/manage
             }
             
             .edit-btn {
-                background-color: #4CAF50;
-                color: white;
-                padding: 8px 15px;
+                background-color: rgba(76, 175, 80, 0.2);
+                color: #4CAF50;
+                padding: 8px;
                 border: none;
-                border-radius: 8px;
+                border-radius: 50%;
                 cursor: pointer;
-                font-weight: 500;
                 transition: all 0.3s ease;
-                text-transform: uppercase;
-                font-size: 0.8rem;
-                letter-spacing: 0.5px;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             
             .delete-btn {
-                background-color: #ff4757;
-                color: white;
-                padding: 8px 15px;
+                background-color: rgba(244, 67, 54, 0.2);
+                color: #f44336;
+                padding: 8px;
                 border: none;
-                border-radius: 8px;
+                border-radius: 50%;
                 cursor: pointer;
-                font-weight: 500;
                 transition: all 0.3s ease;
-                text-transform: uppercase;
-                font-size: 0.8rem;
-                letter-spacing: 0.5px;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             
             .edit-input {
@@ -192,10 +194,25 @@ permalink: profiles/manage
                 letter-spacing: 0.5px;
                 transition: all 0.3s ease;
             }
+
+            .edit-btn:hover {
+                background-color: rgba(76, 175, 80, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .delete-btn:hover {
+                background-color: rgba(244, 67, 54, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .fa-pencil-alt, .fa-trash-alt {
+                font-size: 1rem;
+            }
         </style>
         <!-- Add SweetAlert2 CSS and JS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
     <body>
         <div class="container">
@@ -226,6 +243,8 @@ permalink: profiles/manage
         <script type="module">
             import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
             const API_BASE = `${pythonURI}/api/profiles`;
+            const deleteSound = new Audio('{{site.baseurl}}/images/sounds/delete.mp3');
+
             // Make functions globally available
             window.toggleForm = function(formId) {
                 const form = document.getElementById(formId);
@@ -267,7 +286,7 @@ permalink: profiles/manage
 
                 // Create save button
                 const saveButton = document.createElement('button');
-                saveButton.textContent = 'Save';
+                saveButton.innerHTML = '<i class="fas fa-save"></i>';
                 saveButton.className = 'save-btn';
 
                 // Replace edit button with save button
@@ -285,55 +304,58 @@ permalink: profiles/manage
                     };
 
                     try {
-                        const response = await fetch(API_BASE, {
+                        const response = await fetch(`${API_BASE}`, {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(data),
                             credentials: 'include'
                         });
 
-                        if (response.ok) {
-                            // Update the display with new values
-                            const newNameSpan = document.createElement('span');
-                            newNameSpan.textContent = data.name;
-                            newNameSpan.setAttribute('data-field', 'name');
-
-                            const newClassesSpan = document.createElement('span');
-                            newClassesSpan.textContent = data.classes.join(', ');
-                            newClassesSpan.setAttribute('data-field', 'classes');
-
-                            const newFavoriteClassSpan = document.createElement('span');
-                            newFavoriteClassSpan.textContent = data.favorite_class;
-                            newFavoriteClassSpan.setAttribute('data-field', 'favorite_class');
-
-                            const newGradeSpan = document.createElement('span');
-                            newGradeSpan.textContent = data.grade;
-                            newGradeSpan.setAttribute('data-field', 'grade');
-
-                            // Replace inputs with new spans
-                            nameInput.replaceWith(newNameSpan);
-                            classesInput.replaceWith(newClassesSpan);
-                            favoriteClassInput.replaceWith(newFavoriteClassSpan);
-                            gradeInput.replaceWith(newGradeSpan);
-
-                            // Restore edit button
-                            const newEditButton = document.createElement('button');
-                            newEditButton.textContent = 'Edit';
-                            newEditButton.className = 'edit-btn';
-                            newEditButton.onclick = () => editProfile(profileId);
-                            saveButton.replaceWith(newEditButton);
-
-                            // Show success message
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Profile updated successfully!',
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
+                        if (!response.ok) {
+                            throw new Error('Failed to update profile');
                         }
+
+                        // Update the display with new values
+                        const newNameSpan = document.createElement('span');
+                        newNameSpan.textContent = data.name;
+                        newNameSpan.setAttribute('data-field', 'name');
+
+                        const newClassesSpan = document.createElement('span');
+                        newClassesSpan.textContent = data.classes.join(', ');
+                        newClassesSpan.setAttribute('data-field', 'classes');
+
+                        const newFavoriteClassSpan = document.createElement('span');
+                        newFavoriteClassSpan.textContent = data.favorite_class;
+                        newFavoriteClassSpan.setAttribute('data-field', 'favorite_class');
+
+                        const newGradeSpan = document.createElement('span');
+                        newGradeSpan.textContent = data.grade;
+                        newGradeSpan.setAttribute('data-field', 'grade');
+
+                        // Replace inputs with new spans
+                        nameInput.replaceWith(newNameSpan);
+                        classesInput.replaceWith(newClassesSpan);
+                        favoriteClassInput.replaceWith(newFavoriteClassSpan);
+                        gradeInput.replaceWith(newGradeSpan);
+
+                        // Restore edit button
+                        const newEditButton = document.createElement('button');
+                        newEditButton.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+                        newEditButton.className = 'edit-btn';
+                        newEditButton.onclick = () => editProfile(profileId);
+                        saveButton.replaceWith(newEditButton);
+
+                        // Show success message
+                        await Swal.fire({
+                            title: 'Success!',
+                            text: 'Profile updated successfully!',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+
                     } catch (error) {
                         console.error('Error updating profile:', error);
-                        Swal.fire({
+                        await Swal.fire({
                             title: 'Error!',
                             text: 'Failed to update profile. Please try again.',
                             icon: 'error',
@@ -355,7 +377,7 @@ permalink: profiles/manage
                     });
 
                     if (result.isConfirmed) {
-                        const response = await fetch(API_BASE, {
+                        const response = await fetch(`${API_BASE}`, {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ id: profileId }),
@@ -363,12 +385,19 @@ permalink: profiles/manage
                         });
 
                         if (response.ok) {
-                            loadProfiles();
+                            deleteSound.play();
+                            // Remove the profile element from the DOM
+                            const profileElement = document.querySelector(`div[data-id="${profileId}"]`);
+                            if (profileElement) {
+                                profileElement.remove();
+                            }
                             Swal.fire(
                                 'Deleted!',
                                 'Your profile has been deleted.',
                                 'success'
                             );
+                        } else {
+                            throw new Error('Failed to delete profile');
                         }
                     }
                 } catch (error) {
@@ -457,8 +486,12 @@ permalink: profiles/manage
                                 <p><strong>Favorite Class:</strong> <span data-field="favorite_class">${profile.favorite_class}</span></p>
                                 <p><strong>Grade:</strong> <span data-field="grade">${profile.grade}</span></p>
                                 <div class="button-group">
-                                    <button class="edit-btn" onclick="editProfile(${profile.id})">Edit</button>
-                                    <button class="delete-btn" onclick="deleteProfile(${profile.id})">Delete</button>
+                                    <button class="edit-btn" onclick="editProfile(${profile.id})">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                    <button class="delete-btn" onclick="deleteProfile(${profile.id})">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </div>
                             `;
                             profileContainer.appendChild(profileDiv);
