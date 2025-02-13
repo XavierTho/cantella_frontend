@@ -11,196 +11,184 @@ hide: true
 
 <style>
   body {
-    font-family: 'Georgia', serif;
-    background-color: #f9f8f6;
-    color: #333;
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: #e5e7eb;
     margin: 0;
     padding: 0;
-  }
-
-
-  h1, h3 {
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 20px;
-    font-weight: normal;
-    font-style: italic;
-  }
-
-
-  #flashcard-app {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
+    min-height: 100vh;
+}
 
-
-  #create-deck-btn {
-    background-color: #6c757d;
-    color: #fff;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin: 20px 0;
-  }
-
-
-  #create-deck-btn:hover {
-    background-color: #5a6268;
-  }
-
-
-  #add-deck-form {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
+h1, h3 {
+    text-align: center;
+    color: #facc15;
+    text-shadow: 2px 2px 5px rgba(255, 223, 0, 0.5);
     margin-top: 20px;
+    font-weight: bold;
+}
+
+#flashcard-app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 900px;
+    width: 90%;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+}
+
+button {
+    background: linear-gradient(135deg, #facc15, #d97706);
+    color: black;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0px 4px 15px rgba(255, 215, 0, 0.5);
+}
+
+button:hover {
+    background: linear-gradient(135deg, #d97706, #92400e);
+    transform: scale(1.05);
+    box-shadow: 0px 4px 15px rgba(255, 215, 0, 0.7);
+}
+
+#add-deck-form {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
     width: 100%;
     max-width: 600px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
+    box-shadow: 0 4px 20px rgba(255, 223, 0, 0.3);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
 
-
-  .form-group {
-    margin-bottom: 15px;
-  }
-
-
-  .form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #444;
-  }
-
-
-  .form-group input {
+.form-group input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: inherit;
-    font-size: 14px;
-  }
+    padding: 12px;
+    border: 2px solid #facc15;
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.1);
+    color: white;
+}
 
-
-  .deck-container {
+.deck-container {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     margin-top: 30px;
     justify-content: center;
-  }
+}
 
-
-  .deck {
-    width: 220px;
-    height: 120px;
-    border-radius: 8px;
+.deck {
+    width: 240px;
+    height: 140px;
+    border-radius: 12px;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: #eaeaea;
-    color: #2c3e50;
-    font-size: 18px;
+    background: linear-gradient(135deg, #d97706, #92400e);
+    color: #facc15;
+    font-size: 20px;
     font-weight: bold;
-    border: 1px solid #ccc;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(255, 223, 0, 0.5);
+    animation: glow 4s infinite alternate;
+}
 
+.deck:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(255, 223, 0, 0.7);
+}
 
-  .deck:hover {
-    background-color: #d6d6d6;
-    transform: translateY(-2px);
-  }
-
-
-  .flashcard-container {
+.flashcard-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 25px;
+    border-radius: 12px;
+    border: 2px solid #facc15;
     width: 100%;
     max-width: 700px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
+    box-shadow: 0 6px 15px rgba(255, 223, 0, 0.3);
+}
 
-
-
-  .flashcard {
-    width: 320px;
-    height: 200px;
-    border-radius: 8px;
+.flashcard {
+    width: 340px;
+    height: 220px;
+    border-radius: 12px;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background: linear-gradient(135deg, #f8c291, #f39c12);
-    color: #fff;
-    font-size: 16px;
+    background: linear-gradient(135deg, #facc15, #d97706);
+    color: black;
+    font-size: 18px;
     font-weight: bold;
-    margin-bottom: 15px;
-    border: 2px solid #e67e22;
-    transition: transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
 
+.flashcard.answer {
+    background: linear-gradient(135deg, #d97706, #facc15);
+    transform: rotateY(180deg);
+}
 
-  .flashcard.answer {
-    background: linear-gradient(135deg, #f39c12, #f8c291);
-  }
+.flashcard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(255, 215, 0, 0.5);
+}
 
-
-  .flashcard:hover {
-    transform: scale(1.03);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  }
-
-
-  button {
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-top: 10px;
-  }
-
-
-  button:hover {
-    background-color: #5a6268;
-  }
-
-
-  @media screen and (max-width: 600px) {
-    .deck {
-      width: 100%;
+/* Flashcard Flip Animation */
+@keyframes flip {
+    from {
+        transform: rotateY(0deg);
     }
+    to {
+        transform: rotateY(180deg);
+    }
+}
 
+/* Deck Glow Animation */
+@keyframes glow {
+    from {
+        box-shadow: 0px 6px 15px rgba(255, 223, 0, 0.3);
+    }
+    to {
+        box-shadow: 0px 6px 20px rgba(255, 223, 0, 0.7);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .deck {
+        width: 100%;
+    }
 
     .flashcard {
-      width: 100%;
+        width: 100%;
     }
-  }
+}
 </style>
 
 
