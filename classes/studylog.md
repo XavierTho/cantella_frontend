@@ -9,6 +9,7 @@ permalink: classes/log
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Study Log</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <style>
             body {
                 font-family: 'Inter', sans-serif;
@@ -64,33 +65,39 @@ permalink: classes/log
             .button-group {
                 display: flex;
                 gap: 10px;
-                margin-top: 15px;
+                margin-top: 10px;
             }
-            .log-container li button {
-                flex: 1;
-                padding: 8px 15px;
+            .edit-btn, .delete-btn {
+                background: none;
                 border: none;
-                border-radius: 8px;
+                padding: 8px;
                 cursor: pointer;
-                font-weight: 500;
+                border-radius: 50%;
                 transition: all 0.3s ease;
-                text-transform: uppercase;
-                font-size: 0.8rem;
-                letter-spacing: 0.5px;
+                width: 35px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .edit-btn {
-                background-color: #4CAF50;
-                color: white;
+                background-color: rgba(76, 175, 80, 0.2);
+                color: #4CAF50;
             }
             .delete-btn {
-                background-color: #ff4757;
-                color: white;
+                background-color: rgba(244, 67, 54, 0.2);
+                color: #f44336;
             }
             .edit-btn:hover {
-                background-color: #43a047;
+                background-color: rgba(76, 175, 80, 0.3);
+                transform: translateY(-2px);
             }
             .delete-btn:hover {
-                background-color: #ff3748;
+                background-color: rgba(244, 67, 54, 0.3);
+                transform: translateY(-2px);
+            }
+            .fa-pencil-alt, .fa-trash-alt {
+                font-size: 1rem;
             }
             .form-container {
                 background: rgba(255, 255, 255, 0.15);
@@ -220,24 +227,27 @@ permalink: classes/log
         </footer>
 <script type="module">
     import { pythonURI, fetchOptions } from '{{site.baseurl}}/assets/js/api/config.js';
+    // Add this at the top of your script section
+    const deleteSound = new Audio('{{site.baseurl}}/images/sounds/delete.mp3');
     // Make functions globally available
     window.deleteLog = async function(logId) {
-        try {
-            const response = await fetch(`${pythonURI}/api/studylognew`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: logId }),
-                credentials: 'include',
-            });
-            if (response.ok) {
-                loadStudyLogs();
-            } else {
-                console.error('Failed to delete study log:', response.statusText);
+        if (confirm('Are you sure you want to delete this log?')) {
+            try {
+                const response = await fetch(`${pythonURI}/api/studylognew`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: logId }),
+                    credentials: 'include',
+                });
+                if (response.ok) {
+                    deleteSound.play(); // Play delete sound
+                    loadStudyLogs();
+                }
+            } catch (error) {
+                console.error('Error deleting study log:', error);
             }
-        } catch (error) {
-            console.error('Error deleting study log:', error);
         }
     }
     window.editLog = async function(logId) {
@@ -378,8 +388,12 @@ permalink: classes/log
                         <div><strong>Notes:</strong> <span data-field="notes">${log.notes || 'No notes'}</span></div>
                         <div><strong>Time:</strong> ${new Date(log.date || log.timestamp).toLocaleString()}</div>
                         <div class="button-group">
-                            <button class="edit-btn" onclick="editLog(${log.id})">Edit</button>
-                            <button class="delete-btn" onclick="deleteLog(${log.id})">Delete</button>
+                            <button class="edit-btn" onclick="editLog(${log.id})">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="delete-btn" onclick="deleteLog(${log.id})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     `;
                     studyLogList.appendChild(listItem);
