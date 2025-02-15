@@ -220,7 +220,7 @@ permalink: profiles/manage
     </head>
     <body>
         <div class="container">
-            <h1>Student Social Media - Profiles</h1>
+            <h1>Student Profiles</h1>
             <div class="button-container">
                 <button onclick="toggleForm('create-profile-form-container')">Create New Profile</button>
             </div>
