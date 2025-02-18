@@ -1,4 +1,4 @@
-title: Project Cantella
+title: Cantella
 description: "Study Site for DNHS"
 owner_name: Xavier Thompson
 github_username: XavierTho
@@ -17,13 +17,13 @@ plugins:
   - jekyll-remote-theme
 header_pages:
   - navigation/profiles.md
-  - navigation/flashcards.md
-  - navigation/countdown.html
-  - navigation/about.md
   - navigation/calendar.md
-  - navigation/gradelog.md
   - navigation/tutor.html
+  - navigation/flashcards.md
+  - navigation/studylog.md
+  - navigation/gradelog.md
   - navigation/deployment.md
+
 
 
 Server: https://cantella.nighthawkcodingsociety.com/
