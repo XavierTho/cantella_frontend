@@ -464,7 +464,7 @@ async function fetchDecks() {
             });
         } else if (response.status === 401) {
             alert('You are not authorized. Please log in.');
-            window.location.href = '/login.html';
+            window.location.href = '/cantella_frontend/login';
         } else {
             const error = await response.json();
             console.error('Failed to fetch decks:', error);
@@ -539,12 +539,15 @@ createDeckBtn.addEventListener('click', () => {
 
 
 function displayDeck(deck) {
-    console.log('Displaying deck:', deck); // Log the deck object for debugging
+    console.log('Displaying deck:', deck);
 
     const deckElement = document.createElement('div');
     deckElement.classList.add('deck');
     deckElement.innerHTML = `
-        <h3 class="deck-title">${deck.title}</h3>
+        <h3 class="deck-title" style="position: relative;">
+            <span class="title-text">${deck.title}</span>
+            <span class="edit-icon" style="cursor: pointer; position: absolute; right: -25px; top: 5px; opacity: 0.5;">✏️</span>
+        </h3>
         <div style="display: flex; gap: 5px; justify-content: center; margin-top: 10px;">
             <button class="open-deck-btn">Open</button>
             <button class="delete-deck-btn">Delete</button>
@@ -552,75 +555,91 @@ function displayDeck(deck) {
     `;
 
     const titleElement = deckElement.querySelector('.deck-title');
+    const titleText = deckElement.querySelector('.title-text');
+    const editIcon = deckElement.querySelector('.edit-icon');
 
-    // Enable editing the title on double-click
-    titleElement.addEventListener('dblclick', () => {
+    // Show the pencil icon on hover
+    deckElement.addEventListener('mouseover', () => {
+        editIcon.style.opacity = "1";
+    });
+
+    deckElement.addEventListener('mouseout', () => {
+        editIcon.style.opacity = "0.5";
+    });
+
+    // Function to enable title editing
+    function enableTitleEditing() {
         const input = document.createElement('input');
         input.type = 'text';
-        input.value = deck.title;
+        input.value = titleText.textContent; // Use the current title in the UI
         input.classList.add('edit-deck-input');
 
-        titleElement.replaceWith(input);
+        titleText.replaceWith(input);
+        input.focus();
 
-        // Save the new title when input loses focus or on Enter key
+        // Prevent race condition by setting a delay before executing the replaceWith()
+        function safelyReplaceInputWithTitle() {
+            setTimeout(() => {
+                if (input.parentElement) {
+                    input.replaceWith(titleText);
+                }
+            }, 10);
+        }
+
         input.addEventListener('blur', async () => {
-            const newTitle = input.value.trim();
-            if (newTitle && newTitle !== deck.title) {
-                await editDeckTitle(deck.id, newTitle, input, titleElement, deckElement);
-            } else {
-                input.replaceWith(titleElement); // Revert if no change
-            }
+            await handleDeckTitleUpdate(input, safelyReplaceInputWithTitle);
         });
 
         input.addEventListener('keydown', async (event) => {
             if (event.key === 'Enter') {
-                const newTitle = input.value.trim();
-                if (newTitle && newTitle !== deck.title) {
-                    await editDeckTitle(deck.id, newTitle, input, titleElement, deckElement);
-                } else {
-                    input.replaceWith(titleElement); // Revert if no change
-                }
+                await handleDeckTitleUpdate(input, safelyReplaceInputWithTitle);
             }
         });
+    }
 
-        input.focus(); // Automatically focus the input
-    });
-
-    // Attach event listener for opening the deck
-    deckElement.querySelector('.open-deck-btn').addEventListener('click', () => {
-        console.log('Deck clicked:', deck); // Log the deck object on button click
-        openDeck(deck);
-    });
-
-    // Attach event listener for deleting the deck
-    deckElement.querySelector('.delete-deck-btn').addEventListener('click', async () => {
-        const confirmDelete = confirm(`Are you sure you want to delete the deck "${deck.title}"?`);
-        if (confirmDelete) {
+    // Function to handle deck title update
+    async function handleDeckTitleUpdate(input, onFinish) {
+        const newTitle = input.value.trim();
+        if (newTitle && newTitle !== deck.title) {
             try {
                 const response = await fetch(`${pythonURI}/api/deck/${deck.id}`, {
                     ...fetchOptions,
-                    method: 'DELETE',
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
+                    body: JSON.stringify({ title: newTitle }),
                 });
 
                 if (response.ok) {
-                    alert('Deck deleted successfully!');
-                    // Refresh the decks list
-                    await fetchDecks();
+                    const updatedDeck = await response.json();
+                    deck.title = updatedDeck.title; // Update the local deck object
+                    titleText.textContent = updatedDeck.title; // Update UI immediately
+                    alert(`Deck updated successfully to: ${updatedDeck.title}`);
                 } else {
                     const error = await response.json();
-                    alert(`Failed to delete deck: ${error.error}`);
+                    alert(`Error updating deck: ${error.error}`);
                 }
             } catch (error) {
-                console.error('Error deleting deck:', error);
-                alert('An error occurred while deleting the deck.');
+                console.error('Error updating deck:', error);
+                alert('An error occurred while updating the deck.');
             }
         }
-    });
 
+        // Call the function to replace input safely
+        onFinish();
+    }
+
+    // Enable editing when the title is double-clicked
+    titleElement.addEventListener('dblclick', enableTitleEditing);
+
+    // Enable editing when the pencil icon is clicked
+    editIcon.addEventListener('click', enableTitleEditing);
+
+    // Append the deck element to the container
     deckContainer.appendChild(deckElement);
 }
+
+
 
 
 async function editDeckTitle(deckId, newTitle, inputElement, titleElement, deckElement) {
