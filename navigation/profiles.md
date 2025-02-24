@@ -12,22 +12,28 @@ permalink: profiles/manage
         <title>Profiles</title>
         <style>
             body {
-                font-family: 'Arial', sans-serif;
+                font-family: 'Inter', sans-serif;
                 margin: 0;
                 padding: 20px;
-                background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
-                color: #f9f9f9;
-                text-align: center;
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                color: #ffffff;
+                min-height: 100vh;
             }
             .container {
                 max-width: 1000px;
-                margin: 0 auto;
-                padding: 20px;
+                margin: 20px auto;
+                padding: 30px;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 20px;
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+                border: 1px solid rgba(255, 255, 255, 0.18);
             }
-            h1 {
-                font-size: 2.5em;
-                margin-bottom: 20px;
-                color: #fff;
+            h1, h2 {
+                text-align: center;
+                color: #ffffff;
+                margin-bottom: 30px;
+                font-weight: 600;
             }
             .button-container {
                 display: flex;
@@ -36,140 +42,130 @@ permalink: profiles/manage
                 margin: 30px 0;
             }
             .button-container button {
-                padding: 15px 30px;
-                font-size: 1.1em;
-                color: #fff;
-                background: transparent;
-                border: 2px solid #fff;
-                border-radius: 10px;
+                background-color: #4CAF50;
+                color: white;
+                padding: 12px 24px;
+                border: none;
+                border-radius: 8px;
                 cursor: pointer;
-                transition: all 0.3s;
-                position: relative;
-                overflow: hidden;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: all 0.3s ease;
             }
             .button-container button:hover {
-                background: #fff;
-                color: #333;
-                transform: scale(1.05);
-            }
-            .button-container button:active {
-                transform: scale(0.95);
+                background-color: #43a047;
+                transform: translateY(-2px);
             }
             .profile-container {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 20px;
+                padding: 20px;
+                max-width: 900px;
+                margin: 0 auto;
                 justify-content: center;
             }
             .profile {
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 15px;
+                background: rgba(255, 255, 255, 0.15);
                 padding: 20px;
-                width: 300px;
-                text-align: left;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-                transition: transform 0.3s;
+                border-radius: 15px;
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                width: calc(50% - 10px); /* 50% width minus half the gap */
+                min-width: 280px;
+                box-sizing: border-box;
             }
             .profile:hover {
-                transform: scale(1.05);
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             }
-            .profile-id {
-                font-size: 0.9em;
-                color: #ddd;
-                text-align: right;
-            }
-            .form-container {
-                display: none;
-                margin: 20px auto;
-                padding: 20px;
-                max-width: 600px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            }
-            form label {
-                display: block;
-                margin: 10px 0 5px;
-                color: #fff;
-            }
-            form input {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
+            .profile h3 {
+                color: #a8d0ff;
                 margin-bottom: 15px;
             }
-            form button {
-                padding: 10px 20px;
-                background: #fff;
-                color: #333;
+            .profile p {
+                margin: 10px 0;
+                font-size: 0.95rem;
+            }
+            .profile strong {
+                color: #a8d0ff;
+            }
+            .form-container {
+                display: none; /* Hide by default */
+                background: rgba(255, 255, 255, 0.15);
+                padding: 30px;
+                border-radius: 15px;
+                margin: 30px auto;
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                max-width: 600px;
+            }
+            .form-container form {
+                display: grid;
+                gap: 15px;
+            }
+            .form-container label {
+                font-size: 0.9rem;
+                color: #a8d0ff;
+                margin-bottom: 5px;
+            }
+            .form-container input {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+            }
+            .form-container input:focus {
+                outline: none;
+                border-color: #4CAF50;
+                background: rgba(255, 255, 255, 0.15);
+            }
+            .form-container button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 12px;
                 border: none;
-                border-radius: 5px;
+                border-radius: 8px;
                 cursor: pointer;
-                transition: all 0.3s;
-                position: relative;
-                overflow: hidden;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: all 0.3s ease;
             }
-            form button:hover {
-                background: #eee;
-                transform: scale(1.05);
+            .form-container button:hover {
+                background-color: #43a047;
+                transform: translateY(-2px);
             }
-            form button:active {
-                transform: scale(0.95);
-            }
-            form button::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 0;
-                height: 0;
-                background: rgba(0, 0, 0, 0.1);
+            .edit-btn, .delete-btn {
+                background: none;
+                border: none;
+                padding: 8px;
+                cursor: pointer;
                 border-radius: 50%;
-                transform: translate(-50%, -50%);
-                transition: width 0.3s, height 0.3s;
-            }
-            form button:active::after {
-                width: 150px;
-                height: 150px;
-            }
-            .button-group {
+                transition: all 0.3s ease;
+                width: 35px;
+                height: 35px;
                 display: flex;
-                gap: 10px;
-                margin-top: 15px;
+                align-items: center;
+                justify-content: center;
             }
-            
             .edit-btn {
                 background-color: rgba(76, 175, 80, 0.2);
                 color: #4CAF50;
-                padding: 8px;
-                border: none;
-                border-radius: 50%;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                width: 35px;
-                height: 35px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
             }
-            
             .delete-btn {
                 background-color: rgba(244, 67, 54, 0.2);
                 color: #f44336;
-                padding: 8px;
-                border: none;
-                border-radius: 50%;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                width: 35px;
-                height: 35px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
             }
-            
+            .edit-btn:hover, .delete-btn:hover {
+                transform: translateY(-2px);
+            }
             .edit-input {
                 width: 100%;
                 padding: 8px;
@@ -180,33 +176,41 @@ permalink: profiles/manage
                 color: white;
                 font-size: 1rem;
             }
-            
-            .save-btn {
-                background-color: #4CAF50;
-                color: white;
-                padding: 8px 15px;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: 500;
-                text-transform: uppercase;
-                font-size: 0.8rem;
-                letter-spacing: 0.5px;
-                transition: all 0.3s ease;
+            /* Custom SweetAlert2 styling */
+            .swal2-popup {
+                background: rgba(255, 243, 224, 0.95) !important;
+                border-radius: 15px !important;
             }
-
-            .edit-btn:hover {
-                background-color: rgba(76, 175, 80, 0.3);
-                transform: translateY(-2px);
+            .swal2-title {
+                color: #ff7043 !important;
             }
-
-            .delete-btn:hover {
-                background-color: rgba(244, 67, 54, 0.3);
-                transform: translateY(-2px);
+            .swal2-html-container {
+                color: #ff8a65 !important;
             }
-
-            .fa-pencil-alt, .fa-trash-alt {
-                font-size: 1rem;
+            .swal2-confirm {
+                background: #ff9966 !important;
+                border-radius: 8px !important;
+            }
+            .swal2-cancel {
+                background: #ffccbc !important;
+                color: #ff7043 !important;
+                border-radius: 8px !important;
+            }
+            .button-group {
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+                margin-top: 15px;
+            }
+            /* Update mobile view */
+            @media (max-width: 768px) {
+                .container {
+                    padding: 20px;
+                    margin: 10px;
+                }
+                .profile {
+                    width: 100%;
+                }
             }
         </style>
         <!-- Add SweetAlert2 CSS and JS -->
@@ -216,7 +220,7 @@ permalink: profiles/manage
     </head>
     <body>
         <div class="container">
-            <h1>Student Social Media - Profiles</h1>
+            <h1>Student Profiles</h1>
             <div class="button-container">
                 <button onclick="toggleForm('create-profile-form-container')">Create New Profile</button>
             </div>
