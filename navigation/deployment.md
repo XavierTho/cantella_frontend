@@ -188,11 +188,13 @@ First, login into the [AWS Terminal](https://cockpit.stu.nighthawkcodingsociety.
 
 Now run the following commands:
 
-1. Change into the correct directory: `cd ~`
-2. Clone your backend repo: `git clone https://github.com/[username]/[repo_name].git`
-3. Navigate into your repo: `cd repo_name`
-4. Create an .env file: `nano .env`
-The .env file should have the following info:
+<ol>
+    <li>Change into the correct directory: `cd ~`</li>
+    <li>Clone your backend repo: `git clone https://github.com/[username]/[repo_name].git`</li>
+    <li>Navigate into your repo: `cd repo_name`</li>
+    <li>Create an .env file: `nano .env`</li>
+</ol>
+- The .env file should have the following info:
 ```
 # User Defaults
 ADMIN_USER='tob./scry'
@@ -200,8 +202,16 @@ ADMIN_PASSWORD='123Toby!'
 DEFAULT_USER='hop'
 DEFAULT_PASSWORD='123Hop!'
 ```
-5. Build the site: `docker-compose up -d --build`
-6. Test your site: curl localhost:8--- (replace '8---' with your port number)
+<ol start="5">
+    <li>Build the site: `docker-compose up -d --build`</li>
+</ol>
+Docker-compose up -d --build does one of two things
+
+<img src ="{{site.baseurl}}/images/deployment-blog/dockerfile-diagram.png">
+
+<ol start="6">
+    <li>Test your site: curl localhost:8--- (replace '8---' with your port number)</li>
+</ol>
 - For curl, if you see the content of one of your backend files, you know you succeeded
 
 ### (3) Nginx Setup
