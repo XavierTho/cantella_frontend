@@ -107,15 +107,11 @@ permalink: classes/ap/ush/quizz
 
 <!-- Admin controls for editing leaderboard -->
 <div id="admin-controls" style="display: none; max-width: 700px; margin: 20px auto; text-align: center; background-color: #FFFAF0; padding: 20px; border-radius: 15px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);">
-  <h2>Edit Leaderboard</h2>
   <!-- Form to add a leaderboard entry -->
   <div>
     
     
-    <button id="addEntry"
-            style="background: linear-gradient(45deg, #32CD32, #228B22); color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">
-      Add Entry
-    </button>
+   
   </div>
   <!-- Dropdown to select and delete an entry -->
   <div style="margin-top: 20px;">
