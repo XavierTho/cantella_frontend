@@ -372,33 +372,31 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
 
     try {
         const response = await fetch(`${pythonURI}/api/flashcard`, {
-            ...fetchOptions,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({
                 title: question,
                 content: answer,
-                deck_id: currentDeck.id, // Include the current deck's ID
-                user_id: 1, // Replace with the actual user ID if needed
+                deck_id: currentDeck.id,
+                user_id: 1  // ✅ Ensure this is correct
             }),
         });
 
-        if (response.ok) {
-            const newCard = await response.json();
-            currentDeck.cards.push(newCard); // Add to the current deck locally
-            alert(`Flashcard added to ${currentDeck.title}!`);
-            document.getElementById('question').value = '';
-            document.getElementById('answer').value = '';
-            displayFlashcards(currentDeck.cards); // Refresh the flashcards
-        } else {
-            alert('Failed to add flashcard. Please try again.');
-        }
+        if (!response.ok) throw new Error("Failed to add flashcard.");
+
+        const newCard = await response.json();
+        currentDeck.cards.push(newCard);
+        alert(`Flashcard added to ${currentDeck.title}!`);
+        document.getElementById('question').value = '';
+        document.getElementById('answer').value = '';
+        displayFlashcards(currentDeck.cards);
     } catch (error) {
         console.error('Error adding flashcard:', error);
         alert('An error occurred while adding the flashcard.');
     }
 });
+
 
 
 
@@ -508,7 +506,6 @@ async function updateFlashcard(flashcardId, newTitle, newContent, cardElement) {
         const updatedFlashcard = await response.json();
         alert(`Flashcard updated successfully!`);
 
-        // ✅ Update question and answer correctly
         cardElement.innerHTML = `
             <div class="flashcard-content">
                 <span class="question-text">${updatedFlashcard.title}</span>
@@ -517,12 +514,10 @@ async function updateFlashcard(flashcardId, newTitle, newContent, cardElement) {
             </div>
         `;
 
-        // ✅ Store updated answer in dataset
         cardElement.dataset.answer = updatedFlashcard.content;
 
         const questionElement = cardElement.querySelector('.question-text');
 
-        // ✅ Ensure proper flipping behavior
         cardElement.onclick = (event) => {
             if (!event.target.classList.contains("edit-icon") && !event.target.classList.contains("delete-icon")) {
                 const isQuestion = questionElement.textContent === updatedFlashcard.title;
@@ -531,7 +526,6 @@ async function updateFlashcard(flashcardId, newTitle, newContent, cardElement) {
             }
         };
 
-        // Re-add edit and delete event listeners
         cardElement.querySelector('.edit-icon').addEventListener('click', () => editFlashcard(updatedFlashcard, cardElement));
         cardElement.querySelector('.delete-icon').addEventListener('click', () => deleteFlashcard(updatedFlashcard.id, cardElement));
 
@@ -544,27 +538,24 @@ async function updateFlashcard(flashcardId, newTitle, newContent, cardElement) {
 
 
 
-
 async function deleteFlashcard(flashcardId, cardElement) {
     try {
-        const response = await fetch(`${pythonURI}/api/flashcard/${flashcardId}`, { // ✅ Correct URL
+        const response = await fetch(`${pythonURI}/api/flashcard/${flashcardId}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }, // ✅ Include headers
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Failed to delete flashcard: ${errorData.message}`);
-        }
+        if (!response.ok) throw new Error(`Failed to delete flashcard: ${response.statusText}`);
 
         alert('Flashcard deleted successfully!');
-        cardElement.remove(); // ✅ Remove the flashcard from the UI
+        cardElement.remove();
     } catch (error) {
         console.error('Error deleting flashcard:', error);
         alert('An error occurred while deleting the flashcard.');
     }
 }
+
 
 
 
