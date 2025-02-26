@@ -1,6 +1,6 @@
 ---
-layout: post
-title: Cantella
+layout: base
+title:
 search_exclude: true
 hide: true
 menu: nav/home.html

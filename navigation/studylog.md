@@ -2,7 +2,7 @@
 layout: base
 title: Study Log
 description: Log your study hours
-permalink: classes/log
+permalink: naviagtion/log
 ---
 <html lang="en">
     <head>
