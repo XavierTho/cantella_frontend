@@ -205,30 +205,24 @@ permalink: naviagtion/log
                 background: rgba(255, 243, 224, 0.95) !important;
                 border-radius: 15px !important;
             }
-
             .swal2-title {
                 color: #ff7043 !important;
             }
-
             .swal2-html-container {
                 color: #ff8a65 !important;
             }
-
             .swal2-confirm {
                 background: #ff9966 !important;
                 border-radius: 8px !important;
             }
-
             .swal2-cancel {
                 background: #ffccbc !important;
                 color: #ff7043 !important;
                 border-radius: 8px !important;
             }
-
             .swal2-confirm:hover {
                 background: #ff7043 !important;
             }
-
             .swal2-cancel:hover {
                 background: #ffab91 !important;
             }
