@@ -1,6 +1,6 @@
 ---
 layout: base
-title: Grade Log Tracker
+title: Grade Log
 description: Grade Log Tracker
 permalink: /gradelog
 ---

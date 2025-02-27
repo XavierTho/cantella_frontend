@@ -6,7 +6,7 @@ hide: true
 ---
 
 
-# Welcome to The Flashcards Page
+# Welcome to The Flashcards Page !
 
 
 <style>
@@ -372,28 +372,25 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
 
     try {
         const response = await fetch(`${pythonURI}/api/flashcard`, {
-            ...fetchOptions,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({
                 title: question,
                 content: answer,
-                deck_id: currentDeck.id, // Include the current deck's ID
-                user_id: 1, // Replace with the actual user ID if needed
+                deck_id: currentDeck.id,
+                user_id: 1  // ✅ Ensure this is correct
             }),
         });
 
-        if (response.ok) {
-            const newCard = await response.json();
-            currentDeck.cards.push(newCard); // Add to the current deck locally
-            alert(`Flashcard added to ${currentDeck.title}!`);
-            document.getElementById('question').value = '';
-            document.getElementById('answer').value = '';
-            displayFlashcards(currentDeck.cards); // Refresh the flashcards
-        } else {
-            alert('Failed to add flashcard. Please try again.');
-        }
+        if (!response.ok) throw new Error("Failed to add flashcard.");
+
+        const newCard = await response.json();
+        currentDeck.cards.push(newCard);
+        alert(`Flashcard added to ${currentDeck.title}!`);
+        document.getElementById('question').value = '';
+        document.getElementById('answer').value = '';
+        displayFlashcards(currentDeck.cards);
     } catch (error) {
         console.error('Error adding flashcard:', error);
         alert('An error occurred while adding the flashcard.');
@@ -404,37 +401,164 @@ document.getElementById('add-card-btn').addEventListener('click', async () => {
 
 
 
+
 function displayFlashcards(cards) {
     const container = document.getElementById('flashcard-container');
     container.innerHTML = ''; // Clear existing flashcards
 
-
     cards.forEach(card => {
         const cardElement = document.createElement('div');
         cardElement.classList.add('flashcard');
-        cardElement.textContent = card.title; // Default to question
+        cardElement.innerHTML = `
+            <div class="flashcard-content">
+                <span class="question-text">${card.title}</span>
+                <span class="edit-icon" style="cursor: pointer; font-size: 16px; margin-left: 8px;">✏️</span>
+                <span class="delete-icon" style="cursor: pointer; font-size: 16px; margin-left: 8px;">❌</span>
+            </div>
+        `;
 
+        // Ensure the element exists before adding event listeners
+        const questionElement = cardElement.querySelector('.question-text');
+        if (!questionElement) {
+            console.error("Flashcard question text not found!");
+            return;
+        }
 
-        // Toggle between question and answer
-        cardElement.onclick = () => {
-            if (cardElement.textContent === card.title) {
-                cardElement.textContent = card.content;
-                cardElement.classList.add('answer');
-            } else {
-                cardElement.textContent = card.title;
-                cardElement.classList.remove('answer');
+        // Handle flipping between question and answer
+        cardElement.onclick = (event) => {
+            if (!event.target.classList.contains("edit-icon") && !event.target.classList.contains("delete-icon")) {
+                if (questionElement.textContent === card.title) {
+                    questionElement.textContent = card.content;
+                    cardElement.classList.add('answer');
+                } else {
+                    questionElement.textContent = card.title;
+                    cardElement.classList.remove('answer');
+                }
             }
         };
 
+        // Enable Editing a Flashcard
+        const editIcon = cardElement.querySelector('.edit-icon');
+        editIcon.addEventListener('click', () => editFlashcard(card, cardElement));
+
+        // Enable Deleting a Flashcard
+        const deleteIcon = cardElement.querySelector('.delete-icon');
+        deleteIcon.addEventListener('click', async () => {
+            const confirmDelete = confirm(`Are you sure you want to delete this flashcard?`);
+            if (confirmDelete) {
+                await deleteFlashcard(card.id, cardElement);
+            }
+        });
 
         container.appendChild(cardElement);
     });
-
 
     if (cards.length === 0) {
         container.innerHTML = '<p>No flashcards available. Add one to get started!</p>';
     }
 }
+
+
+// Function to Edit Flashcard
+function editFlashcard(card, cardElement) {
+    console.log('Editing flashcard:', card);
+
+    const editForm = document.createElement('div');
+    editForm.innerHTML = `
+        <input type="text" value="${card.title}" class="edit-input" style="width: 90%; padding: 5px; border-radius: 5px;">
+        <input type="text" value="${card.content}" class="edit-input" style="width: 90%; padding: 5px; margin-top: 5px; border-radius: 5px;">
+        <button class="save-edit-btn" style="margin-top: 5px; padding: 5px 10px; border-radius: 5px;">Save</button>
+    `;
+
+    cardElement.innerHTML = ''; // Clear the card content
+    cardElement.appendChild(editForm);
+
+    const inputs = editForm.querySelectorAll('.edit-input');
+    const saveButton = editForm.querySelector('.save-edit-btn');
+
+    saveButton.addEventListener('click', async () => {
+        const updatedTitle = inputs[0].value.trim();
+        const updatedContent = inputs[1].value.trim();
+
+        if (!updatedTitle || !updatedContent) {
+            alert("Both question and answer are required.");
+            return;
+        }
+
+        await updateFlashcard(card.id, updatedTitle, updatedContent, cardElement);
+    });
+}
+
+async function updateFlashcard(flashcardId, newTitle, newContent, cardElement) {
+    try {
+        const response = await fetch(`${pythonURI}/api/flashcard/${flashcardId}`, {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ title: newTitle, content: newContent }),
+        });
+
+        if (!response.ok) throw new Error(`Failed to update flashcard: ${response.statusText}`);
+
+        const updatedFlashcard = await response.json();
+        alert(`Flashcard updated successfully!`);
+
+        cardElement.innerHTML = `
+            <div class="flashcard-content">
+                <span class="question-text">${updatedFlashcard.title}</span>
+                <span class="edit-icon" style="cursor: pointer;">✏️</span>
+                <span class="delete-icon" style="cursor: pointer;">❌</span>
+            </div>
+        `;
+
+        cardElement.dataset.answer = updatedFlashcard.content;
+
+        const questionElement = cardElement.querySelector('.question-text');
+
+        cardElement.onclick = (event) => {
+            if (!event.target.classList.contains("edit-icon") && !event.target.classList.contains("delete-icon")) {
+                const isQuestion = questionElement.textContent === updatedFlashcard.title;
+                questionElement.textContent = isQuestion ? cardElement.dataset.answer : updatedFlashcard.title;
+                cardElement.classList.toggle('answer', isQuestion);
+            }
+        };
+
+        cardElement.querySelector('.edit-icon').addEventListener('click', () => editFlashcard(updatedFlashcard, cardElement));
+        cardElement.querySelector('.delete-icon').addEventListener('click', () => deleteFlashcard(updatedFlashcard.id, cardElement));
+
+    } catch (error) {
+        console.error('Error updating flashcard:', error);
+        alert('An error occurred while updating the flashcard.');
+    }
+}
+
+
+
+
+async function deleteFlashcard(flashcardId, cardElement) {
+    try {
+        const response = await fetch(`${pythonURI}/api/flashcard/${flashcardId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+        });
+
+        if (!response.ok) throw new Error(`Failed to delete flashcard: ${response.statusText}`);
+
+        alert('Flashcard deleted successfully!');
+        cardElement.remove();
+    } catch (error) {
+        console.error('Error deleting flashcard:', error);
+        alert('An error occurred while deleting the flashcard.');
+    }
+}
+
+
+
+
 
 
 
@@ -464,7 +588,7 @@ async function fetchDecks() {
             });
         } else if (response.status === 401) {
             alert('You are not authorized. Please log in.');
-            window.location.href = '/login.html';
+            window.location.href = '/cantella_frontend/login';
         } else {
             const error = await response.json();
             console.error('Failed to fetch decks:', error);
@@ -537,14 +661,16 @@ createDeckBtn.addEventListener('click', () => {
 
 
 
-
 function displayDeck(deck) {
     console.log('Displaying deck:', deck); // Log the deck object for debugging
 
     const deckElement = document.createElement('div');
     deckElement.classList.add('deck');
     deckElement.innerHTML = `
-        <h3 class="deck-title">${deck.title}</h3>
+        <div style="display: flex; align-items: center; gap: 5px;">
+            <h3 class="deck-title" style="margin: 0; flex-grow: 1;">${deck.title}</h3>
+            <span class="edit-icon" style="cursor: pointer; font-size: 16px;">✏️</span>
+        </div>
         <div style="display: flex; gap: 5px; justify-content: center; margin-top: 10px;">
             <button class="open-deck-btn">Open</button>
             <button class="delete-deck-btn">Delete</button>
@@ -552,38 +678,41 @@ function displayDeck(deck) {
     `;
 
     const titleElement = deckElement.querySelector('.deck-title');
+    const editIcon = deckElement.querySelector('.edit-icon');
 
-    // Enable editing the title on double-click
-    titleElement.addEventListener('dblclick', () => {
+    // Enable editing the title when clicking the pencil icon
+    editIcon.addEventListener('click', () => {
         const input = document.createElement('input');
         input.type = 'text';
         input.value = deck.title;
         input.classList.add('edit-deck-input');
+        input.style.width = "80%";
+        input.style.padding = "5px";
+        input.style.borderRadius = "5px";
+        input.style.border = "1px solid #facc15";
+        input.style.background = "rgba(255, 255, 255, 0.1)";
+        input.style.color = "white";
+        input.style.fontSize = "16px";
 
         titleElement.replaceWith(input);
+        input.focus();
 
         // Save the new title when input loses focus or on Enter key
-        input.addEventListener('blur', async () => {
+        const saveTitle = async () => {
             const newTitle = input.value.trim();
             if (newTitle && newTitle !== deck.title) {
-                await editDeckTitle(deck.id, newTitle, input, titleElement, deckElement);
+                await editDeckTitle(deck.id, newTitle, input, titleElement);
             } else {
                 input.replaceWith(titleElement); // Revert if no change
             }
-        });
+        };
 
+        input.addEventListener('blur', saveTitle);
         input.addEventListener('keydown', async (event) => {
             if (event.key === 'Enter') {
-                const newTitle = input.value.trim();
-                if (newTitle && newTitle !== deck.title) {
-                    await editDeckTitle(deck.id, newTitle, input, titleElement, deckElement);
-                } else {
-                    input.replaceWith(titleElement); // Revert if no change
-                }
+                await saveTitle();
             }
         });
-
-        input.focus(); // Automatically focus the input
     });
 
     // Attach event listener for opening the deck
@@ -606,8 +735,7 @@ function displayDeck(deck) {
 
                 if (response.ok) {
                     alert('Deck deleted successfully!');
-                    // Refresh the decks list
-                    await fetchDecks();
+                    await fetchDecks(); // Refresh the decks list
                 } else {
                     const error = await response.json();
                     alert(`Failed to delete deck: ${error.error}`);
@@ -622,33 +750,33 @@ function displayDeck(deck) {
     deckContainer.appendChild(deckElement);
 }
 
-
-async function editDeckTitle(deckId, newTitle, inputElement, titleElement, deckElement) {
+async function editDeckTitle(deckId, newTitle, inputElement, titleElement) {
     try {
         const response = await fetch(`${pythonURI}/api/deck/${deckId}`, {
             ...fetchOptions,
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ title: newTitle }), // Send the new title in the request body
+            body: JSON.stringify({ title: newTitle }), 
         });
 
         if (response.ok) {
             const updatedDeck = await response.json();
-            titleElement.textContent = updatedDeck.title; // Update the title in the UI
-            inputElement.replaceWith(titleElement); // Replace input with updated title
+            titleElement.textContent = updatedDeck.title; 
+            inputElement.replaceWith(titleElement);
             alert(`Deck updated successfully to: ${updatedDeck.title}`);
         } else {
             const error = await response.json();
             alert(`Error updating deck: ${error.error}`);
-            inputElement.replaceWith(titleElement); // Revert if there's an error
+            inputElement.replaceWith(titleElement);
         }
     } catch (error) {
         console.error('Error updating deck:', error);
         alert('An error occurred while updating the deck.');
-        inputElement.replaceWith(titleElement); // Revert if there's an error
+        inputElement.replaceWith(titleElement);
     }
 }
+
 
 
 async function openDeck(deck) {
