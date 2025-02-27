@@ -415,7 +415,7 @@ permalink: naviagtion/log
                         <div><strong>Subject:</strong> <span data-field="subject">${log.subject}</span></div>
                         <div><strong>Hours Studied:</strong> <span data-field="hours">${log.hours_studied}</span></div>
                         <div><strong>Notes:</strong> <span data-field="notes">${log.notes || 'No notes'}</span></div>
-                        <div><strong>Time:</strong> ${new Date(log.date || log.timestamp).toLocaleString()}</div>
+                        <div><strong>Time:</strong> ${new Date(new Date(log.date || log.timestamp).getTime() + 8 * 60 * 60 * 1000).toLocaleString()}</div>
                         <div class="button-group">
                             <button class="edit-btn" onclick="editLog(${log.id})"><i class="fas fa-pencil-alt"></i></button>
                             <button class="delete-btn" onclick="deleteLog(${log.id})"><i class="fas fa-trash-alt"></i></button>
