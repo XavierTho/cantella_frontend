@@ -2,7 +2,7 @@
 layout: base
 title: Study Log
 description: Log your study hours
-permalink: classes/log
+permalink: naviagtion/log
 ---
 <html lang="en">
     <head>
@@ -205,30 +205,24 @@ permalink: classes/log
                 background: rgba(255, 243, 224, 0.95) !important;
                 border-radius: 15px !important;
             }
-
             .swal2-title {
                 color: #ff7043 !important;
             }
-
             .swal2-html-container {
                 color: #ff8a65 !important;
             }
-
             .swal2-confirm {
                 background: #ff9966 !important;
                 border-radius: 8px !important;
             }
-
             .swal2-cancel {
                 background: #ffccbc !important;
                 color: #ff7043 !important;
                 border-radius: 8px !important;
             }
-
             .swal2-confirm:hover {
                 background: #ff7043 !important;
             }
-
             .swal2-cancel:hover {
                 background: #ffab91 !important;
             }
@@ -415,7 +409,7 @@ permalink: classes/log
                         <div><strong>Subject:</strong> <span data-field="subject">${log.subject}</span></div>
                         <div><strong>Hours Studied:</strong> <span data-field="hours">${log.hours_studied}</span></div>
                         <div><strong>Notes:</strong> <span data-field="notes">${log.notes || 'No notes'}</span></div>
-                        <div><strong>Time:</strong> ${new Date(log.date || log.timestamp).toLocaleString()}</div>
+                        <div><strong>Time:</strong> ${new Date(new Date(log.date || log.timestamp).getTime() - 8 * 60 * 60 * 1000).toLocaleString()}</div>
                         <div class="button-group">
                             <button class="edit-btn" onclick="editLog(${log.id})"><i class="fas fa-pencil-alt"></i></button>
                             <button class="delete-btn" onclick="deleteLog(${log.id})"><i class="fas fa-trash-alt"></i></button>
