@@ -217,30 +217,44 @@ menu: nav/home.html
         50% { transform: translateY(-20px) rotate(10deg); }
     }
 
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
     .cantella-title {
         text-align: center;
-        margin: 100px 0;
+        margin: 20px 0;
         position: relative;
     }
 
     .cantella-title h1 {
-        font-size: 6rem;
+        font-size: 5rem;
         color: #FF8A5B;
-        text-shadow: 0 0 20px #FFD6A5, 0 0 40px #FF8A5B, 0 0 60px #FF8A5B;
-        font-family: 'Poppins', sans-serif;
-        animation: glow 2s infinite alternate;
-        background: linear-gradient(135deg, #FF8A5B, #FFD6A5);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-family: 'Pacifico', cursive;
+        display: inline-block;
+        animation: float 3s ease-in-out infinite;
+        letter-spacing: 0.1em;
     }
 
-    @keyframes glow {
-        from {
-            text-shadow: 0 0 20px #FFD6A5, 0 0 40px #FF8A5B, 0 0 60px #FF8A5B;
-        }
-        to {
-            text-shadow: 0 0 30px #FFD6A5, 0 0 60px #FF8A5B, 0 0 90px #FF8A5B;
-        }
+    .cantella-title h1 span {
+        display: inline-block;
+        animation: bounce 1.5s infinite alternate;
+    }
+
+    .cantella-title h1 span:nth-child(odd) {
+        animation-delay: 0.1s;
+    }
+
+    .cantella-title h1 span:nth-child(even) {
+        animation-delay: 0.2s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    @keyframes bounce {
+        from { transform: translateY(0); }
+        to { transform: translateY(-20px); }
     }
 
     .cantella-title::after {
@@ -248,7 +262,7 @@ menu: nav/home.html
         display: block;
         font-size: 1.5rem;
         color: #FFD6A5;
-        margin-top: 10px;
+        margin-top: 5px;
         text-shadow: 0 0 10px #FF8A5B;
     }
 </style>
@@ -261,7 +275,9 @@ menu: nav/home.html
 <div class="floating-shape shape3"></div>
 
 <div class="cantella-title">
-    <h1>Cantella</h1>
+    <h1>
+        <span>C</span><span>a</span><span>n</span><span>t</span><span>e</span><span>l</span><span>l</span><span>a</span>
+    </h1>
 </div>
 
 <div id="prompt-login" class="prompt-login">
