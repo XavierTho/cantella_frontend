@@ -61,22 +61,23 @@ menu: nav/home.html
     /* Updated motivational bar */
     .motivational-bar {
         text-align: center;
-        font-size: 1.2rem;
-        padding: 1.2rem;
-        background: linear-gradient(135deg, #ffa500, #ff8c00);
+        font-size: 1.5rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
         margin: 1rem auto;
         max-width: 800px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         cursor: pointer;
         transition: all 0.3s ease;
-        color: white;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
     .motivational-bar:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4);
-        background: linear-gradient(135deg, #ff8c00, #ffa500);
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+        background: rgba(255, 255, 255, 0.3);
     }
     .motivational-bar span {
         font-size: 2rem;
