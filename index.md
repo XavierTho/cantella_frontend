@@ -294,3 +294,13 @@ menu: nav/home.html
         }
     });
 </script>
+
+
+
+<script src="https://utteranc.es/client.js"
+        repo="arushah2007/arushStudent"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+    </script> 
