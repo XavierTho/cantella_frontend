@@ -229,10 +229,10 @@ menu: nav/home.html
     .cantella-title h1 {
         font-size: 5rem;
         color: #FF8A5B;
-        font-family: 'Pacifico', cursive;
-        display: inline-block;
-        animation: float 3s ease-in-out infinite;
-        letter-spacing: 0.1em;
+        font-family: 'Arial', sans-serif;
+        font-weight: bold;
+        text-align: center;
+        margin: 20px 0;
     }
 
     .cantella-title h1 span {
@@ -248,23 +248,9 @@ menu: nav/home.html
         animation-delay: 0.2s;
     }
 
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
-
     @keyframes bounce {
         from { transform: translateY(0); }
         to { transform: translateY(-20px); }
-    }
-
-    .cantella-title::after {
-        content: 'The Ultimate Study Hub';
-        display: block;
-        font-size: 1.5rem;
-        color: #FFD6A5;
-        margin-top: 5px;
-        text-shadow: 0 0 10px #FF8A5B;
     }
 </style>
 
