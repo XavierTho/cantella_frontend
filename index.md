@@ -78,6 +78,8 @@ menu: nav/home.html
         transform: translateY(-2px);
         box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
         background: rgba(255, 255, 255, 0.3);
+        border-width: 10px;
+        border-color: #ff8c00;
     }
     .motivational-bar span {
         font-size: 2rem;
@@ -90,7 +92,7 @@ menu: nav/home.html
         padding: 1.5rem;
         text-align: center;
         display: none;
-        background: rgba(255, 255, 255, 0.9);
+        background: #ff8c00;
         border-radius: 20px;
         box-shadow: 0 4px 20px rgba(255, 165, 0, 0.2);
     }
