@@ -216,6 +216,41 @@ menu: nav/home.html
         0%, 100% { transform: translateY(0) rotate(0deg); }
         50% { transform: translateY(-20px) rotate(10deg); }
     }
+
+    .cantella-title {
+        text-align: center;
+        margin: 100px 0;
+        position: relative;
+    }
+
+    .cantella-title h1 {
+        font-size: 6rem;
+        color: #FF8A5B;
+        text-shadow: 0 0 20px #FFD6A5, 0 0 40px #FF8A5B, 0 0 60px #FF8A5B;
+        font-family: 'Poppins', sans-serif;
+        animation: glow 2s infinite alternate;
+        background: linear-gradient(135deg, #FF8A5B, #FFD6A5);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 20px #FFD6A5, 0 0 40px #FF8A5B, 0 0 60px #FF8A5B;
+        }
+        to {
+            text-shadow: 0 0 30px #FFD6A5, 0 0 60px #FF8A5B, 0 0 90px #FF8A5B;
+        }
+    }
+
+    .cantella-title::after {
+        content: 'The Ultimate Study Hub';
+        display: block;
+        font-size: 1.5rem;
+        color: #FFD6A5;
+        margin-top: 10px;
+        text-shadow: 0 0 10px #FF8A5B;
+    }
 </style>
 
 <!-- Add decorative elements -->
@@ -225,8 +260,8 @@ menu: nav/home.html
 <div class="floating-shape shape2"></div>
 <div class="floating-shape shape3"></div>
 
-<div class="search-container">
-    <input type="text" id="class-search" placeholder="Search for classes..." oninput="filterClasses()" />
+<div class="cantella-title">
+    <h1>Cantella</h1>
 </div>
 
 <div id="prompt-login" class="prompt-login">
