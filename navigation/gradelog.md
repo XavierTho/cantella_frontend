@@ -7,84 +7,88 @@ permalink: /gradelog
 
 <style>
   body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+    font-family: 'Inter', sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: #ffffff;
+    min-height: 100vh;
   }
 
   h2 {
     text-align: center;
-    margin-top: 20px;
-    color: #444;
+    color: #ffffff;
+    margin-bottom: 30px;
+    font-weight: 600;
   }
 
   #create-log-btn {
-    display: block;
-    margin: 20px auto;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
+    background-color: #4CAF50;
     color: white;
-    background-color: #007BFF;
+    padding: 12px 24px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    margin: 20px auto;
+    display: block;
   }
 
   #create-log-btn:hover {
-    background-color: #0056b3;
+    background-color: #43a047;
     transform: translateY(-2px);
   }
 
   #grade-log-form-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-
-  #grade-log-form {
-    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 20px auto;
     max-width: 400px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
 
   #grade-log-form input,
-  #grade-log-form textarea,
-  #grade-log-form button {
-    display: block;
+  #grade-log-form textarea {
     width: 100%;
-    margin-bottom: 15px;
     padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    transition: border-color 0.3s ease;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
   }
 
   #grade-log-form input:focus,
   #grade-log-form textarea:focus {
-    border-color: #007BFF;
     outline: none;
+    border-color: #4CAF50;
+    background: rgba(255, 255, 255, 0.15);
   }
 
   #grade-log-form button {
-    background-color: #28a745;
+    background-color: #4CAF50;
     color: white;
-    font-weight: bold;
+    padding: 12px;
+    width: 100%;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
   }
 
   #grade-log-form button:hover {
-    background-color: #218838;
+    background-color: #43a047;
     transform: translateY(-2px);
   }
 
@@ -94,38 +98,76 @@ permalink: /gradelog
     gap: 20px;
     justify-content: center;
     margin-top: 30px;
+    padding: 20px;
   }
 
   .grade-log {
-    width: 320px;
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
     padding: 20px;
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .grade-log:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
 
   .grade-log h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #333;
+    color: #a8d0ff;
+    margin-bottom: 15px;
   }
 
   .grade-log p {
-    font-size: 16px;
-    margin: 5px 0;
-    color: #555;
+    margin: 10px 0;
+    color: #ffffff;
   }
 
-  .hidden {
-    display: none;
+  .grade {
+    font-size: 1.5em;
+    color: #4CAF50;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.2em 0.5em;
+    border-radius: 5px;
+    display: inline-block;
+  }
+
+  .edit-btn, .delete-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+  }
+
+  .edit-btn {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+  }
+
+  .delete-btn {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+  }
+
+  .edit-btn:hover, .delete-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
   }
 
   @media (max-width: 768px) {
@@ -133,18 +175,69 @@ permalink: /gradelog
       width: 100%;
       max-width: 300px;
     }
-
-    #grade-log-form {
-      padding: 15px;
-    }
   }
 
-  .grade {
-    font-size: 1.5em;
+  /* SweetAlert2 styling to match theme */
+  .swal2-popup {
+    background: rgba(255, 243, 224, 0.95) !important;
+    border-radius: 15px !important;
+  }
+
+  .swal2-title {
+    color: #ff7043 !important;
+  }
+
+  .swal2-html-container {
+    color: #ff8a65 !important;
+  }
+
+  .swal2-confirm {
+    background: #ff9966 !important;
+    border-radius: 8px !important;
+  }
+
+  .swal2-cancel {
+    background: #ffccbc !important;
+    color: #ff7043 !important;
+    border-radius: 8px !important;
+  }
+
+  .save-btn {
+    background-color: rgba(76, 175, 80, 0.2);
     color: #4CAF50;
-    background-color: #f0f0f0;
-    padding: 0.2em 0.5em;
-    border-radius: 5px;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+  }
+
+  .save-btn:hover {
+    transform: translateY(-2px);
+    background-color: rgba(76, 175, 80, 0.3);
+  }
+
+  .edit-input {
+    width: 100%;
+    padding: 8px;
+    margin: 4px 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+  }
+
+  .edit-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    background: rgba(255, 255, 255, 0.15);
   }
 </style>
 
@@ -156,7 +249,7 @@ permalink: /gradelog
   <div id="grade-log-form-container" class="hidden">
     <form id="grade-log-form">
       <input type="text" id="subject" placeholder="Subject" required>
-      <input type="number" id="grade" placeholder="Grade" required>
+      <input type="text" id="grade" placeholder="Grade" required>
       <textarea id="notes" placeholder="Notes (Optional)"></textarea>
       <button type="submit">Submit Grade Log</button>
     </form>
@@ -189,15 +282,22 @@ permalink: /gradelog
     const grade = document.getElementById('grade').value.trim();
     const notes = document.getElementById('notes').value.trim();
 
+    // Add validation to ensure grade is a valid number
     if (!subject || !grade) {
       alert('Subject and grade are required!');
+      return;
+    }
+
+    const gradeNum = parseFloat(grade);
+    if (isNaN(gradeNum)) {
+      alert('Please enter a valid number for grade');
       return;
     }
 
     const data = {
       user_id: userId,
       subject,
-      grade: parseFloat(grade),
+      grade: gradeNum,
       notes
     };
 
@@ -267,139 +367,66 @@ permalink: /gradelog
 
   // Function to display grade logs in the DOM
   function displayGradeLogs(logs) {
-    // Clear the container that holds the grade logs
     gradeLogContainer.innerHTML = '';
 
-    // Check if there are no logs to display
     if (logs.length === 0) {
-      // Display a message indicating no grade logs were found
-      gradeLogContainer.innerHTML = '<p>No grade logs found.</p>';
+      gradeLogContainer.innerHTML = '<p style="color: #ffffff; text-align: center;">No grade logs found.</p>';
       return;
     }
 
     // Group logs by subject
     const groupedLogs = logs.reduce((acc, log) => {
-      // If the subject is not already a key in the accumulator, add it
       if (!acc[log.subject]) {
         acc[log.subject] = [];
       }
-      // Push the current log into the array for its subject
       acc[log.subject].push(log);
       return acc;
     }, {});
 
-    // Iterate over each subject in the grouped logs
     Object.keys(groupedLogs).forEach((subject) => {
-      // Create a container element for the subject group
       const subjectElement = document.createElement('div');
-      subjectElement.className = 'subject-group'; // Add a class for styling
-      subjectElement.innerHTML = `<h3>${subject}</h3>`; // Add the subject title
+      subjectElement.className = 'subject-group';
+      subjectElement.style.width = '100%';
+      subjectElement.style.marginBottom = '30px';
+      subjectElement.innerHTML = `<h3 style="color: #a8d0ff; text-align: center;">${subject}</h3>`;
 
-      let totalGrades = 0; // Initialize variables for calculating average grade
+      let totalGrades = 0;
       let gradeCount = 0;
 
-      // Iterate through the logs for the current subject
       groupedLogs[subject].forEach((log) => {
-        // Create a container element for the individual grade log
         const logElement = document.createElement('div');
-        logElement.className = 'grade-log'; // Add a class for styling
+        logElement.className = 'grade-log';
+        logElement.setAttribute('data-id', log.id);
+        logElement.style.background = 'rgba(255, 255, 255, 0.1)';
+        logElement.style.backdropFilter = 'blur(5px)';
 
-        // Convert the JSON data into DOM elements with structured information
         logElement.innerHTML = `
-          <p><strong>Grade:</strong> <span class="grade">${log.grade}</span></p>
-          <p>${log.notes}</p>
-          <p><small>${new Date(log.date).toLocaleString()}</small></p>
-          <button class="edit-log-btn" data-id="${log.id}">Edit</button>
-          <button class="delete-log-btn" data-id="${log.id}">Delete</button>
+          <p><strong style="color: #a8d0ff;">Grade:</strong> <span class="grade" data-field="grade">${log.grade}</span></p>
+          <p style="color: #ffffff;"><span data-field="notes">${log.notes || 'No notes'}</span></p>
+          <p style="color: #a8d0ff; font-size: 0.9em;">${new Date(log.date).toLocaleString()}</p>
+          <div class="button-group">
+            <button class="edit-btn" onclick="editLog(${log.id})"><i class="fas fa-pencil-alt"></i></button>
+            <button class="delete-btn" onclick="deleteLog(${log.id})"><i class="fas fa-trash-alt"></i></button>
+          </div>
         `;
-        // Append the log element to the subject group container
+
         subjectElement.appendChild(logElement);
 
-        // Accumulate the total grades and count for calculating the average
         totalGrades += parseFloat(log.grade);
         gradeCount++;
       });
 
-      // Calculate the average grade for the subject
       const averageGrade = (totalGrades / gradeCount).toFixed(2);
-      // Create an element to display the average grade
-      const averageGradeElement = document.createElement('p');
-      averageGradeElement.className = 'average-grade'; // Add a class for styling
-      averageGradeElement.innerHTML = `<strong>Average Grade:</strong> <span class="grade">${averageGrade}</span>`;
-      // Append the average grade element to the subject group container
-      subjectElement.appendChild(averageGradeElement);
+      const averageElement = document.createElement('div');
+      averageElement.className = 'grade-log';
+      averageElement.style.background = 'rgba(255, 255, 255, 0.15)';
+      averageElement.style.textAlign = 'center';
+      averageElement.innerHTML = `
+        <p><strong style="color: #a8d0ff;">Average Grade:</strong> <span class="grade">${averageGrade}</span></p>
+      `;
+      subjectElement.appendChild(averageElement);
 
-      // Append the subject group container to the main grade log container
       gradeLogContainer.appendChild(subjectElement);
-    });
-
-    // Add CSS styles for the grade and subject group
-    const style = document.createElement('style');
-    style.innerHTML = `
-      .grade {
-        font-size: 1.5em;
-        color: #4CAF50;
-        background-color: #f0f0f0;
-        padding: 0.2em 0.5em;
-        border-radius: 5px;
-        transition: transform 0.3s ease;
-      }
-      .grade:hover {
-        transform: scale(1.1);
-      }
-      .subject-group {
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #fff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-      .subject-group h3 {
-        margin-top: 0;
-        color: #007BFF;
-      }
-      .grade-log {
-        margin-bottom: 10px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #fafafa;
-        transition: background-color 0.3s ease;
-      }
-      .grade-log:hover {
-        background-color: #f1f1f1;
-      }
-      .average-grade {
-        margin-top: 10px;
-        font-size: 1.2em;
-        color: #333;
-      }
-      .edit-log-btn, .delete-log-btn {
-        margin-right: 5px;
-        padding: 5px 10px;
-        font-size: 14px;
-        color: white;
-        background-color: #007BFF;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-      .edit-log-btn:hover, .delete-log-btn:hover {
-        background-color: #0056b3;
-      }
-    `;
-    // Append the style element to the document head
-    document.head.appendChild(style);
-
-    // Add event listeners for Edit and Delete buttons
-    document.querySelectorAll('.edit-log-btn').forEach((btn) => {
-      btn.addEventListener('click', handleEditLog);
-    });
-
-    document.querySelectorAll('.delete-log-btn').forEach((btn) => {
-      btn.addEventListener('click', handleDeleteLog);
     });
   }
 
@@ -439,77 +466,185 @@ permalink: /gradelog
     });
   }
 
-  // Handle Edit button click
-  async function handleEditLog(event) {
-    const logId = event.target.getAttribute('data-id');
+  // Add delete sound effect
+  const deleteSound = new Audio('{{site.baseurl}}/images/sounds/delete.mp3');
 
-    // Prompt user for the field to update
-    const field = prompt('Enter the field to update (subject, grade, notes):');
-    if (!field) {
-      alert('Field is required!');
-      return;
-    }
+  window.deleteLog = async function(logId) {
+    const result = await Swal.fire({
+      title: 'Delete this log?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it'
+    });
 
-    // Prompt user for the new value
-    const newValue = prompt(`Enter new value for ${field}:`);
-    if (!newValue) {
-      alert('New value is required!');
-      return;
-    }
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(`${pythonURI}/api/gradelog`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id: logId }),
+          credentials: 'include',
+        });
 
-    const data = {
-      id: logId,
-      [field]: field === 'grade' ? parseFloat(newValue) : newValue
-    };
+        if (response.ok) {
+          // Play delete sound
+          deleteSound.play();
+          
+          // Find the log element and its parent subject group
+          const logElement = document.querySelector(`div[data-id="${logId}"]`);
+          const subjectGroup = logElement.parentElement;
+          
+          // Add delete animation
+          logElement.style.transition = 'all 0.3s ease';
+          logElement.style.transform = 'scale(0.8)';
+          logElement.style.opacity = '0';
+          
+          // Remove element after animation and check if subject group is empty
+          setTimeout(() => {
+            logElement.remove();
+            
+            // If this was the last grade in the subject group (excluding average),
+            // remove the entire subject group
+            const remainingGrades = subjectGroup.querySelectorAll('.grade-log');
+            if (remainingGrades.length <= 1) { // 1 because of the average element
+              subjectGroup.style.transition = 'all 0.3s ease';
+              subjectGroup.style.opacity = '0';
+              setTimeout(() => {
+                subjectGroup.remove();
+              }, 300);
+            } else {
+              // Otherwise, just refresh the logs to update averages
+              loadGradeLogs();
+            }
+          }, 300);
 
-    try {
-      const response = await fetch(`${pythonURI}/api/gradelog`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        alert('Grade Log updated successfully!');
-        loadGradeLogs(); // Refresh logs
-      } else {
-        const errorText = await response.text();
-        alert('Failed to update grade log: ' + errorText);
+          await Swal.fire({
+            title: 'Deleted!',
+            text: 'Your grade log has been deleted.',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        } else {
+          throw new Error('Failed to delete');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        await Swal.fire({
+          title: 'Error!',
+          text: 'Failed to delete grade log.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while updating the grade log.');
     }
   }
 
-  // Handle Delete button click
-  async function handleDeleteLog(event) {
-    const logId = event.target.getAttribute('data-id');
+  window.editLog = async function(logId) {
+    const logElement = document.querySelector(`div[data-id="${logId}"]`);
+    const gradeSpan = logElement.querySelector('[data-field="grade"]');
+    const notesSpan = logElement.querySelector('[data-field="notes"]');
 
-    if (!confirm('Are you sure you want to delete this grade log?')) {
-      return;
-    }
+    // Create input fields
+    const gradeInput = document.createElement('input');
+    gradeInput.type = 'text';
+    gradeInput.value = gradeSpan.textContent;
+    gradeInput.className = 'edit-input';
 
-    try {
-      const response = await fetch(`${pythonURI}/api/gradelog?id=${logId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
+    const notesInput = document.createElement('textarea');
+    notesInput.value = notesSpan.textContent === 'No notes' ? '' : notesSpan.textContent;
+    notesInput.className = 'edit-input';
 
-      if (response.ok) {
-        alert('Grade Log deleted successfully!');
-        loadGradeLogs(); // Refresh logs
-      } else {
-        const errorText = await response.text();
-        alert('Failed to delete grade log: ' + errorText);
+    // Replace spans with inputs
+    gradeSpan.replaceWith(gradeInput);
+    notesSpan.replaceWith(notesInput);
+
+    // Create save button
+    const saveButton = document.createElement('button');
+    saveButton.innerHTML = '<i class="fas fa-save"></i>';
+    saveButton.className = 'save-btn';
+
+    // Replace edit button with save button
+    const editButton = logElement.querySelector('.edit-btn');
+    editButton.replaceWith(saveButton);
+
+    // Add save functionality
+    saveButton.onclick = async function() {
+      const newGrade = parseFloat(gradeInput.value);
+      if (isNaN(newGrade)) {
+        await Swal.fire('Error!', 'Please enter a valid number for grade.', 'error');
+        return;
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while deleting the grade log.');
-    }
+
+      const data = {
+        id: logId,
+        grade: newGrade,
+        notes: notesInput.value
+      };
+
+      try {
+        const response = await fetch(`${pythonURI}/api/gradelog`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          // Create new spans with updated values
+          const newGradeSpan = document.createElement('span');
+          newGradeSpan.textContent = newGrade;
+          newGradeSpan.setAttribute('data-field', 'grade');
+          newGradeSpan.className = 'grade';
+
+          const newNotesSpan = document.createElement('span');
+          newNotesSpan.textContent = notesInput.value || 'No notes';
+          newNotesSpan.setAttribute('data-field', 'notes');
+
+          // Replace inputs with new spans
+          gradeInput.replaceWith(newGradeSpan);
+          notesInput.replaceWith(newNotesSpan);
+
+          // Restore edit button
+          const newEditButton = document.createElement('button');
+          newEditButton.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+          newEditButton.className = 'edit-btn';
+          newEditButton.onclick = () => editLog(logId);
+          saveButton.replaceWith(newEditButton);
+
+          // Add animation effect
+          logElement.style.transform = 'scale(1.05)';
+          setTimeout(() => {
+            logElement.style.transform = 'scale(1)';
+          }, 200);
+
+          await Swal.fire({
+            title: 'Success!',
+            text: 'Grade log updated successfully!',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          });
+
+          // Refresh logs after animation
+          setTimeout(() => {
+            loadGradeLogs();
+          }, 1600);
+        }
+      } catch (error) {
+        console.error('Error updating grade log:', error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Failed to update grade log.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    };
   }
 
   // Load grade logs on page load
