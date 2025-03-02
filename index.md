@@ -85,17 +85,7 @@ menu: nav/home.html
         font-size: 2rem;
     }
 
-    /* Updated classes container */
-    .classes-container {
-        margin: 2rem auto;
-        max-width: 800px;
-        padding: 1.5rem;
-        text-align: center;
-        display: none;
-        background: #ff8c00;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(255, 165, 0, 0.2);
-    }
+
 
     /* Updated prompt login */
     .prompt-login {
@@ -336,11 +326,3 @@ menu: nav/home.html
 </script>
 
 
-
-<script src="https://utteranc.es/client.js"
-        repo="arushah2007/arushStudent"
-        issue-term="pathname"
-        theme="github-dark"
-        crossorigin="anonymous"
-        async>
-    </script> 

@@ -82,7 +82,7 @@ permalink: profiles/manage
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             }
             .profile h3 {
-                color: #a8d0ff;
+                color: #ff7043;
                 margin-bottom: 15px;
             }
             .profile p {
@@ -90,7 +90,7 @@ permalink: profiles/manage
                 font-size: 0.95rem;
             }
             .profile strong {
-                color: #a8d0ff;
+                color: #ff7043;
             }
             .form-container {
                 display: none; /* Hide by default */
@@ -212,6 +212,14 @@ permalink: profiles/manage
                     width: 100%;
                 }
             }
+            .create-profile-button {
+                color: #ff7043; /* Changed to orange */
+            }
+            .icon-edit,
+            .icon-delete,
+            .icon-save {
+                color: #ff7043; /* Changed to orange */
+            }
         </style>
         <!-- Add SweetAlert2 CSS and JS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -220,7 +228,7 @@ permalink: profiles/manage
     </head>
     <body>
         <div class="container">
-            <h1>Student Profiles</h1>
+            <h1 style="color:#ff7043;">Profiles</h1>
             <div class="button-container">
                 <button onclick="toggleForm('create-profile-form-container')">Create New Profile</button>
             </div>
