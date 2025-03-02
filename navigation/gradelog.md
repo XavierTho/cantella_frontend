@@ -117,13 +117,17 @@ permalink: /gradelog
   }
 
   .grade-log h3 {
-    color: #a8d0ff;
+    color: #ff7043;
     margin-bottom: 15px;
   }
 
   .grade-log p {
     margin: 10px 0;
     color: #ffffff;
+  }
+
+  .grade-log p strong {
+    color: #ff7043;
   }
 
   .grade {
@@ -243,7 +247,7 @@ permalink: /gradelog
 
 
 <div id="grade-log-app">
-  <h2>Grade Log Tracker</h2>
+  <h2 style="color:#ff7043;">Grade Log Tracker</h1>
   <button id="create-log-btn">Add Grade Log</button>
 
   <div id="grade-log-form-container" class="hidden">
@@ -401,7 +405,7 @@ permalink: /gradelog
         logElement.style.backdropFilter = 'blur(5px)';
 
         logElement.innerHTML = `
-          <p><strong style="color: #a8d0ff;">Grade:</strong> <span class="grade" data-field="grade">${log.grade}</span></p>
+          <p><strong style="color: #ff7043;">Grade:</strong> <span class="grade" data-field="grade">${log.grade}</span></p>
           <p style="color: #ffffff;"><span data-field="notes">${log.notes || 'No notes'}</span></p>
           <p style="color: #a8d0ff; font-size: 0.9em;">${new Date(log.date).toLocaleString()}</p>
           <div class="button-group">
@@ -422,7 +426,7 @@ permalink: /gradelog
       averageElement.style.background = 'rgba(255, 255, 255, 0.15)';
       averageElement.style.textAlign = 'center';
       averageElement.innerHTML = `
-        <p><strong style="color: #a8d0ff;">Average Grade:</strong> <span class="grade">${averageGrade}</span></p>
+        <p><strong style="color: #ff7043;">Average Grade:</strong> <span class="grade">${averageGrade}</span></p>
       `;
       subjectElement.appendChild(averageElement);
 
