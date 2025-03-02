@@ -247,7 +247,7 @@ permalink: /gradelog
 
 
 <div id="grade-log-app">
-  <h2 style="color:#ff7043;">Grade Log Tracker</h1>
+  <h2 style="color:#ff7043;">Grade Log Tracker</h2>
   <button id="create-log-btn">Add Grade Log</button>
 
   <div id="grade-log-form-container" class="hidden">
