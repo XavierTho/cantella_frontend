@@ -405,8 +405,8 @@ permalink: /gradelog
           <p style="color: #ffffff;"><span data-field="notes">${log.notes || 'No notes'}</span></p>
           <p style="color: #a8d0ff; font-size: 0.9em;">${new Date(log.date).toLocaleString()}</p>
           <div class="button-group">
-            <button class="edit-btn" onclick="editLog(${log.id})"><i class="fas fa-pencil-alt"></i></button>
-            <button class="delete-btn" onclick="deleteLog(${log.id})"><i class="fas fa-trash-alt"></i></button>
+            <button class="edit-btn" data-id="${log.id}"><i class="fas fa-pencil-alt"></i></button>
+            <button class="delete-btn" data-id="${log.id}"><i class="fas fa-trash-alt"></i></button>
           </div>
         `;
 
@@ -428,40 +428,41 @@ permalink: /gradelog
 
       gradeLogContainer.appendChild(subjectElement);
     });
+
+    // Add event listeners for Edit and Delete buttons
+    document.querySelectorAll('.edit-btn').forEach((btn) => {
+      btn.addEventListener('click', handleEditLog);
+    });
+
+    document.querySelectorAll('.delete-btn').forEach((btn) => {
+      btn.addEventListener('click', handleDeleteLog);
+    });
   }
 
   // Function to display average grades for all users
   function displayAllUsersAverageGrades(logs) {
     // Group logs by subject
     const groupedLogs = logs.reduce((acc, log) => {
-      // If the subject is not already a key in the accumulator, add it
       if (!acc[log.subject]) {
         acc[log.subject] = [];
       }
-      // Push the current log into the array for its subject
       acc[log.subject].push(log);
       return acc;
     }, {});
 
-    // Iterate over each subject in the grouped logs
     Object.keys(groupedLogs).forEach((subject) => {
-      let totalGrades = 0; // Initialize variables for calculating average grade
+      let totalGrades = 0;
       let gradeCount = 0;
 
-      // Iterate through the logs for the current subject
       groupedLogs[subject].forEach((log) => {
-        // Accumulate the total grades and count for calculating the average
         totalGrades += parseFloat(log.grade);
         gradeCount++;
       });
 
-      // Calculate the average grade for the subject
       const averageGrade = (totalGrades / gradeCount).toFixed(2);
-      // Create an element to display the average grade for all users
       const averageGradeElement = document.createElement('p');
-      averageGradeElement.className = 'average-grade'; // Add a class for styling
+      averageGradeElement.className = 'average-grade';
       averageGradeElement.innerHTML = `<strong>All Users Average Grade for ${subject}:</strong> <span class="grade">${averageGrade}</span>`;
-      // Append the average grade element to the main grade log container
       gradeLogContainer.appendChild(averageGradeElement);
     });
   }
@@ -469,87 +470,55 @@ permalink: /gradelog
   // Add delete sound effect
   const deleteSound = new Audio('{{site.baseurl}}/images/sounds/delete.mp3');
 
-  window.deleteLog = async function(logId) {
-    const result = await Swal.fire({
-      title: 'Delete this log?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, keep it'
-    });
+  async function handleDeleteLog(event) {
+    const logId = event.target.getAttribute('data-id');
+    const confirmation = confirm('Are you sure you want to delete this log? This action cannot be undone.');
 
-    if (result.isConfirmed) {
+    if (confirmation) {
       try {
-        const response = await fetch(`${pythonURI}/api/gradelog`, {
+        const response = await fetch(`${pythonURI}/api/gradelog?id=${logId}`, {
           method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ id: logId }),
           credentials: 'include',
         });
 
         if (response.ok) {
-          // Play delete sound
           deleteSound.play();
-          
-          // Find the log element and its parent subject group
           const logElement = document.querySelector(`div[data-id="${logId}"]`);
           const subjectGroup = logElement.parentElement;
-          
-          // Add delete animation
           logElement.style.transition = 'all 0.3s ease';
           logElement.style.transform = 'scale(0.8)';
           logElement.style.opacity = '0';
-          
-          // Remove element after animation and check if subject group is empty
           setTimeout(() => {
             logElement.remove();
-            
-            // If this was the last grade in the subject group (excluding average),
-            // remove the entire subject group
             const remainingGrades = subjectGroup.querySelectorAll('.grade-log');
-            if (remainingGrades.length <= 1) { // 1 because of the average element
+            if (remainingGrades.length <= 1) {
               subjectGroup.style.transition = 'all 0.3s ease';
               subjectGroup.style.opacity = '0';
               setTimeout(() => {
                 subjectGroup.remove();
               }, 300);
             } else {
-              // Otherwise, just refresh the logs to update averages
               loadGradeLogs();
             }
           }, 300);
 
-          await Swal.fire({
-            title: 'Deleted!',
-            text: 'Your grade log has been deleted.',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-          });
+          alert('Grade log deleted successfully!');
         } else {
           throw new Error('Failed to delete');
         }
       } catch (error) {
         console.error('Error:', error);
-        await Swal.fire({
-          title: 'Error!',
-          text: 'Failed to delete grade log.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
+        alert('Failed to delete grade log.');
       }
     }
   }
 
-  window.editLog = async function(logId) {
+  async function handleEditLog(event) {
+    const logId = event.target.getAttribute('data-id');
     const logElement = document.querySelector(`div[data-id="${logId}"]`);
     const gradeSpan = logElement.querySelector('[data-field="grade"]');
     const notesSpan = logElement.querySelector('[data-field="notes"]');
 
-    // Create input fields
     const gradeInput = document.createElement('input');
     gradeInput.type = 'text';
     gradeInput.value = gradeSpan.textContent;
@@ -559,24 +528,20 @@ permalink: /gradelog
     notesInput.value = notesSpan.textContent === 'No notes' ? '' : notesSpan.textContent;
     notesInput.className = 'edit-input';
 
-    // Replace spans with inputs
     gradeSpan.replaceWith(gradeInput);
     notesSpan.replaceWith(notesInput);
 
-    // Create save button
     const saveButton = document.createElement('button');
     saveButton.innerHTML = '<i class="fas fa-save"></i>';
     saveButton.className = 'save-btn';
 
-    // Replace edit button with save button
     const editButton = logElement.querySelector('.edit-btn');
     editButton.replaceWith(saveButton);
 
-    // Add save functionality
     saveButton.onclick = async function() {
       const newGrade = parseFloat(gradeInput.value);
       if (isNaN(newGrade)) {
-        await Swal.fire('Error!', 'Please enter a valid number for grade.', 'error');
+        alert('Please enter a valid number for grade.');
         return;
       }
 
@@ -595,7 +560,6 @@ permalink: /gradelog
         });
 
         if (response.ok) {
-          // Create new spans with updated values
           const newGradeSpan = document.createElement('span');
           newGradeSpan.textContent = newGrade;
           newGradeSpan.setAttribute('data-field', 'grade');
@@ -605,48 +569,29 @@ permalink: /gradelog
           newNotesSpan.textContent = notesInput.value || 'No notes';
           newNotesSpan.setAttribute('data-field', 'notes');
 
-          // Replace inputs with new spans
           gradeInput.replaceWith(newGradeSpan);
           notesInput.replaceWith(newNotesSpan);
 
-          // Restore edit button
           const newEditButton = document.createElement('button');
           newEditButton.innerHTML = '<i class="fas fa-pencil-alt"></i>';
           newEditButton.className = 'edit-btn';
-          newEditButton.onclick = () => editLog(logId);
+          newEditButton.onclick = () => handleEditLog({ target: newEditButton });
           saveButton.replaceWith(newEditButton);
 
-          // Add animation effect
           logElement.style.transform = 'scale(1.05)';
           setTimeout(() => {
             logElement.style.transform = 'scale(1)';
           }, 200);
 
-          await Swal.fire({
-            title: 'Success!',
-            text: 'Grade log updated successfully!',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-          });
-
-          // Refresh logs after animation
-          setTimeout(() => {
-            loadGradeLogs();
-          }, 1600);
+          alert('Grade log updated successfully!');
+          loadGradeLogs();
         }
       } catch (error) {
         console.error('Error updating grade log:', error);
-        Swal.fire({
-          title: 'Error!',
-          text: 'Failed to update grade log.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
+        alert('Failed to update grade log.');
       }
     };
   }
 
-  // Load grade logs on page load
   loadGradeLogs();
 </script>
