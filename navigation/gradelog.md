@@ -553,7 +553,7 @@ permalink: /gradelog
 
       try {
         const response = await fetch(`${pythonURI}/api/gradelog`, {
-          method: 'PATCH',
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
           credentials: 'include',
