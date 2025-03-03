@@ -61,7 +61,7 @@ permalink: naviagtion/log
                 font-size: 0.95rem;
             }
             .log-container li strong {
-                color: #a8d0ff;
+                color: #ff7043;
                 font-weight: 500;
             }
             .button-group {
@@ -230,9 +230,10 @@ permalink: naviagtion/log
     </head>
     <body>
         <div class="container">
-            <h1>Study Log</h1>
+            <h1 style="color:#ff7043;">Your Study Logs</h1>
+            <div>
+            </div>
             <div class="log-container" id="log-container">
-                <h2>Your Study Logs</h2>
                 <ul id="study-log"></ul>
             </div>
             <div class="form-container">

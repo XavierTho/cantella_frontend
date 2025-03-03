@@ -11,79 +11,55 @@ hide: true
 
 <style>
   body {
-    font-family: 'Cinzel', serif;
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    color: #e5e7eb;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #ffffff;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
 }
 
-h1, h3 {
-    text-align: center;
-    color: #facc15;
-    text-shadow: 2px 2px 5px rgba(255, 223, 0, 0.5);
-    margin-top: 20px;
-    font-weight: bold;
+h1 {
+    color: #ff7043;
+    margin-bottom: 20px;
 }
 
-#flashcard-app {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1000px;
+.container {
+    max-width: 900px;
     width: 100%;
-    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
 }
 
-/* Layout Containers */
-.top-container {
+.top-container, .bottom-container {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    gap: 20px;
+    margin-bottom: 20px;
 }
 
-/* Bottom Section (Hidden Until Deck is Opened) */
-.bottom-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-/* Individual Feature Boxes */
-#add-deck-box, #open-deck-box, #flashcard-box, #add-flashcard-box {
-    width: 48%;
+.box {
+    flex: 1;
+    margin: 0 10px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.3);
-    border: 2px solid rgba(255, 215, 0, 0.2);
-    text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Import Box Always Visible */
-#import-box {
-    width: 100%;
-    margin-top: 20px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.3);
-    border: 2px solid rgba(255, 215, 0, 0.2);
-    text-align: center;
+.box h2 {
+    color: #ff7043;
+    margin-bottom: 15px;
 }
 
 button {
-    background: linear-gradient(135deg, #facc15, #d97706);
-    color: black;
+    background: #ff7043;
+    color: white;
     border: none;
     border-radius: 8px;
     padding: 10px 16px;
@@ -91,43 +67,21 @@ button {
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: bold;
-    box-shadow: 0px 4px 15px rgba(255, 215, 0, 0.5);
+    width: 100%;
 }
 
 button:hover {
-    background: linear-gradient(135deg, #d97706, #92400e);
-    transform: scale(1.05);
+    background: #d97706;
 }
 
-#add-deck-form {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    padding: 20px;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0 4px 20px rgba(255, 223, 0, 0.3);
-    border: 2px solid rgba(255, 215, 0, 0.3);
-}
-
-.form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #facc15;
-    border-radius: 8px;
-    font-size: 16px;
-    background: rgba(0, 0, 0, 0.1);
-    color: white;
-}
-
-/* Deck Display */
-.deck-container {
+.deck-container, .flashcard-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px;
     justify-content: center;
 }
 
-.deck {
+.deck, .flashcard {
     width: 200px;
     height: 120px;
     border-radius: 10px;
@@ -137,144 +91,76 @@ button:hover {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background: linear-gradient(135deg, #d97706, #92400e);
-    color: #facc15;
+    background: #f5f5f5;
+    color: #ff7043;
     font-size: 18px;
     font-weight: bold;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 15px rgba(255, 223, 0, 0.5);
-    animation: glow 4s infinite alternate;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
 
-.deck:hover {
+.deck:hover, .flashcard:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(255, 223, 0, 0.7);
-}
-
-.flashcard-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 25px;
-    border-radius: 12px;
-    border: 2px solid #facc15;
-    width: 100%;
-    max-width: 700px;
-    box-shadow: 0 6px 15px rgba(255, 223, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
 }
 
 .flashcard {
-    width: 340px;
     height: 220px;
-    border-radius: 12px;
-    text-align: center;
+}
+
+.flashcard-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    background: linear-gradient(135deg, #facc15, #d97706);
-    color: black;
-    font-size: 18px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
-    transform-style: preserve-3d;
-    perspective: 1000px;
 }
 
-.flashcard.answer {
-    background: linear-gradient(135deg, #d97706, #facc15);
-    transform: rotateY(180deg);
+.flashcard-content span {
+    margin: 5px 0;
 }
 
-.flashcard:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 15px rgba(255, 215, 0, 0.5);
-}
-
-/* Flashcard Flip Animation */
-@keyframes flip {
-    from {
-        transform: rotateY(0deg);
-    }
-    to {
-        transform: rotateY(180deg);
-    }
-}
-
-/* Deck Glow Animation */
-@keyframes glow {
-    from {
-        box-shadow: 0px 6px 15px rgba(255, 223, 0, 0.3);
-    }
-    to {
-        box-shadow: 0px 6px 20px rgba(255, 223, 0, 0.7);
-    }
-}
-
-@media screen and (max-width: 600px) {
-    .deck {
-        width: 100%;
-    }
-
-    .flashcard {
-        width: 100%;
-    }
+.hidden {
+    display: none;
 }
 </style>
 
 
-<div id="flashcard-app">
+<div class="container">
+  <h1>Flashcards</h1>
   <div class="top-container">
-    <!-- Left Box: Add Deck Feature -->
-    <div id="add-deck-box">
+    <div class="box" id="add-deck-box">
       <h2>Create a New Deck</h2>
       <button id="create-deck-btn">+ Create Deck</button>
       <div id="add-deck-form" class="hidden">
-        <div class="form-group">
-          <label for="deck-title">Deck Title:</label>
-          <input type="text" id="deck-title" placeholder="Enter deck title">
-        </div>
+        <input type="text" id="deck-title" placeholder="Enter deck title" />
       </div>
     </div>
-
-    <!-- Right Box: Open Deck Feature -->
-<div id="open-deck-box">
+    <div class="box" id="open-deck-box">
       <h2>Your Decks</h2>
       <div class="deck-container" id="deck-container"></div>
     </div>
   </div>
 
-  <!-- This section only appears after clicking "Open Deck" -->
   <div class="bottom-container hidden" id="deck-interaction">
-    <div id="flashcard-box">
+    <div class="box" id="flashcard-box">
       <h2>Flashcards</h2>
-      <div class="flashcard-container hidden" id="flashcard-container">
+      <div class="flashcard-container" id="flashcard-container">
         <div class="flashcard hidden" id="flashcard"></div>
         <button id="next-card-btn" class="hidden">Next Card</button>
         <button id="close-deck-btn" class="hidden">Close Deck</button>
       </div>
     </div>
-
-<div id="add-flashcard-box">
+    <div class="box" id="add-flashcard-box">
       <h2>Add a Flashcard</h2>
       <div id="add-flashcard-form" class="hidden">
         <h3 id="current-deck-name">Add Flashcard to Deck: <span id="deck-name-placeholder"></span></h3>
-        <div class="form-group">
-          <label for="question">Question:</label>
-          <input type="text" id="question" placeholder="Enter question">
-        </div>
-        <div class="form-group">
-          <label for="answer">Answer:</label>
-          <input type="text" id="answer" placeholder="Enter answer">
-        </div>
+        <input type="text" id="question" placeholder="Enter question" />
+        <input type="text" id="answer" placeholder="Enter answer" />
         <button id="add-card-btn">Add Flashcard</button>
       </div>
     </div>
   </div>
+</div>
 
 
 
