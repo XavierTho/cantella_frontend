@@ -316,7 +316,6 @@ permalink: /gradelog
       });
 
       if (response.ok) {
-        alert('Grade Log added successfully!');
         gradeLogForm.reset();
         loadGradeLogs(); // Refresh logs
       } else {
@@ -587,7 +586,6 @@ permalink: /gradelog
             logElement.style.transform = 'scale(1)';
           }, 200);
 
-          alert('Grade log updated successfully!');
           loadGradeLogs();
         }
       } catch (error) {
